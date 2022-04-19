@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import '../httpClient/config.dart';
-import '../themes/light_color.dart';
-import '../widgets/MessageBox.dart';
-import '../widgets/flushBar.dart';
-import '../widgets/input_text.dart';
+import '../../httpClient/config.dart';
+import '../../themes/light_color.dart';
+import '../../widgets/MessageBox.dart';
+import '../../widgets/flushBar.dart';
+import '../../widgets/input_text.dart';
 import 'package:http/http.dart' as http;
 
 class ActivationPage extends StatefulWidget {

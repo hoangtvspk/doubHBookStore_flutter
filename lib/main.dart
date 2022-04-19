@@ -1,20 +1,16 @@
 import 'package:doubhBookstore_flutter_springboot/src/config/route.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/active.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/home.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/signIn.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/mainLayout.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/bookDetail.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/signUp.dart';
 import 'package:doubhBookstore_flutter_springboot/src/widgets/customRoute.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:loader_overlay/loader_overlay.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'src/themes/theme.dart';
 
-void main() {
+void main() async {
+  await GetStorage.init();
   runApp(MyApp());
   configLoading();
 }
@@ -40,7 +36,7 @@ void configLoading() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Cửa hàng sách DoubH',
       theme: AppTheme.lightTheme.copyWith(
         textTheme: GoogleFonts.muliTextTheme(
@@ -50,7 +46,7 @@ class MyApp extends StatelessWidget {
       builder: EasyLoading.init(),
 
       debugShowCheckedModeBanner: false,
-      routes: Routes.getRoute(),
+      getPages: routes(),
       onGenerateRoute: (RouteSettings settings) {
 
          return CustomRoute<bool>(

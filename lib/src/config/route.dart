@@ -1,21 +1,21 @@
-import 'package:doubhBookstore_flutter_springboot/src/pages/active.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/register/active.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/bookDetail.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/home.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/home/homeScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/mainLayout.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/signUp.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/routes/get_route.dart';
 
-import '../pages/signIn.dart';
+import '../pages/login/signInScreen.dart';
+import '../pages/profile/myProfile/myProfileScreen.dart';
 
-class Routes {
-  static Map<String, WidgetBuilder> getRoute() {
-    return <String, WidgetBuilder>{
-      '/': (context) => MainLayout(),
-      '/detail':(context) => BookDetail(),
-      '/home':(context) => HomePage(),
-      '/signup':(context) => SignUpPage(),
-      '/activation':(context)=> ActivationPage(),
-      '/signin':(context)=>SignInPage(),
-    };
-  }
-}
+
+routes() => [
+  GetPage(name: "/", page: () => MainLayout()),
+  GetPage(name: "/detail", page: () => BookDetail()),
+  GetPage(name: "/home", page: () => HomePage()),
+  GetPage(name: "/signup", page: () => SignUpPage()),
+  GetPage(name: "/activation", page: () => ActivationPage()),
+  GetPage(name: "/signin", page: () => SignInPage()),
+  GetPage(name: "/myProfile", page: () => MyProfileScreen()),
+];

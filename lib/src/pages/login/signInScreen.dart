@@ -2,68 +2,37 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:doubhBookstore_flutter_springboot/src/httpClient/config.dart';
+import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
+import 'package:doubhBookstore_flutter_springboot/src/model/userLoginInfoModel.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/home/homeScreen.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/login/signInController.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/signUp.dart';
 import 'package:doubhBookstore_flutter_springboot/src/themes/theme.dart';
 import 'package:doubhBookstore_flutter_springboot/src/widgets/flushBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:loader_overlay/loader_overlay.dart';
-
-import '../themes/light_color.dart';
-import '../widgets/input_text.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../themes/light_color.dart';
+import '../../widgets/input_text.dart';
+import '../mainLayout.dart';
 
 class SignInPage extends StatefulWidget {
   SignInPage() : super();
 
   @override
-  _SearchPageState createState() => _SearchPageState();
+  _SignInState createState() => _SignInState();
 }
 
-class _SearchPageState extends State<SignInPage> {
+class _SignInState extends State<SignInPage> {
+  final _controller = Get.put(LoginController());
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  late Timer _timer;
-  bool _isLoaderVisible = false;
 
-  Future signIn(String email, String password, BuildContext context) async {
-    var res = await http.post(
-        Uri.parse(Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["login"]!),
-        headers: <String, String>{"Content-Type": "application/json"},
-        body: json.encode({
-          "email": email,
-          "password": password,
-        }));
-    // print(res.body);
-    if (_formKey.currentState!.validate()) {
-      if (res.statusCode == 200) {
-
-        print(res.body);
-        Navigator.of(context).pushNamed('/mainpage');
-        FlushBar.showFlushBar(
-          context,
-          null,
-          "Đăng nhập thành công!",
-          Icon(
-            Icons.check,
-            color: Colors.green,
-          ),
-        );
-      } else {
-        print(res.body);
-        FlushBar.showFlushBar(
-          context,
-          "Đăng nhập thất bại",
-          "Tải khoản hoặc mật khẩu chưa chính xác.\nVui lòng nhập lại!",
-          Icon(
-            Icons.error_outline,
-            color: Colors.red,
-          ),
-        );
-        //MessageBox.showMyDialog(context, "Không thành công", "Tải khoản hoặc mật khẩu chưa chính xác\nVui lòng nhập lại", "Nhập lại");
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +134,7 @@ class _SearchPageState extends State<SignInPage> {
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () {
-                            Navigator.of(context).pushNamed('/signup');
+                            Get.to(() => SignUpPage());
                           },
                           child: Text(
                             "Đăng ký",
@@ -322,7 +291,7 @@ class _SearchPageState extends State<SignInPage> {
                           onPressed: () async {
                             String password = passwordController.text;
                             String email = emailController.text;
-                            await signIn(email, password, context);
+                            _controller.signIn(email, password, context,_formKey);
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.transparent,
