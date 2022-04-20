@@ -34,7 +34,9 @@ class Config{
     "addReplyReview": "/users/reviewrep/add",
     "cancelOrder": "/users/orders/canel/:id"
   };
+
   static Map<String, String>  HTTP_CONFIG = {
     "baseURL": "http://10.21.56.19:8080/api/v1"
+
   };
 }
