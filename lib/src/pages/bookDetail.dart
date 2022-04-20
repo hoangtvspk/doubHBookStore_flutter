@@ -2,6 +2,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -191,13 +193,12 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                             ? Row(
                                 children: [
                                   TitleText(
-                                    text: formatter
-                                            .format(agrs.book.price -
-                                                agrs.book.price *
-                                                    agrs.book.sale /
-                                                    100)
-                                            .toString() +
-                                        "₫",
+                                    text:  "${formatter
+                                        .format(agrs.book.price -
+                                        agrs.book.price *
+                                            agrs.book.sale /
+                                            100)
+                                        .toString()}₫",
                                     fontSize: 25,
                                     color: Colors.black87,
                                   ),
@@ -213,7 +214,7 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                                         color: Colors.white54,
                                       ),
                                       child: Text(
-                                        "-" + agrs.book.sale.toString() + "%",
+                                        "-${agrs.book.sale.toString()} %",
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.black54,
@@ -224,11 +225,9 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(left: 5),
-                                    child: Text(
-                                      formatter
-                                              .format(agrs.book.price)
-                                              .toString() +
-                                          "₫",
+                                    child: Text("${formatter
+                                        .format(agrs.book.price)
+                                        .toString()}₫",
                                       style: TextStyle(
                                         fontSize: 15,
                                         color: Colors.black54,
@@ -241,13 +240,11 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                               )
                             : Row(children: [
                                 TitleText(
-                                  text: "₫" +
-                                      formatter
-                                          .format(agrs.book.price)
-                                          .toString(),
-                                  fontSize: 35,
-                                  color: Colors.deepOrange,
-                                  fontWeight: FontWeight.w900,
+                                  text: "${formatter
+                                      .format(agrs.book.price)
+                                      .toString()}₫",
+                                  fontSize: 25,
+                                  color: Colors.black87,
                                 ),
                               ])
                       ],
@@ -292,7 +289,7 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                 color: Colors.black,
               ),
               onPressed: () {
-                Navigator.of(context).pop();
+                Get.back();
               },
               tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
             );

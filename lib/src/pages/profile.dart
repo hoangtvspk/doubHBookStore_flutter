@@ -1,8 +1,13 @@
 
+import 'dart:convert';
+
 import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
+import '../model/userLoginInfoModel.dart';
 import '../themes/light_color.dart';
 import '../themes/theme.dart';
 import '../widgets/title_text.dart';
@@ -72,27 +77,38 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _price() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        TitleText(
-          text: ' sản phẩm',
-          color: LightColor.grey,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-        TitleText(
-          text: '155.000 VNĐ',
-          fontSize: 18,
-        ),
-      ],
+
+    final box = GetStorage();
+    print(box.read("userInfo")!.toString());
+    dynamic e = (box.read("userInfo"));
+    UserLoginInfoModel userInfo = new UserLoginInfoModel(firstName: e["firstName"], lastName: e["lastName"], email: e["email"], token: e["token"], userRole: e["userRole"]);
+    return SingleChildScrollView(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          TitleText(
+            text: ' sản phẩm',
+            color: LightColor.grey,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+          TitleText(
+            text: userInfo.firstName,
+            fontSize: 18,
+          ),
+        ],
+      ),
     );
   }
 
   Widget _submitButton(BuildContext context) {
     return ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
+          final box = GetStorage();
+          final prefs = await SharedPreferences.getInstance();
           Navigator.pushNamed(context, "/signin");
+          await prefs.setBool('isAuth', false);
+          print(prefs.getBool('isAuth'));
         },
 
         child: Container(

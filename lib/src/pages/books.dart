@@ -4,7 +4,8 @@ import 'dart:convert';
 import 'package:doubhBookstore_flutter_springboot/src/model/imageModel.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get_storage/get_storage.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:loader_overlay/loader_overlay.dart';
 
@@ -35,6 +36,7 @@ class _BooksPageState extends State<BooksPage> {
     context.loaderOverlay.hide();
   }
   void onProgressing(var data, bookList){
+    final box = GetStorage();
     List<dynamic> responseJson = json.decode(utf8.decode(data.bodyBytes));
     for (var e in responseJson) {
       List<ImageModel> imageList = [] ;
