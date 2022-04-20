@@ -35,6 +35,6 @@ class Config{
     "cancelOrder": "/users/orders/canel/:id"
   };
   static Map<String, String>  HTTP_CONFIG = {
-    "baseURL": "http://192.168.1.6:8080/api/v1"
+    "baseURL": "http://10.21.56.19:8080/api/v1"
   };
 }
