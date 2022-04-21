@@ -6,6 +6,7 @@ class InputTextWidget extends StatelessWidget {
   final bool? obscureText;
   final keyboardType;
   final controller;
+  final String? initialValue;
 
 
   const InputTextWidget(
@@ -13,7 +14,8 @@ class InputTextWidget extends StatelessWidget {
         this.icon,
         this.obscureText,
         this.keyboardType,
-        this.controller})
+        this.controller,
+        this.initialValue})
       : super();
 
   @override
@@ -25,6 +27,7 @@ class InputTextWidget extends StatelessWidget {
             child: TextFormField(
                 controller: controller,
                 obscureText: obscureText!,
+                initialValue: initialValue,
                 autofocus: false,
                 keyboardType: keyboardType,
                 decoration: InputDecoration(

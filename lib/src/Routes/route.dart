@@ -1,3 +1,4 @@
+import 'package:doubhBookstore_flutter_springboot/src/pages/profile/myProfile/editPassword/editPasswordScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/register/active.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/bookDetail.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/home/homeScreen.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
 import '../pages/login/signInScreen.dart';
+import '../pages/profile/myProfile/editMyProfile/editMyProfileScreen.dart';
 import '../pages/profile/myProfile/myProfileScreen.dart';
 
 
@@ -18,4 +20,7 @@ routes() => [
   GetPage(name: "/activation", page: () => ActivationPage()),
   GetPage(name: "/signin", page: () => SignInPage()),
   GetPage(name: "/myProfile", page: () => MyProfileScreen()),
+  GetPage(name: "/editProfile", page: () => EditMyProfileScreen()),
+  GetPage(name: "/editPassword", page: () => EditPasswordScreen()),
+
 ];

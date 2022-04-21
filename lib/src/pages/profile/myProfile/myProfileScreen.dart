@@ -1,4 +1,6 @@
 import 'package:doubhBookstore_flutter_springboot/src/model/myInfoModel.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/profile/myProfile/editMyProfile/editMyProfileScreen.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/profile/myProfile/editPassword/editPasswordScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -149,12 +151,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   ProfileMenu(
                     text: "Chỉnh sửa thông tin",
                     icon: Icons.person_outline,
-                    press: () => {},
+                    press: () => {Get.to(()=>EditMyProfileScreen())},
                   ),
                   ProfileMenu(
                     text: "Cập nhật mật khẩu",
                     icon: Icons.password_outlined,
-                    press: () => {},
+                    press: () => {Get.to(()=>EditPasswordScreen())},
                   ),
                 ],
               );

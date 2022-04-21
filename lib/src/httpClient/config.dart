@@ -1,3 +1,7 @@
+import 'package:get_storage/get_storage.dart';
+
+import '../model/userLoginInfoModel.dart';
+
 class Config{
   static Map<String, String> APP_API = {
     "book":"/books",
@@ -34,11 +38,19 @@ class Config{
     "addReplyReview": "/users/reviewrep/add",
     "cancelOrder": "/users/orders/canel/:id"
   };
-  static Map<String, String>  HTTP_CONFIG = {
-    "baseURL": "http://192.168.1.13:8080/api/v1"
+  // static Map<String, String>  HTTP_CONFIG = {
+  //   "baseURL": "http://192.168.1.13:8080/api/v1"
 
   static Map<String, String>  HTTP_CONFIG = {
     "baseURL": "http://10.21.56.19:8080/api/v1"
+  };
+  static final box = GetStorage();
+  static dynamic e = (box.read("userInfo"));
+  static UserLoginInfoModel userInfo = new UserLoginInfoModel(firstName: e["firstName"], lastName: e["lastName"], email: e["email"], token: e["token"], userRole: e["userRole"]);
 
+  static Map<String, String>  HEADER = {
+    'Content-type': 'application/json',
+    'Accept': 'application/json',
+    'Authorization': '${userInfo.token.toString()}'
   };
 }

@@ -1,4 +1,4 @@
-import 'package:doubhBookstore_flutter_springboot/src/config/route.dart';
+import 'package:doubhBookstore_flutter_springboot/src/Routes/route.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/mainLayout.dart';
 import 'package:doubhBookstore_flutter_springboot/src/widgets/customRoute.dart';
 import "package:flutter/material.dart";
