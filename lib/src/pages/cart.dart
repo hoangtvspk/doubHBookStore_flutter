@@ -1,6 +1,5 @@
 import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/home/homeScreen.dart';
-
 import 'package:flutter/material.dart';
 
 import '../themes/light_color.dart';
@@ -8,8 +7,6 @@ import '../themes/theme.dart';
 import '../widgets/title_text.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomUtils.dart';
-
-import 'home/homeScreen.dart';
 class Cart extends StatelessWidget {
   const Cart({Key? key}) : super(key: key);
 
