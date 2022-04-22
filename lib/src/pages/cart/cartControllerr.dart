@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,7 +19,6 @@ import 'package:http/http.dart' as http;
 class CartController extends GetxController {
   final box = GetStorage();
   final prefs = SharedPreferences.getInstance();
-
   Future<List<CartItem>> addOne(int id, Book book) async {
     dynamic cartInfo = await box.read("cartInfo");
     dynamic userInfo = await box.read("userInfo");
@@ -45,21 +45,19 @@ class CartController extends GetxController {
         return [];
       }
     }
-    var body =
-         jsonEncode(cartItemRequests.map((e) => e.toJson()).toList());
+    var body = jsonEncode(cartItemRequests.map((e) => e.toJson()).toList());
     print(body);
     await http
         .post(
-        Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
-            Config.APP_API["updateCartItem"]!),
-        headers: <String, String>{
-          "Content-Type": "application/json",
-          "Authorization": userInfo["token"].toString()
-        },
-        body: body)
+            Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
+                Config.APP_API["updateCartItem"]!),
+            headers: <String, String>{
+              "Content-Type": "application/json",
+              "Authorization": userInfo["token"].toString()
+            },
+            body: body)
         .then((value) => onProgressing(value, list, 1))
         .whenComplete(() {});
-
 
     await saveToBox(list);
     return list;
@@ -127,11 +125,11 @@ class CartController extends GetxController {
         ],
       ),
     ));
-    List<CartItem> list =await [];
+    List<CartItem> list = await [];
     final prefs = await SharedPreferences.getInstance();
     bool? isAuthh = await prefs.getBool("isAuth");
     if (isAuthh == true) {
-      dynamic userInfo =await (box.read("userInfo"));
+      dynamic userInfo = await (box.read("userInfo"));
       // UserLoginInfoModel userInfo = new UserLoginInfoModel(firstName: e["firstName"], lastName: e["lastName"], email: e["email"], token: e["token"], userRole: e["userRole"]);
 
       await http
@@ -156,12 +154,12 @@ class CartController extends GetxController {
           .whenComplete(() => cancelLoading(context));
     }
     saveToBox(list);
-
     return list;
   }
 
   Future<void> saveToBox(List<CartItem> list) async {
     List<CartItemRequest> cartItemRequests = [];
+    double totalPrice = 0;
     for (CartItem e in list) {
       CartItemRequest cartItemRequest =
           new CartItemRequest(id: e.book.id, quantity: e.quantity);
@@ -169,13 +167,17 @@ class CartController extends GetxController {
     }
     var json1 = jsonEncode(cartItemRequests.map((e) => e.toJson()).toList());
     dynamic e = json.decode(json1);
+    for (CartItem item in list) {
+      Book book = item.book;
+      totalPrice += (item.quantity * book.price * (1 - book.sale * 0.01));
+    }
 
     box.write("cartInfo", e);
+    box.write("totalItem", list.length);
+    box.write("totalPrice", totalPrice);
     print(box.read("cartInfo"));
     // print(box.read("userInfo"));
     // var json = jsonEncode(cartItemRequests.map((e) => e.toJson()).toList());
     // box.write("cartInfo", json);
   }
-
-
 }

@@ -3,6 +3,7 @@ import 'package:doubhBookstore_flutter_springboot/src/pages/home/homeScreen.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/cartItem.dart';
@@ -16,6 +17,7 @@ import 'cartControllerr.dart';
 
 class Cart extends StatefulWidget {
   const Cart({List<CartItem>? items, Key? key}) : super(key: key);
+
   Widget _item(Book model) {
     return Container(
       height: 80,
@@ -109,7 +111,6 @@ class Cart extends StatefulWidget {
         ));
   }
 
-
   @override
   _CartState createState() => _CartState();
 
@@ -145,6 +146,8 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
   final _controller = Get.put(CartController());
+  final box = GetStorage();
+  var formatter = NumberFormat('#,###,000');
 
   footer(BuildContext context) {
     return Container(
@@ -158,7 +161,7 @@ class _CartState extends State<Cart> {
               Container(
                 margin: EdgeInsets.only(left: 30),
                 child: Text(
-                  "Total",
+                  "Tổng cộng",
                   style: CustomTextStyle.textFormFieldMedium
                       .copyWith(color: Colors.grey, fontSize: 12),
                 ),
@@ -166,7 +169,7 @@ class _CartState extends State<Cart> {
               Container(
                 margin: EdgeInsets.only(right: 30),
                 child: Text(
-                  "\$299.00",
+                  formatter.format(box.read("totalPrice")).toString(),
                   style: CustomTextStyle.textFormFieldBlack.copyWith(
                       color: Colors.greenAccent.shade700, fontSize: 14),
                 ),
@@ -196,23 +199,23 @@ class _CartState extends State<Cart> {
     );
   }
 
-  createHeader() {
-    return Container(
-      alignment: Alignment.topLeft,
-      child: Text(
-        "SHOPPING CART",
-        style: CustomTextStyle.textFormFieldBold
-            .copyWith(fontSize: 16, color: Colors.black),
-      ),
-      margin: EdgeInsets.only(left: 12, top: 12),
-    );
-  }
+  // createHeader() {
+  //   return Container(
+  //     alignment: Alignment.topLeft,
+  //     child: Text(
+  //       "SHOPPING CART",
+  //       style: CustomTextStyle.textFormFieldBold
+  //           .copyWith(fontSize: 16, color: Colors.black),
+  //     ),
+  //     margin: EdgeInsets.only(left: 12, top: 12),
+  //   );
+  // }
 
   createSubTitle() {
     return Container(
       alignment: Alignment.topLeft,
       child: Text(
-        "Total(3) Items",
+        "Có(" + box.read("totalItem").toString() + ") sản phẩm",
         style: CustomTextStyle.textFormFieldBold
             .copyWith(fontSize: 12, color: Colors.grey),
       ),
@@ -235,156 +238,171 @@ class _CartState extends State<Cart> {
             },
             itemCount: snapshot.data.length,
           );
-        }
+        });
+  }
+
+  createCartListItem(CartItem cartItem) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(16))),
+          child: Row(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8),
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(14)),
+                    color: Colors.blue.shade200,
+                    image: DecorationImage(
+                        image: NetworkImage(cartItem.book.image[0].image))),
+              ),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(right: 8, top: 4),
+                        child: Text(
+                          cartItem.book.name.toString(),
+                          maxLines: 2,
+                          softWrap: true,
+                          style: CustomTextStyle.textFormFieldSemiBold
+                              .copyWith(fontSize: 14),
+                        ),
+                      ),
+                      Utils.getSizedBox(height: 6),
+                      Text(
+                        cartItem.book.category.nameCategory.toString(),
+                        style: CustomTextStyle.textFormFieldRegular
+                            .copyWith(color: Colors.grey, fontSize: 14),
+                      ),
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              formatter.format(cartItem.book.price).toString(),
+                              style: CustomTextStyle.textFormFieldBlack
+                                  .copyWith(color: Colors.green),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 3, horizontal: 3),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Colors.deepOrange),
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white54,
+                              ),
+                              child: Text(
+                                "-${cartItem.book.sale.toString()} %",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: <Widget>[
+                                  SizedBox(
+                                    height: 30,
+                                    width: 30,
+                                    child: new IconButton(
+                                      onPressed: () {},
+                                      icon: new Icon(Icons.remove, size: 24),
+                                      color: Colors.grey.shade700,
+                                    ),
+                                  ),
+                                  Container(
+                                    color: Colors.grey.shade200,
+                                    padding: const EdgeInsets.only(
+                                        bottom: 2, right: 12, left: 12),
+                                    child: Text(
+                                      cartItem.quantity.toString(),
+                                      style:
+                                          CustomTextStyle.textFormFieldSemiBold,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 30,
+                                    width: 30,
+                                    child: new IconButton(
+                                      onPressed: () {
+                                        _controller.addOne(
+                                            cartItem.book.id, cartItem.book);
+                                        setState(() {});
+                                      },
+                                      icon: new Icon(Icons.add, size: 24),
+                                      color: Colors.grey.shade700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                flex: 100,
+              )
+            ],
+          ),
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: Container(
+            width: 24,
+            height: 24,
+            alignment: Alignment.center,
+            margin: EdgeInsets.only(right: 10, top: 8),
+            child: Icon(
+              Icons.close,
+              color: Colors.white,
+              size: 20,
+            ),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+                color: Colors.green),
+          ),
+        )
+      ],
     );
   }
 
-        createCartListItem(CartItem cartItem)
-    {
-      return Stack(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(16))),
-            child: Row(
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8),
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(14)),
-                      color: Colors.blue.shade200,
-                      image: DecorationImage(
-                          image: NetworkImage(cartItem.book.image[0].image))),
-                ),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(right: 8, top: 4),
-                          child: Text(
-                            cartItem.book.name.toString(),
-                            maxLines: 2,
-                            softWrap: true,
-                            style: CustomTextStyle.textFormFieldSemiBold
-                                .copyWith(fontSize: 14),
-                          ),
-                        ),
-                        Utils.getSizedBox(height: 6),
-                        Text(
-                          cartItem.book.category.nameCategory.toString(),
-                          style: CustomTextStyle.textFormFieldRegular
-                              .copyWith(color: Colors.grey, fontSize: 14),
-                        ),
-                        Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                cartItem.book.price.toString(),
-                                style: CustomTextStyle.textFormFieldBlack
-                                    .copyWith(color: Colors.green),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: <Widget>[
-                                    SizedBox(
-                                    height: 30,
-                                    width:30,
-                                      child: new IconButton(
-                                        onPressed: (){},
-                                        icon :new Icon(Icons.remove, size: 24),
-                                        color: Colors.grey.shade700,
-
-                                      ),
-                                    ),
-                                    Container(
-                                      color: Colors.grey.shade200,
-                                      padding: const EdgeInsets.only(
-                                          bottom: 2, right: 12, left: 12),
-                                      child:
-                                      Text(
-                                        cartItem.quantity.toString(),
-                                        style:
-                                        CustomTextStyle.textFormFieldSemiBold,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 30,
-                                      width: 30,
-                                      child: new IconButton(
-                                        onPressed: () {_controller.addOne(cartItem.book.id,cartItem.book);
-                                        setState(() {});},
-                                        icon :new Icon(Icons.add, size: 24),
-                                        color: Colors.grey.shade700,
-
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  flex: 100,
-                )
-              ],
-            ),
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: Container(
-              width: 24,
-              height: 24,
-              alignment: Alignment.center,
-              margin: EdgeInsets.only(right: 10, top: 8),
-              child: Icon(
-                Icons.close,
-                color: Colors.white,
-                size: 20,
-              ),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                  color: Colors.green),
-            ),
-          )
-        ],
-      );
-    }
-    @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.grey.shade100,
-        body: Builder(
-          builder: (context) {
-            return ListView(
-              children: <Widget>[
-                createHeader(),
-                createSubTitle(),
-                createCartList(() =>_controller.getCartItems(context)),
-                footer(context)
-              ],
-            );
-          },
-        ),
-      );
-    }
-
-
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Giỏ hàng"),
+      ),
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.grey.shade100,
+      body: Builder(
+        builder: (context) {
+          return ListView(
+            children: <Widget>[
+              createSubTitle(),
+              createCartList(() => _controller.getCartItems(context)),
+              footer(context)
+            ],
+          );
+        },
+      ),
+    );
   }
-
-
+}
