@@ -30,18 +30,18 @@ class MyProfileController extends GetxController{
     dynamic e = (box.read("userInfo"));
     UserLoginInfoModel userInfo = new UserLoginInfoModel(firstName: e["firstName"], lastName: e["lastName"], email: e["email"], token: e["token"], userRole: e["userRole"]);
     print(userInfo.token);
-    context.loaderOverlay.show(widget: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircularProgressIndicator(),
-          SizedBox(height: 12),
-          Text(
-            'Đang tải dữ liệu...',
-          ),
-        ],
-      ),
-    ));
+    // context.loaderOverlay.show(widget: Center(
+    //   child: Column(
+    //     mainAxisSize: MainAxisSize.min,
+    //     children: [
+    //       CircularProgressIndicator(),
+    //       SizedBox(height: 12),
+    //       Text(
+    //         'Đang tải dữ liệu...',
+    //       ),
+    //     ],
+    //   ),
+    // ));
 
     final data = await http
         .get(Uri.parse(Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["userInfo"]!),headers: Config.HEADER).whenComplete(() => cancelLoading(context));
