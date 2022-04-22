@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+// import 'package:dio/dio.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/request/cartItemRequest.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +17,13 @@ import '../../model/categoryModel.dart';
 import '../../model/imageModel.dart';
 import 'package:http/http.dart' as http;
 
+import '../../widgets/flushBar.dart';
+
 class CartController extends GetxController {
   final box = GetStorage();
   final prefs = SharedPreferences.getInstance();
-  Future<List<CartItem>> addOne(int id, Book book) async {
+
+  Future addOne(int id, Book book) async {
     dynamic cartInfo = await box.read("cartInfo");
     dynamic userInfo = await box.read("userInfo");
     List<CartItemRequest> cartItemRequests = await [];
@@ -157,7 +161,7 @@ class CartController extends GetxController {
     return list;
   }
 
-  Future<void> saveToBox(List<CartItem> list) async {
+  saveToBox(List<CartItem> list) {
     List<CartItemRequest> cartItemRequests = [];
     double totalPrice = 0;
     for (CartItem e in list) {
@@ -179,5 +183,75 @@ class CartController extends GetxController {
     // print(box.read("userInfo"));
     // var json = jsonEncode(cartItemRequests.map((e) => e.toJson()).toList());
     // box.write("cartInfo", json);
+  }
+
+  Future addToCart(int id, BuildContext context) async {
+    dynamic cartInfo = await box.read("cartInfo");
+    dynamic userInfo = await box.read("userInfo");
+    String idBook = json.encode({"id": id});
+    String quantity = json.encode({"number": 1});
+    print("1");
+    // FormData formData = FormData;
+    // FormData formData = FormData.from({
+    //   "idBook": idBook
+    // });
+    int until = 1;
+    var map = new Map<String, String>();
+    map['idBook'] = '1';
+    map['quantity'] = '2';
+    // FormData formData = new FormData(map);
+    // formData.fields(
+    //     "idBook",
+    //     new Blob([JSON.stringify({ id })], { type: "application/json" })
+    // );
+    //  print(map);
+    List<CartItem> list = await [];
+    // print(jsonEncode({
+    //   "idBook": {"id": "$id"},
+    //   "quantity": {"number": 1}
+    // }));
+    // FormData formData = new FormData.fromMap(map);
+
+    // var res = await http
+    //     .post(
+    //         Uri.parse(
+    //             Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["addToCart"]!),
+    //         headers: <String, String>{
+    //           "Content-Type": "multipart/form-data",
+    //           // "Content-Type": "application/json",
+    //
+    //           "Authorization": userInfo["token"].toString()
+    //
+    //         },
+    //         body: map);
+
+    Map<String, String> headers= <String,String>{
+      "Content-Type": "multipart/form-data",
+      // "Content-Type": "application/json",
+
+      "Authorization": userInfo["token"].toString()
+    };
+    var uri = Uri.parse(Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["addToCart"]!);
+    var request = http.MultipartRequest('POST', uri)
+      ..headers.addAll(headers) //if u have headers, basic auth, token bearer... Else remove line
+      ..fields.addAll(map);
+    var response = await request.send();
+    final respStr = await response.stream.bytesToString();
+    print(jsonDecode(respStr)) ;
+        // .then((value) => onProgressing(value, list, 1))
+        // .whenComplete(() {
+      // FlushBar.showFlushBar(
+      //   context,
+      //   null,
+      //   "Thêm giỏ hàng thành công",
+      //   Icon(
+      //     Icons.check,
+      //     color: Colors.green,
+      //   ),
+      // );
+    // });
+    // print(res.body);
+    saveToBox(list);
+    print("2");
   }
 }

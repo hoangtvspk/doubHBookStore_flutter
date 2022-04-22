@@ -13,6 +13,7 @@ import '../model/bookModel.dart';
 import '../themes/light_color.dart';
 import '../themes/theme.dart';
 import '../widgets/title_text.dart';
+import 'cart/cartControllerr.dart';
 
 class BookDetail extends StatefulWidget {
   BookDetail({Key? key}) : super(key: key);
@@ -22,6 +23,7 @@ class BookDetail extends StatefulWidget {
 }
 
 class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
+  final _controller = Get.put(CartController());
   late AnimationController controller;
   late Animation<double> animation;
   var formatter = NumberFormat('#,###,000');
@@ -278,6 +280,8 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final BookDetailsArguments agrs =
+    ModalRoute.of(context)!.settings.arguments as BookDetailsArguments;
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -322,7 +326,7 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                     top: BorderSide(width: 0.2, color: Colors.grey.shade400))),
             child: ElevatedButton(
               onPressed: () async {
-                //Get.to(ChoiceScreen());
+                _controller.addToCart(agrs.book.id,context);
               },
               style: ElevatedButton.styleFrom(
                 primary: Colors.transparent,
