@@ -187,7 +187,7 @@ class _CartState extends State<Cart> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(24))),
             child: Text(
-              "Checkout",
+              "Thanh Toán",
               style: CustomTextStyle.textFormFieldSemiBold
                   .copyWith(color: Colors.white),
             ),

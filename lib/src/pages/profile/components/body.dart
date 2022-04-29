@@ -37,6 +37,9 @@ class _BodyState extends State<Body> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isAuth', false);
     box.remove("userInfo");
+    // box.remove("cartInfo");
+    // // box.remove("totalPrice");
+    // box.remove("totalItem");
   }
   @override
   Widget build(BuildContext context){

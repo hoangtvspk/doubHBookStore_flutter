@@ -1,9 +1,11 @@
 import 'dart:convert';
 
-// import 'package:dio/dio.dart';
+
 import 'package:doubhBookstore_flutter_springboot/src/model/request/cartItemRequest.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:form_data/form_data.dart' as formdata;
+
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
@@ -18,6 +20,7 @@ import '../../model/imageModel.dart';
 import 'package:http/http.dart' as http;
 
 import '../../widgets/flushBar.dart';
+import '../login/signInScreen.dart';
 
 class CartController extends GetxController {
   final box = GetStorage();
@@ -184,74 +187,61 @@ class CartController extends GetxController {
     // var json = jsonEncode(cartItemRequests.map((e) => e.toJson()).toList());
     // box.write("cartInfo", json);
   }
+  onAddtoCart(http.Response data, BuildContext context){
+    if (data.statusCode == 200) {
+      print("add successfully");
+      print(data.body);
+      FlushBar.showFlushBar(
+        context,
+        null,
+        "Thêm giỏ hàng thành công",
+        Icon(
+          Icons.check,
+          color: Colors.green,
+        ),
+      );
+    }
+    else {
+      print("failed!");
+      print(data.body);
+    }
 
+  }
   Future addToCart(int id, BuildContext context) async {
+
     dynamic cartInfo = await box.read("cartInfo");
     dynamic userInfo = await box.read("userInfo");
-    String idBook = json.encode({"id": id});
-    String quantity = json.encode({"number": 1});
-    print("1");
-    // FormData formData = FormData;
-    // FormData formData = FormData.from({
-    //   "idBook": idBook
-    // });
-    int until = 1;
-    var map = new Map<String, String>();
-    map['idBook'] = '1';
-    map['quantity'] = '2';
-    // FormData formData = new FormData(map);
-    // formData.fields(
-    //     "idBook",
-    //     new Blob([JSON.stringify({ id })], { type: "application/json" })
-    // );
-    //  print(map);
-    List<CartItem> list = await [];
-    // print(jsonEncode({
-    //   "idBook": {"id": "$id"},
-    //   "quantity": {"number": 1}
-    // }));
-    // FormData formData = new FormData.fromMap(map);
+    if(userInfo == null){
+      Get.to(()=>SignInPage());
+    }
+    else{
+      String idBook = json.encode({"id": id,});
+      String quantity = json.encode({"number": 1});
+      print("1");
 
-    // var res = await http
-    //     .post(
-    //         Uri.parse(
-    //             Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["addToCart"]!),
-    //         headers: <String, String>{
-    //           "Content-Type": "multipart/form-data",
-    //           // "Content-Type": "application/json",
-    //
-    //           "Authorization": userInfo["token"].toString()
-    //
-    //         },
-    //         body: map);
+      var map = new Map<String, String>();
+      map['idBook'] = '1';
+      map['quantity'] = '2';
+      //var formData = new FormData(map);
+      var formData = formdata.FormData();
+      formData.add("idBook", idBook, contentType: 'application/json');
+      formData.add("quantity",quantity, contentType: 'application/json');
 
-    Map<String, String> headers= <String,String>{
-      "Content-Type": "multipart/form-data",
-      // "Content-Type": "application/json",
 
-      "Authorization": userInfo["token"].toString()
+
+      Map<String, String> headers= <String,String>{
+        "Content-Type": formData.contentType,
+        // "Content-Type": "application/json",
+        "Content-Length": formData.contentLength.toString(),
+        "Authorization": userInfo["token"].toString()
+      };
+      var uri = Uri.parse(Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["addToCart"]!);
+
+      await http.post(uri,headers:headers,body: formData.body).then((value) => onAddtoCart(value,context)) ;
+      print("2");
     };
-    var uri = Uri.parse(Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["addToCart"]!);
-    var request = http.MultipartRequest('POST', uri)
-      ..headers.addAll(headers) //if u have headers, basic auth, token bearer... Else remove line
-      ..fields.addAll(map);
-    var response = await request.send();
-    final respStr = await response.stream.bytesToString();
-    print(jsonDecode(respStr)) ;
-        // .then((value) => onProgressing(value, list, 1))
-        // .whenComplete(() {
-      // FlushBar.showFlushBar(
-      //   context,
-      //   null,
-      //   "Thêm giỏ hàng thành công",
-      //   Icon(
-      //     Icons.check,
-      //     color: Colors.green,
-      //   ),
-      // );
-    // });
-    // print(res.body);
-    saveToBox(list);
-    print("2");
+
+
+
   }
 }

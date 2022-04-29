@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 class HomeBanner extends StatelessWidget {
   final List<String> bannerList = [
-    "https://www.teahub.io/photos/full/55-550023_wallpaper-book-garland-light-darkness-reading-dark-books.jpg",
-    "https://i.pinimg.com/originals/b7/23/cb/b723cb289b80267278b606991e238c05.jpg",
+    "https://lh6.googleusercontent.com/eQHsVMxqSmtWfP7FYChVaLl-14JSYyFmPHY06ZLDUrgeUNlhNUCNQa73Wd4MmajGgpuZBtg05FLsF5tZ8ouwykcKV8Tf4lk1_IhOLblJCg6uRa-qFSaYglH0Jc2iilspuoGPMV9eKL_sIQVpKA",
+    "https://theki.vn/wp-content/uploads/2019/05/trinh-bay-vai-tro-cua-sach-va-cach-doc-sach-dung-dan-qua-cau-noi-cua-m-gorki-hay-yeu-sach-no-la-nguon-tri-thuc.jpg",
     "https://www.pixelstalk.net/wp-content/uploads/2016/06/Free-Desktop-Book-Wallpapers-HD.jpg",
     "https://images5.alphacoders.com/443/443740.jpg",
     "https://www.heat-up.mx/wp-content/uploads/2014/10/book-table-close-up-photo-wallpaper-1680x1050.jpg",

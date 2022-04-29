@@ -156,6 +156,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "8.12.0"
+  form_data:
+    dependency: "direct main"
+    description:
+      name: form_data
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1"
   get:
     dependency: "direct main"
     description:
