@@ -1,4 +1,5 @@
 import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/checkoutScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/home/homeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -180,7 +181,7 @@ class _CartState extends State<Cart> {
           RaisedButton(
             onPressed: () {
               Navigator.push(context,
-                  new MaterialPageRoute(builder: (context) => HomePage())); ////
+                  new MaterialPageRoute(builder: (context) => CheckOutPage())); ////
             },
             color: Colors.green,
             padding: EdgeInsets.only(top: 12, left: 60, right: 60, bottom: 12),
@@ -321,7 +322,10 @@ class _CartState extends State<Cart> {
                                     height: 30,
                                     width: 30,
                                     child: new IconButton(
-                                      onPressed: () {},
+                                      onPressed: () async { await _controller.removeOne(
+                                          cartItem.book.id, cartItem.book);
+                                      setState(() {});
+                                      },
                                       icon: new Icon(Icons.remove, size: 24),
                                       color: Colors.grey.shade700,
                                     ),
@@ -340,8 +344,7 @@ class _CartState extends State<Cart> {
                                     height: 30,
                                     width: 30,
                                     child: new IconButton(
-                                      onPressed: () {
-                                        _controller.addOne(
+                                      onPressed: () async { await _controller.addOne(
                                             cartItem.book.id, cartItem.book);
                                         setState(() {});
                                       },
@@ -366,15 +369,23 @@ class _CartState extends State<Cart> {
         Align(
           alignment: Alignment.topRight,
           child: Container(
-            width: 24,
-            height: 24,
+            width: 28,
+            height: 28,
             alignment: Alignment.center,
             margin: EdgeInsets.only(right: 10, top: 8),
-            child: Icon(
-              Icons.close,
+            child: new IconButton(
+              onPressed: () async { await _controller.removeItem(
+                  cartItem.book.id);
+              setState(() {});
+              },
+              icon: new Icon(Icons.close, size: 15),
               color: Colors.white,
-              size: 20,
             ),
+            // child: Icon(
+            //   Icons.close,
+            //   color: Colors.white,
+            //   size: 20,
+            // ),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(4)),
                 color: Colors.green),
@@ -397,7 +408,7 @@ class _CartState extends State<Cart> {
           return ListView(
             children: <Widget>[
               createSubTitle(),
-              createCartList(() => _controller.getCartItems(context)),
+              createCartList(() async => await _controller.getCartItems(context)),
               footer(context)
             ],
           );

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import 'package:doubhBookstore_flutter_springboot/src/model/request/cartItemRequest.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +52,43 @@ class CartController extends GetxController {
       }
     }
     var body = jsonEncode(cartItemRequests.map((e) => e.toJson()).toList());
+    print(Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["updateCartItem"]!);
+    await http
+        .post(
+            Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
+                Config.APP_API["updateCartItem"]!),
+            headers: <String, String>{
+              "Content-Type": "application/json",
+              "Authorization": userInfo["token"].toString()
+            },
+            body: body)
+        .then((value) => onProgressing(value, list, 1))
+        .whenComplete(() {});
+    await saveToBox(list);
+  }
+
+  Future removeOne(int id, Book book) async {
+    dynamic cartInfo = await box.read("cartInfo");
+    dynamic userInfo = await box.read("userInfo");
+    List<CartItemRequest> cartItemRequests = await [];
+    List<CartItem> list = await [];
+    print("+");
+    //Chuyen doi ve json thong qua cartItem
+    for (var e in await cartInfo) {
+      cartItemRequests
+          .add(CartItemRequest(id: e["id"], quantity: e["quantity"]));
+    }
+    for (var e in await cartItemRequests) {
+      if (e.id == id) {
+        e.quantity--;
+      }
+      if (e.quantity < 1) {
+        Get.snackbar("Thông báo",
+            "Số lượng sách " + book.name + " đã dạt giá trị tối thiểu");
+        return [];
+      }
+    }
+    var body = jsonEncode(cartItemRequests.map((e) => e.toJson()).toList());
     print(body);
     await http
         .post(
@@ -65,13 +101,30 @@ class CartController extends GetxController {
             body: body)
         .then((value) => onProgressing(value, list, 1))
         .whenComplete(() {});
-
     await saveToBox(list);
-    return list;
   }
 
-  void cancelLoading(BuildContext context) async {
-    context.loaderOverlay.hide();
+  Future removeItem(int id) async {
+    dynamic cartInfo = await box.read("cartInfo");
+    dynamic userInfo = await box.read("userInfo");
+    List<CartItemRequest> cartItemRequests = await [];
+    List<CartItem> list = await [];
+    for (var e in await cartInfo) {
+      cartItemRequests
+          .add(CartItemRequest(id: e["id"], quantity: e["quantity"]));
+    }
+    await http
+        .delete(
+            Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
+                Config.APP_API["deleteCartItem"]! +
+                "$id"),
+            headers: <String, String>{
+              "Content-Type": "application/json",
+              "Authorization": userInfo["token"].toString()
+            })
+        .then((value) => onProgressing(value, list, 1))
+        .whenComplete(() {});
+    await saveToBox(list);
   }
 
   void onProgressing(var data, cartItems, int flag) {
@@ -119,19 +172,7 @@ class CartController extends GetxController {
     var json =
         await jsonEncode(cartItemRequests.map((e) => e.toJson()).toList());
     // print(json);
-    context.loaderOverlay.show(
-        widget: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircularProgressIndicator(),
-          SizedBox(height: 12),
-          Text(
-            'Đang tải dữ liệu...',
-          ),
-        ],
-      ),
-    ));
+
     List<CartItem> list = await [];
     final prefs = await SharedPreferences.getInstance();
     bool? isAuthh = await prefs.getBool("isAuth");
@@ -148,8 +189,7 @@ class CartController extends GetxController {
                 "Authorization": userInfo["token"].toString()
               },
               body: json)
-          .then((value) => onProgressing(value, list, 1))
-          .whenComplete(() => cancelLoading(context));
+          .then((value) => onProgressing(value, list, 1));
     } else {
       await http
           .post(
@@ -157,10 +197,9 @@ class CartController extends GetxController {
                   Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["makeCart"]!),
               headers: <String, String>{"Content-Type": "application/json"},
               body: json)
-          .then((value) => onProgressing(value, list, 0))
-          .whenComplete(() => cancelLoading(context));
+          .then((value) => onProgressing(value, list, 0));
     }
-    saveToBox(list);
+    await saveToBox(list);
     return list;
   }
 
@@ -182,66 +221,53 @@ class CartController extends GetxController {
     box.write("cartInfo", e);
     box.write("totalItem", list.length);
     box.write("totalPrice", totalPrice);
-    print(box.read("cartInfo"));
     // print(box.read("userInfo"));
     // var json = jsonEncode(cartItemRequests.map((e) => e.toJson()).toList());
     // box.write("cartInfo", json);
   }
-  onAddtoCart(http.Response data, BuildContext context){
-    if (data.statusCode == 200) {
-      print("add successfully");
-      print(data.body);
-      FlushBar.showFlushBar(
-        context,
-        null,
-        "Thêm giỏ hàng thành công",
-        Icon(
-          Icons.check,
-          color: Colors.green,
-        ),
-      );
-    }
-    else {
-      print("failed!");
-      print(data.body);
-    }
 
+  onAddtoCart(BuildContext context) {
+    FlushBar.showFlushBar(
+      context,
+      null,
+      "Thêm giỏ hàng thành công",
+      Icon(
+        Icons.check,
+        color: Colors.green,
+      ),
+    );
   }
-  Future addToCart(int id, BuildContext context) async {
 
+  Future addToCart(int id, BuildContext context) async {
     dynamic cartInfo = await box.read("cartInfo");
     dynamic userInfo = await box.read("userInfo");
-    if(userInfo == null){
-      Get.to(()=>SignInPage());
-    }
-    else{
-      String idBook = json.encode({"id": id,});
-      String quantity = json.encode({"number": 1});
-      print("1");
+    List<CartItem> list = await [];
 
-      var map = new Map<String, String>();
-      map['idBook'] = '1';
-      map['quantity'] = '2';
-      //var formData = new FormData(map);
+    if (userInfo == null) {
+      Get.to(() => SignInPage());
+    } else {
+      String idBook = json.encode({
+        "id": id,
+      });
+      String quantity = json.encode({"number": 1});
       var formData = formdata.FormData();
       formData.add("idBook", idBook, contentType: 'application/json');
-      formData.add("quantity",quantity, contentType: 'application/json');
+      formData.add("quantity", quantity, contentType: 'application/json');
 
-
-
-      Map<String, String> headers= <String,String>{
+      Map<String, String> headers = <String, String>{
         "Content-Type": formData.contentType,
         // "Content-Type": "application/json",
         "Content-Length": formData.contentLength.toString(),
         "Authorization": userInfo["token"].toString()
       };
-      var uri = Uri.parse(Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["addToCart"]!);
-
-      await http.post(uri,headers:headers,body: formData.body).then((value) => onAddtoCart(value,context)) ;
-      print("2");
-    };
-
-
-
+      var uri = Uri.parse(
+          Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["addToCart"]!);
+      await http
+          .post(uri, headers: headers, body: formData.body)
+          .then((value) => onProgressing(value, list, 1))
+          .then((value) => onAddtoCart(context));
+    }
+    ;
+    await saveToBox(list);
   }
 }

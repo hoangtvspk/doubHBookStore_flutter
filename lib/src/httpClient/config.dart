@@ -19,7 +19,7 @@ class Config{
     "makeCart": "/users/makecart",
     "addToCart": "/users/cart/add",
     "getCart": "/users/getcart",
-    "deleteCartItem": "users/cart/delete/:id",
+    "deleteCartItem": "/users/cart/delete/",
     "updateCartItem": "/users/cart/update",
     "order": "/users/order",
     "purchase": "/users/orders",
@@ -27,6 +27,7 @@ class Config{
     "addAddress": "/users/address/add",
     "updateAddress": "/users/address/edit/:id",
     "deleteAddress": "/users/address/delete/:id",
+    "getAddressByUser": "/users/address",
     "getAddress": "/users/address/:id",
     "newBook": "/books/new",
     "bestSellingBook": "/books/best-selling",
@@ -42,7 +43,7 @@ class Config{
   //   "baseURL": "http://192.168.1.13:8080/api/v1"
 
   static Map<String, String>  HTTP_CONFIG = {
-    "baseURL": "http://192.168.43.93:8080/api/v1"
+    "baseURL": "http://192.168.1.59:8080/api/v1"
   };
   static final box = GetStorage();
   static dynamic e = (box.read("userInfo"));
