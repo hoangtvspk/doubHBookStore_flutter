@@ -24,6 +24,25 @@ import '../login/signInScreen.dart';
 class CartController extends GetxController {
   final box = GetStorage();
   final prefs = SharedPreferences.getInstance();
+  RxBool isEmpty = false.obs;
+  Future checkEmpty(BuildContext context) async{
+    await this.getCartItems(context);
+    dynamic cartInfo = await box.read("cartInfo");
+    int count =0;
+    for (var e in await cartInfo) {
+      count++;
+    }
+    if (box.read("cartInfo") == null) {
+      isEmpty = true.obs;
+    }else if(count==0){
+      isEmpty = true.obs;
+    }
+    else {
+      isEmpty = false.obs;
+    }
+    print(box.read("cartInfo"));
+    print(isEmpty);
+  }
 
   Future addOne(int id, Book book) async {
     dynamic cartInfo = await box.read("cartInfo");
@@ -124,6 +143,11 @@ class CartController extends GetxController {
             })
         .then((value) => onProgressing(value, list, 1))
         .whenComplete(() {});
+    if(list.length == 0)
+      {
+        isEmpty= true.obs;
+      }
+    else isEmpty=  false.obs;
     await saveToBox(list);
   }
 
@@ -268,6 +292,10 @@ class CartController extends GetxController {
           .then((value) => onAddtoCart(context));
     }
     ;
+    if(list.length == 0)
+    {
+      isEmpty= await true.obs;
+    }else isEmpty= await false.obs;
     await saveToBox(list);
   }
 }
