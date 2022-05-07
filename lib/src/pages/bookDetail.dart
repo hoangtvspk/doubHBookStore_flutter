@@ -326,7 +326,7 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                     top: BorderSide(width: 0.2, color: Colors.grey.shade400))),
             child: ElevatedButton(
               onPressed: () async {
-                _controller.addToCart(agrs.book.id,context);
+                await _controller.addToCart(agrs.book.id,context);
               },
               style: ElevatedButton.styleFrom(
                 primary: Colors.transparent,

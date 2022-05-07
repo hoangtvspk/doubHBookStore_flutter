@@ -1,4 +1,5 @@
 import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/checkoutScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/home/homeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -148,6 +149,30 @@ class _CartState extends State<Cart> {
   final _controller = Get.put(CartController());
   final box = GetStorage();
   var formatter = NumberFormat('#,###,000');
+  final prefs = SharedPreferences.getInstance();
+  // bool? isEmpty = false;
+  //
+  // Future checkEmpty() async {
+  //   await _controller.getCartItems(context);
+  //   dynamic cartInfo = await box.read("cartInfo");
+  //   int count =0;
+  //   for (var e in await cartInfo) {
+  //     count++;
+  //   }
+  //   if (box.read("cartInfo") == null) {
+  //     isEmpty = true;
+  //   }else if(count==0){
+  //     isEmpty = true;
+  //   }
+  //   else {
+  //     isEmpty = false;
+  //   }
+  //   setState(() {
+  //     isEmpty = isEmpty;
+  //   });
+  //   print(box.read("cartInfo"));
+  //   print(isEmpty);
+  // }
 
   footer(BuildContext context) {
     return Container(
@@ -179,8 +204,10 @@ class _CartState extends State<Cart> {
           Utils.getSizedBox(height: 8),
           RaisedButton(
             onPressed: () {
-              Navigator.push(context,
-                  new MaterialPageRoute(builder: (context) => HomePage())); ////
+              Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                      builder: (context) => CheckOutPage())); ////
             },
             color: Colors.green,
             padding: EdgeInsets.only(top: 12, left: 60, right: 60, bottom: 12),
@@ -297,8 +324,7 @@ class _CartState extends State<Cart> {
                               padding: const EdgeInsets.symmetric(
                                   vertical: 3, horizontal: 3),
                               decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Colors.deepOrange),
+                                border: Border.all(color: Colors.deepOrange),
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.white54,
                               ),
@@ -321,7 +347,11 @@ class _CartState extends State<Cart> {
                                     height: 30,
                                     width: 30,
                                     child: new IconButton(
-                                      onPressed: () {},
+                                      onPressed: () async {
+                                        await _controller.removeOne(
+                                            cartItem.book.id, cartItem.book);
+                                        setState(() {});
+                                      },
                                       icon: new Icon(Icons.remove, size: 24),
                                       color: Colors.grey.shade700,
                                     ),
@@ -340,8 +370,8 @@ class _CartState extends State<Cart> {
                                     height: 30,
                                     width: 30,
                                     child: new IconButton(
-                                      onPressed: () {
-                                        _controller.addOne(
+                                      onPressed: () async {
+                                        await _controller.addOne(
                                             cartItem.book.id, cartItem.book);
                                         setState(() {});
                                       },
@@ -366,15 +396,23 @@ class _CartState extends State<Cart> {
         Align(
           alignment: Alignment.topRight,
           child: Container(
-            width: 24,
-            height: 24,
+            width: 28,
+            height: 28,
             alignment: Alignment.center,
             margin: EdgeInsets.only(right: 10, top: 8),
-            child: Icon(
-              Icons.close,
+            child: new IconButton(
+              onPressed: () async {
+                await _controller.removeItem(cartItem.book.id);
+                setState(() {});
+              },
+              icon: new Icon(Icons.close, size: 15),
               color: Colors.white,
-              size: 20,
             ),
+            // child: Icon(
+            //   Icons.close,
+            //   color: Colors.white,
+            //   size: 20,
+            // ),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(4)),
                 color: Colors.green),
@@ -383,25 +421,83 @@ class _CartState extends State<Cart> {
       ],
     );
   }
+  @override
+  void initState() {
+    _controller.checkEmpty(context);
+    print("before state");
+    super.initState();
 
+  }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Giỏ hàng"),
-      ),
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.grey.shade100,
-      body: Builder(
-        builder: (context) {
-          return ListView(
-            children: <Widget>[
-              createSubTitle(),
-              createCartList(() => _controller.getCartItems(context)),
-              footer(context)
-            ],
-          );
-        },
+    // checkEmpty();
+    if (_controller.isEmpty == false) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Giỏ hàng"),
+        ),
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.grey.shade100,
+        body: Builder(
+          builder: (context) {
+            return ListView(
+              children: <Widget>[
+                createSubTitle(),
+                createCartList(
+                    () async => await _controller.getCartItems(context)),
+                footer(context)
+              ],
+            );
+          },
+        ),
+      );
+    }else{
+      return emptyCart();
+    }
+  }
+
+  SafeArea emptyCart() {
+     return SafeArea(
+      child: Container(
+        decoration: BoxDecoration(color: Colors.white),
+        child: Column(
+          children: <Widget>[
+            SizedBox(
+              height: 70,
+              child: Container(
+                color: Color(0xFFFFFFFF),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              height: 250,
+              child: Image.asset(
+                "assets/empty_shopping_cart.png",
+                height: 250,
+                width: double.infinity,
+              ),
+            ),
+            SizedBox(
+              height: 40,
+              child: Container(
+                color: Color(0xFFFFFFFF),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              child: Text(
+                "You haven't anything to cart",
+                style: TextStyle(
+                  color: Color(0xFF67778E),
+                  fontFamily: 'Roboto-Light.ttf',
+                  fontSize: 20,
+                  fontStyle: FontStyle.normal,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
