@@ -51,7 +51,7 @@ class _EmptyShoppingCartScreenState extends State<EmptyShoppingCartScreen> {
             Container(
               width: double.infinity,
               child: Text(
-                "You haven't anything to cart",
+                "Bạn chưa có sản phẩm trong giỏ hàng",
                 style: TextStyle(
                   color: Color(0xFF67778E),
                   fontFamily: 'Roboto-Light.ttf',

@@ -25,26 +25,26 @@ class CartController extends GetxController {
   final box = GetStorage();
   final prefs = SharedPreferences.getInstance();
   RxBool isEmpty = false.obs;
-  Future checkEmpty(BuildContext context) async{
+
+  Future checkEmpty(BuildContext context) async {
     await this.getCartItems(context);
     dynamic cartInfo = await box.read("cartInfo");
-    int count =0;
+    int count = 0;
     for (var e in await cartInfo) {
       count++;
     }
     if (box.read("cartInfo") == null) {
       isEmpty = true.obs;
-    }else if(count==0){
+    } else if (count == 0) {
       isEmpty = true.obs;
-    }
-    else {
+    } else {
       isEmpty = false.obs;
     }
     print(box.read("cartInfo"));
     print(isEmpty);
   }
 
-  Future addOne(int id, Book book) async {
+  Future addOne(int id, Book book, BuildContext context) async {
     dynamic cartInfo = await box.read("cartInfo");
     dynamic userInfo = await box.read("userInfo");
     List<CartItemRequest> cartItemRequests = await [];
@@ -60,14 +60,27 @@ class CartController extends GetxController {
         e.quantity++;
       }
       if (e.quantity > book.quantity) {
-        Get.snackbar(
-            "Thông báo",
-            "Số lượng sách " +
-                book.name +
-                " không vượt quá " +
-                book.quantity.toString() +
-                " cuốn");
-        return [];
+        FlushBar.showFlushBar(
+          context,
+          null,
+          "Số lượng sách " +
+              book.name +
+              " không vượt quá " +
+              book.quantity.toString() +
+              " cuốn",
+          Icon(
+            Icons.error_outline,
+            color: Colors.red,
+          ),
+        );
+        // Get.snackbar(
+        //     "Thông báo",
+        //     "Số lượng sách " +
+        //         book.name +
+        //         " không vượt quá " +
+        //         book.quantity.toString() +
+        //         " cuốn");
+        return;
       }
     }
     var body = jsonEncode(cartItemRequests.map((e) => e.toJson()).toList());
@@ -102,9 +115,8 @@ class CartController extends GetxController {
         e.quantity--;
       }
       if (e.quantity < 1) {
-        Get.snackbar("Thông báo",
-            "Số lượng sách " + book.name + " đã dạt giá trị tối thiểu");
-        return [];
+        await this.removeItem(id);
+        return;
       }
     }
     var body = jsonEncode(cartItemRequests.map((e) => e.toJson()).toList());
@@ -141,13 +153,11 @@ class CartController extends GetxController {
               "Content-Type": "application/json",
               "Authorization": userInfo["token"].toString()
             })
-        .then((value) => onProgressing(value, list, 1))
-        .whenComplete(() {});
-    if(list.length == 0)
-      {
-        isEmpty= true.obs;
-      }
-    else isEmpty=  false.obs;
+        .then((value) => onProgressing(value, list, 1));
+    if (list.length == 0) {
+      isEmpty = true.obs;
+    } else
+      isEmpty = false.obs;
     await saveToBox(list);
   }
 
@@ -292,10 +302,10 @@ class CartController extends GetxController {
           .then((value) => onAddtoCart(context));
     }
     ;
-    if(list.length == 0)
-    {
-      isEmpty= await true.obs;
-    }else isEmpty= await false.obs;
+    if (list.length == 0) {
+      isEmpty = await true.obs;
+    } else
+      isEmpty = await false.obs;
     await saveToBox(list);
   }
 }

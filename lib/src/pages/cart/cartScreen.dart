@@ -1,5 +1,5 @@
 import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/checkoutScreen.dart';
+import 'package:doubhBookstore_flutter_springboot/src/checkout/checkoutScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/home/homeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -50,7 +50,7 @@ class Cart extends StatefulWidget {
                   subtitle: Row(
                     children: <Widget>[
                       TitleText(
-                        text: model.price.toString(),
+                        text: model.price.toString() + "₫",
                         fontSize: 14,
                       ),
                       TitleText(
@@ -150,29 +150,6 @@ class _CartState extends State<Cart> {
   final box = GetStorage();
   var formatter = NumberFormat('#,###,000');
   final prefs = SharedPreferences.getInstance();
-  // bool? isEmpty = false;
-  //
-  // Future checkEmpty() async {
-  //   await _controller.getCartItems(context);
-  //   dynamic cartInfo = await box.read("cartInfo");
-  //   int count =0;
-  //   for (var e in await cartInfo) {
-  //     count++;
-  //   }
-  //   if (box.read("cartInfo") == null) {
-  //     isEmpty = true;
-  //   }else if(count==0){
-  //     isEmpty = true;
-  //   }
-  //   else {
-  //     isEmpty = false;
-  //   }
-  //   setState(() {
-  //     isEmpty = isEmpty;
-  //   });
-  //   print(box.read("cartInfo"));
-  //   print(isEmpty);
-  // }
 
   footer(BuildContext context) {
     return Container(
@@ -188,15 +165,15 @@ class _CartState extends State<Cart> {
                 child: Text(
                   "Tổng cộng",
                   style: CustomTextStyle.textFormFieldMedium
-                      .copyWith(color: Colors.grey, fontSize: 12),
+                      .copyWith(color: Colors.grey, fontSize: 20),
                 ),
               ),
               Container(
                 margin: EdgeInsets.only(right: 30),
                 child: Text(
-                  formatter.format(box.read("totalPrice")).toString(),
+                  formatter.format(box.read("totalPrice")).toString() + "₫",
                   style: CustomTextStyle.textFormFieldBlack.copyWith(
-                      color: Colors.greenAccent.shade700, fontSize: 14),
+                      color: Colors.greenAccent.shade700, fontSize: 20),
                 ),
               ),
             ],
@@ -316,7 +293,7 @@ class _CartState extends State<Cart> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text(
-                              formatter.format(cartItem.book.price).toString(),
+                              "${formatter.format(cartItem.book.price - cartItem.book.price * cartItem.book.sale / 100).toString()}₫",
                               style: CustomTextStyle.textFormFieldBlack
                                   .copyWith(color: Colors.green),
                             ),
@@ -324,16 +301,15 @@ class _CartState extends State<Cart> {
                               padding: const EdgeInsets.symmetric(
                                   vertical: 3, horizontal: 3),
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.deepOrange),
-                                borderRadius: BorderRadius.circular(10),
                                 color: Colors.white54,
                               ),
                               child: Text(
-                                "-${cartItem.book.sale.toString()} %",
+                                "${formatter.format(cartItem.book.price).toString()}₫",
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 15,
                                   color: Colors.black54,
                                   fontWeight: FontWeight.w300,
+                                  decoration: TextDecoration.lineThrough,
                                 ),
                               ),
                             ),
@@ -372,7 +348,9 @@ class _CartState extends State<Cart> {
                                     child: new IconButton(
                                       onPressed: () async {
                                         await _controller.addOne(
-                                            cartItem.book.id, cartItem.book);
+                                            cartItem.book.id,
+                                            cartItem.book,
+                                            context);
                                         setState(() {});
                                       },
                                       icon: new Icon(Icons.add, size: 24),
@@ -421,13 +399,14 @@ class _CartState extends State<Cart> {
       ],
     );
   }
+
   @override
   void initState() {
     _controller.checkEmpty(context);
     print("before state");
     super.initState();
-
   }
+
   @override
   Widget build(BuildContext context) {
     // checkEmpty();
@@ -451,13 +430,13 @@ class _CartState extends State<Cart> {
           },
         ),
       );
-    }else{
+    } else {
       return emptyCart();
     }
   }
 
   SafeArea emptyCart() {
-     return SafeArea(
+    return SafeArea(
       child: Container(
         decoration: BoxDecoration(color: Colors.white),
         child: Column(

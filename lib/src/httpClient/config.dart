@@ -44,7 +44,7 @@ class Config{
 
   static Map<String, String>  HTTP_CONFIG = {
 
-    "baseURL": "http://192.168.1.130:8080/api/v1"
+    "baseURL": "http://192.168.1.59:8080/api/v1"
 
   };
   static final box = GetStorage();

@@ -37,7 +37,7 @@ class AddressController extends GetxController {
       dynamic userInfo = await (box.read("userInfo"));
       // UserLoginInfoModel userInfo = new UserLoginInfoModel(firstName: e["firstName"], lastName: e["lastName"], email: e["email"], token: e["token"], userRole: e["userRole"]);
 
-      await http.post(
+      await http.get(
           Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
               Config.APP_API["getAddressByUser"]!),
           headers: <String, String>{
@@ -47,7 +47,6 @@ class AddressController extends GetxController {
     } else {
       Get.to(() => SignInPage());
     }
-    print(addresses.toString());
     return addresses;
   }
 }

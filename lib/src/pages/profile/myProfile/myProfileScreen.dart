@@ -22,7 +22,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   Widget Body() {
     return SingleChildScrollView(
-
         child: FutureBuilder(
             future: _controller.getBooks(context),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -34,10 +33,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                        border: Border( bottom: BorderSide(width: 0.5, color: Colors.grey.withOpacity(0.3)))
-                    ),
+                        border: Border(
+                            bottom: BorderSide(
+                                width: 0.5,
+                                color: Colors.grey.withOpacity(0.3)))),
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-
                     child: Row(
                       children: [
                         Text(
@@ -55,14 +55,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               color: Colors.black87,
                               fontFamily: 'Tahoma'),
                         ),
-
                       ],
                     ),
                   ),
                   Container(
                     decoration: BoxDecoration(
-                        border: Border( bottom: BorderSide(width: 0.5, color: Colors.grey.withOpacity(0.3)))
-                    ),
+                        border: Border(
+                            bottom: BorderSide(
+                                width: 0.5,
+                                color: Colors.grey.withOpacity(0.3)))),
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                     child: Row(
                       children: [
@@ -81,15 +82,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               color: Colors.black87,
                               fontFamily: 'Tahoma'),
                         ),
-
                       ],
                     ),
                   ),
-
                   Container(
                     decoration: BoxDecoration(
-                        border: Border( bottom: BorderSide(width: 1, color: Colors.grey.withOpacity(0.3)))
-                    ),
+                        border: Border(
+                            bottom: BorderSide(
+                                width: 1,
+                                color: Colors.grey.withOpacity(0.3)))),
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                     child: Row(
                       children: [
@@ -108,14 +109,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               color: Colors.black87,
                               fontFamily: 'Tahoma'),
                         ),
-
                       ],
                     ),
                   ),
                   Container(
                     decoration: BoxDecoration(
-                        border: Border( bottom: BorderSide(width: 1, color: Colors.grey.withOpacity(0.3)))
-                    ),
+                        border: Border(
+                            bottom: BorderSide(
+                                width: 1,
+                                color: Colors.grey.withOpacity(0.3)))),
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                     child: Row(
                       children: [
@@ -129,34 +131,32 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         Spacer(),
                         (myInfoModel.phone == null)
                             ? Text(
-                          "",
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black87,
-                              fontFamily: 'Tahoma'),
-                        )
+                                "",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black87,
+                                    fontFamily: 'Tahoma'),
+                              )
                             : Text(
-                          "${myInfoModel.phone}",
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black87,
-                              fontFamily: 'Tahoma'),
-                        ),
-
+                                "${myInfoModel.phone}",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black87,
+                                    fontFamily: 'Tahoma'),
+                              ),
                       ],
                     ),
                   ),
-
                   SizedBox(height: 20),
                   ProfileMenu(
                     text: "Chỉnh sửa thông tin",
                     icon: Icons.person_outline,
-                    press: () => {Get.to(()=>EditMyProfileScreen())},
+                    press: () => {Get.to(() => EditMyProfileScreen())},
                   ),
                   ProfileMenu(
                     text: "Cập nhật mật khẩu",
                     icon: Icons.password_outlined,
-                    press: () => {Get.to(()=>EditPasswordScreen())},
+                    press: () => {Get.to(() => EditPasswordScreen())},
                   ),
                 ],
               );
