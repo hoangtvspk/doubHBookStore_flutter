@@ -16,7 +16,7 @@ import '../model/categoryModel.dart';
 import '../themes/light_color.dart';
 import '../themes/theme.dart';
 import '../widgets/bookCard.dart';
-import 'bookDetail.dart';
+import 'bookDetail/bookDetail.dart';
 
 class BooksPage extends StatefulWidget {
   BooksPage({Key? key, this.title}) : super(key: key);

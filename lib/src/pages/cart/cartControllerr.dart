@@ -262,7 +262,7 @@ class CartController extends GetxController {
     );
   }
 
-  Future addToCart(int id, BuildContext context) async {
+  Future addToCart(int id, BuildContext context, RxInt count) async {
     dynamic cartInfo = await box.read("cartInfo");
     dynamic userInfo = await box.read("userInfo");
     List<CartItem> list = await [];
@@ -273,7 +273,7 @@ class CartController extends GetxController {
       String idBook = json.encode({
         "id": id,
       });
-      String quantity = json.encode({"number": 1});
+      String quantity = json.encode({"number": count.value});
       var formData = formdata.FormData();
       formData.add("idBook", idBook, contentType: 'application/json');
       formData.add("quantity", quantity, contentType: 'application/json');

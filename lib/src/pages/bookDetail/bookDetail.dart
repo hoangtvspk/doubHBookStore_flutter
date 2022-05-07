@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/bookDetail/bookDetailController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -8,12 +9,12 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
-import '../httpClient/config.dart';
-import '../model/bookModel.dart';
-import '../themes/light_color.dart';
-import '../themes/theme.dart';
-import '../widgets/title_text.dart';
-import 'cart/cartControllerr.dart';
+import '../../httpClient/config.dart';
+import '../../model/bookModel.dart';
+import '../../themes/light_color.dart';
+import '../../themes/theme.dart';
+import '../../widgets/title_text.dart';
+import '../cart/cartControllerr.dart';
 
 class BookDetail extends StatefulWidget {
   BookDetail({Key? key}) : super(key: key);
@@ -24,6 +25,7 @@ class BookDetail extends StatefulWidget {
 
 class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
   final _controller = Get.put(CartController());
+  final BookDetailController c = Get.put(BookDetailController());
   late AnimationController controller;
   late Animation<double> animation;
   var formatter = NumberFormat('#,###,000');
@@ -172,7 +174,6 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                           itemCount: 5,
                           itemSize: 15.0,
                           direction: Axis.horizontal,
-
                         ),
                         Text(
                           "Thể loại: " + agrs.book.category.nameCategory,
@@ -195,12 +196,8 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                             ? Row(
                                 children: [
                                   TitleText(
-                                    text:  "${formatter
-                                        .format(agrs.book.price -
-                                        agrs.book.price *
-                                            agrs.book.sale /
-                                            100)
-                                        .toString()}₫",
+                                    text:
+                                        "${formatter.format(agrs.book.price - agrs.book.price * agrs.book.sale / 100).toString()}₫",
                                     fontSize: 25,
                                     color: Colors.black87,
                                   ),
@@ -227,9 +224,8 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(left: 5),
-                                    child: Text("${formatter
-                                        .format(agrs.book.price)
-                                        .toString()}₫",
+                                    child: Text(
+                                      "${formatter.format(agrs.book.price).toString()}₫",
                                       style: TextStyle(
                                         fontSize: 15,
                                         color: Colors.black54,
@@ -242,9 +238,8 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                               )
                             : Row(children: [
                                 TitleText(
-                                  text: "${formatter
-                                      .format(agrs.book.price)
-                                      .toString()}₫",
+                                  text:
+                                      "${formatter.format(agrs.book.price).toString()}₫",
                                   fontSize: 25,
                                   color: Colors.black87,
                                 ),
@@ -252,6 +247,46 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                       ],
                     ),
                   ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                SizedBox(
+                  height: 30,
+                  width: 30,
+                  child: new IconButton(
+                    onPressed: () => c.decrement(agrs.book.quantity, context),
+                    icon: new Icon(Icons.remove, size: 24),
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+                Container(
+                    padding:
+                        const EdgeInsets.only(bottom: 2, right: 12, left: 12),
+                    child: Obx(
+                      () => Text(
+                        "${c.count}",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    )),
+                SizedBox(
+                  height: 30,
+                  width: 30,
+                  child: new IconButton(
+                    onPressed: () => c.increment(agrs.book.quantity, context),
+                    icon: new Icon(Icons.add, size: 24),
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+                SizedBox(
+                  width: 30,
+                ),
+                TitleText(
+                  text: "Còn ${agrs.book.quantity} cuốn",
+                  fontSize: 15,
+                  color: Colors.grey,
+                ),
+              ],
+            ),
             SizedBox(
               height: 20,
             ),
@@ -281,7 +316,7 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final BookDetailsArguments agrs =
-    ModalRoute.of(context)!.settings.arguments as BookDetailsArguments;
+        ModalRoute.of(context)!.settings.arguments as BookDetailsArguments;
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -319,38 +354,57 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
       bottomNavigationBar: Stack(
         children: [
           Container(
-            height: AppTheme.fullHeight(context)/10,
+            padding: const EdgeInsets.only(left: 20,right: 20),
+            height: AppTheme.fullHeight(context) / 10,
+            width: AppTheme.fullWidth(context),
             decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border(
                     top: BorderSide(width: 0.2, color: Colors.grey.shade400))),
-            child: ElevatedButton(
-              onPressed: () async {
-                await _controller.addToCart(agrs.book.id,context);
-              },
-              style: ElevatedButton.styleFrom(
-                primary: Colors.transparent,
-                elevation: 0.0,
-                padding: EdgeInsets.only(
-                    left: AppTheme.fullWidth(context) * 50 / 100,
-                    right: 10,
-                    top: 10,
-                    bottom: 10),
-              ),
-              child: Ink(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.redAccent, // Color(0xffF05945),
-                ),
-                child: Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Chọn mua",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+            child: Row(
+              children: [
+                (agrs.book.sale != null && agrs.book.sale != 0)
+                    ? Obx(() => TitleText(
+                          text:
+                              "${formatter.format((agrs.book.price - agrs.book.price * agrs.book.sale / 100) * c.count.value).toString()}₫",
+                          fontSize: 25,
+                          color: Colors.red.withOpacity(0.7),
+                        ))
+                    : Obx(() => TitleText(
+                          text:
+                              "${formatter.format(agrs.book.price * c.count.value).toString()}₫",
+                          fontSize: 25,
+                          color: Colors.black87,
+                        )),
+                Spacer(),
+                ElevatedButton(
+                  onPressed: () async {
+                    await _controller.addToCart(agrs.book.id, context, c.count);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.transparent,
+                    elevation: 0.0,
+                    padding: EdgeInsets.only(
+                        top: 10,
+                        bottom: 10),
+                  ),
+                  child: Ink(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.redAccent, // Color(0xffF05945),
+                    ),
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.symmetric(horizontal: 40),
+                      child: Text(
+                        "Chọn mua",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
         ],

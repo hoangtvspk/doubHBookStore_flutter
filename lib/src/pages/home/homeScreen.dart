@@ -19,7 +19,7 @@ import '../../model/bookModel.dart';
 import '../../themes/light_color.dart';
 import '../../themes/theme.dart';
 import '../../widgets/bookCardHome.dart';
-import '../bookDetail.dart';
+import '../bookDetail/bookDetail.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key, this.title}) : super(key: key);

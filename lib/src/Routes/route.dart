@@ -1,6 +1,6 @@
 import 'package:doubhBookstore_flutter_springboot/src/pages/profile/myProfile/editPassword/editPasswordScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/register/active.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/bookDetail.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/bookDetail/bookDetail.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/home/homeScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/mainLayout.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/signUp.dart';

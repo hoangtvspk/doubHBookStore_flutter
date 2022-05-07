@@ -1,5 +1,5 @@
 import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/bookDetail.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/bookDetail/bookDetail.dart';
 import 'package:doubhBookstore_flutter_springboot/src/widgets/extentions.dart';
 import 'package:flutter/material.dart';
 
