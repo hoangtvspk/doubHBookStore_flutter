@@ -14,6 +14,7 @@ import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart
 
 import '../model/cartItem.dart';
 import '../pages/address/addressController.dart';
+import '../themes/theme.dart';
 import '../utils/CustomUtils.dart';
 
 class CheckOutPage extends StatefulWidget {
@@ -440,9 +441,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   Utils.getSizedBox(height: 6),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 0, vertical: 3),
+                    width: AppTheme.fullWidth(context)*0.7,
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //crossAxisAlignment: CrossAxisAlignment.start,
+                      //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
                           "Số lượng: " + cartItem.quantity.toString(),
@@ -452,14 +454,14 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             fontWeight: FontWeight.w300,
                           ),
                         ),
-                        SizedBox(
-                          width: 170,
-                        ),
+                        Spacer(),
                         Text(
-                          "${formatter.format(cartItem.book.price - cartItem.book.price * cartItem.book.sale / 100).toString()}₫",
-                          style: CustomTextStyle.textFormFieldSemiBold
-                              .copyWith(color: Colors.green, fontSize: 15),
-                        ),
+                            "${formatter.format(cartItem.book.price - cartItem.book.price * cartItem.book.sale / 100).toString()}₫",
+                            style: CustomTextStyle.textFormFieldSemiBold
+                                .copyWith(color: Colors.green, fontSize: 15),
+                          ),
+
+
                       ],
                     ),
                   ),

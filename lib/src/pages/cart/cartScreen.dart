@@ -316,7 +316,7 @@ class _CartState extends State<Cart> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                // mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: <Widget>[
                                   SizedBox(
@@ -335,7 +335,7 @@ class _CartState extends State<Cart> {
                                   Container(
                                     color: Colors.grey.shade200,
                                     padding: const EdgeInsets.only(
-                                        bottom: 2, right: 12, left: 12),
+                                        bottom: 2, right: 5, left: 5),
                                     child: Text(
                                       cartItem.quantity.toString(),
                                       style:
