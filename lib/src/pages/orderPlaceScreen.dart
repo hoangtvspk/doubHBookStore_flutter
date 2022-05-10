@@ -33,7 +33,7 @@ class _OrderPlacePageState extends State<OrderPlacePage> {
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Image(
-                      image: AssetImage("images/ic_thank_you.png"),
+                      image: AssetImage("assets/Ic_thank_you.png"),
                       width: 300,
                     ),
                   ),

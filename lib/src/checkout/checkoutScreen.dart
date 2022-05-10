@@ -290,7 +290,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
               print("hello");
             },
             child: Text(
-              "Edit / Change",
+              "Thay đổi địa chỉ",
               style: CustomTextStyle.textFormFieldSemiBold
                   .copyWith(fontSize: 12, color: Colors.indigo.shade700),
             ),
@@ -310,7 +310,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
           ),
           FlatButton(
             onPressed: () {},
-            child: Text("Add New Address",
+            child: Text("Địa chỉ mới",
                 style: CustomTextStyle.textFormFieldSemiBold
                     .copyWith(fontSize: 12, color: Colors.indigo.shade700)),
             splashColor: Colors.transparent,
