@@ -1,3 +1,4 @@
+import 'package:doubhBookstore_flutter_springboot/src/pages/address/addressScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -54,13 +55,15 @@ class _BodyState extends State<Body> {
             text: "Thông Tin Cá Nhân",
             icon: Icons.person_outline,
             press: () => {
-              Get.to(MyProfileScreen())
+              Get.to(() => MyProfileScreen())
             },
           ),
           ProfileMenu(
             text: "Địa Chỉ Giao Hàng",
             icon: Icons.person_outline,
-            press: () {},
+            press:  () => {
+              Get.to(() => AddressScreen())
+            },
           ),
           ProfileMenu(
             text: "Quản Lý Đơn Hàng",

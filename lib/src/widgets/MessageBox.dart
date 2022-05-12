@@ -3,6 +3,10 @@
 import 'package:flutter/material.dart';
 
 class MessageBox{
+  static String isFunction = "no";
+  static Future<void> myFunction(Future<void> function)async {
+    return function;
+  }
   static Future<void> showMyDialog(BuildContext context, String title, String message, String button) async {
     return showDialog<void>(
       context: context,
@@ -21,6 +25,7 @@ class MessageBox{
             TextButton(
               child: Text(button),
               onPressed: () {
+                isFunction = "no";
                 Navigator.of(context).pop();
               },
             ),

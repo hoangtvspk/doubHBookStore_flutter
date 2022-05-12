@@ -83,7 +83,7 @@ class _MainLayoutState extends State<MainLayout> {
             children: <Widget>[
               SingleChildScrollView(
                 child: Container(
-                  height: AppTheme.fullHeight(context)-100 ,
+                  height: AppTheme.fullHeight(context)-70 ,
                   color: Color(0xFFBDBDBD),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
