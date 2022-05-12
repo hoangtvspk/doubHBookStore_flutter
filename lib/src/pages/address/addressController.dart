@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:doubhBookstore_flutter_springboot/src/model/address.dart';
+import 'package:doubhBookstore_flutter_springboot/src/widgets/MessageBox.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -28,6 +30,10 @@ class AddressController extends GetxController {
     }
 
   }
+  void onDeleteProgressing(http.Response data) {
+    print(data.body);
+
+  }
 
   Future<List<Address>> getAddress(BuildContext context) async {
     List<Address> addresses = await [];
@@ -40,10 +46,75 @@ class AddressController extends GetxController {
       await http.get(
           Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
               Config.APP_API["getAddressByUser"]!),
+          headers:Config.HEADER).then((value) => onProgressing(value, addresses));
+    } else {
+      Get.to(() => SignInPage());
+    }
+    return addresses;
+  }
+  Future deleteAddress(BuildContext context, int id) async {
+
+    final prefs = await SharedPreferences.getInstance();
+    bool? isAuthh = await prefs.getBool("isAuth");
+    if (isAuthh == true) {
+      dynamic userInfo = await (box.read("userInfo"));
+      // UserLoginInfoModel userInfo = new UserLoginInfoModel(firstName: e["firstName"], lastName: e["lastName"], email: e["email"], token: e["token"], userRole: e["userRole"]);
+      http.delete(
+          Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
+              Config.APP_API["deleteAddress"]! + "$id"),
           headers: <String, String>{
             "Content-Type": "application/json",
             "Authorization": userInfo["token"].toString()
-          }).then((value) => onProgressing(value, addresses));
+          }).then((value) => onDeleteProgressing(value));
+    } else {
+      Get.to(() => SignInPage());
+    }
+  }
+  static Future<void> showMyDialog(BuildContext context,action) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Xóa địa chỉ"),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text("Xóa địa chỉ vừa chọn?"),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Hủy"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Xóa"),
+              onPressed: ()  {
+                action;
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  Future<List<Address>> updateAddress(BuildContext context, int id) async {
+    List<Address> addresses = await [];
+    final prefs = await SharedPreferences.getInstance();
+    bool? isAuthh = await prefs.getBool("isAuth");
+    if (isAuthh == true) {
+      dynamic userInfo = await (box.read("userInfo"));
+      // UserLoginInfoModel userInfo = new UserLoginInfoModel(firstName: e["firstName"], lastName: e["lastName"], email: e["email"], token: e["token"], userRole: e["userRole"]);
+
+      await http.get(
+          Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
+              Config.APP_API["updateAddress"]!),
+          headers: Config.HEADER).then((value) => onProgressing(value, addresses));
     } else {
       Get.to(() => SignInPage());
     }
