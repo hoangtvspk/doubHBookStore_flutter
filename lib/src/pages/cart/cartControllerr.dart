@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:doubhBookstore_flutter_springboot/src/model/request/cartItemRequest.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/cart/emptyCartScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:form_data/form_data.dart' as formdata;
@@ -26,11 +27,11 @@ class CartController extends GetxController {
   final prefs = SharedPreferences.getInstance();
   RxBool isEmpty = false.obs;
 
-  Future checkEmpty(BuildContext context) async {
-    await this.getCartItems(context);
-    dynamic cartInfo = await box.read("cartInfo");
+  void checkEmpty(BuildContext context)  {
+     this.getCartItems(context);
+    dynamic cartInfo =  box.read("cartInfo");
     int count = 0;
-    for (var e in await cartInfo) {
+    for (var e in  cartInfo) {
       count++;
     }
     if (box.read("cartInfo") == null) {
@@ -233,7 +234,11 @@ class CartController extends GetxController {
               body: json)
           .then((value) => onProgressing(value, list, 0));
     }
+
     await saveToBox(list);
+    // if(list.length == 0){
+    //   Get.to(Get.to(() =>EmptyShoppingCartScreen()));
+    // }
     return list;
   }
 

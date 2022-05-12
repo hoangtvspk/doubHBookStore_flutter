@@ -29,7 +29,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
   var formatter = NumberFormat('#,###,000');
   final box = GetStorage();
 
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -43,7 +42,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 Icons.arrow_back,
                 color: Colors.black,
               ),
-              onPressed: () {
+              onPressed: () async{
                 Navigator.pop(context);
               }),
           title: Text(
@@ -72,7 +71,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   width: double.infinity,
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                   child: RaisedButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      print("press order");
+                      await _controller.order(context);
                       Navigator.of(context).push(new MaterialPageRoute(
                           builder: (context) => OrderPlacePage()));
                       showThankYouBottomSheet(context);
@@ -97,6 +98,13 @@ class _CheckOutPageState extends State<CheckOutPage> {
     );
   }
 
+  @override
+  void initState() {
+    _controller.getCheckoutInfo(context);
+    print("before state");
+    super.initState();
+  }
+
   showThankYouBottomSheet(BuildContext context) {
     return _scaffoldKey.currentState!.showBottomSheet((context) {
       return Container(
@@ -113,7 +121,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Image(
-                    image: AssetImage("images/ic_thank_you.png"),
+                    image: AssetImage("assets/Ic_thank_you.png"),
                     width: 300,
                   ),
                 ),
@@ -172,99 +180,76 @@ class _CheckOutPageState extends State<CheckOutPage> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(4)),
         ),
-        child: FutureBuilder(
-            future: _controller.getCheckoutInfo(context),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              CheckOut chekcout = snapshot.data;
-              if (snapshot.data == null) {
-                return Container(child: Center(child: Icon(Icons.error)));
-              }
-              return Card(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(4))),
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                      border: Border.all(color: Colors.grey.shade200)),
-                  padding: EdgeInsets.only(left: 12, top: 8, right: 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            chekcout.myInfoModel.lastName.toString() +
-                                " " +
-                                chekcout.myInfoModel.firstName.toString(),
-                            style: CustomTextStyle.textFormFieldSemiBold
-                                .copyWith(fontSize: 14),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(
-                                left: 8, right: 8, top: 4, bottom: 4),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.rectangle,
-                                color: Colors.grey.shade300,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(16))),
-                            child: Text(
-                              "Mặc định",
-                              style: CustomTextStyle.textFormFieldBlack
-                                  .copyWith(
-                                      color: Colors.indigoAccent.shade200,
-                                      fontSize: 8),
-                            ),
-                          )
-                        ],
-                      ),
-                      createAddressText(
-                          "Địa chỉ: " +
-                              chekcout.addresses[0].address +
-                              ", " +
-                              chekcout.addresses[0].neighborhoodVillage +
-                              ", " +
-                              chekcout.addresses[0].districtTown +
-                              ", " +
-                              chekcout.addresses[0].provinceCity,
-                          16),
-                      createAddressText(
-                          "Email: " + chekcout.myInfoModel.email, 6),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      RichText(
-                        text: TextSpan(children: [
-                          TextSpan(
-                              text: "Số điện thoại : ",
-                              style: CustomTextStyle.textFormFieldMedium
-                                  .copyWith(
-                                      fontSize: 12,
-                                      color: Colors.grey.shade800)),
-                          TextSpan(
-                              text: chekcout.myInfoModel.phone,
-                              style: CustomTextStyle.textFormFieldBold
-                                  .copyWith(color: Colors.black, fontSize: 12)),
-                        ]),
-                      ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Container(
-                        color: Colors.grey.shade300,
-                        height: 1,
-                        width: double.infinity,
-                      ),
-                      addressAction()
-                    ],
-                  ),
+        child: Card(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(4))),
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+                border: Border.all(color: Colors.grey.shade200)),
+            padding: EdgeInsets.only(left: 12, top: 8, right: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(
+                  height: 6,
                 ),
-              );
-            }));
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Obx(() => Text(
+                          _controller.lastName.string +
+                              " " +
+                              _controller.firstName.string,
+                          style: CustomTextStyle.textFormFieldSemiBold
+                              .copyWith(fontSize: 14),
+                        )),
+                    Container(
+                      padding:
+                          EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.all(Radius.circular(16))),
+                      child: Text(
+                        "Mặc định",
+                        style: CustomTextStyle.textFormFieldBlack.copyWith(
+                            color: Colors.indigoAccent.shade200, fontSize: 8),
+                      ),
+                    )
+                  ],
+                ),
+                Obx(() => createAddressText("Địa chỉ: "+_controller.address.string, 16)),
+                Obx(() => createAddressText("Email: "+_controller.email.string, 6)),
+                SizedBox(
+                  height: 6,
+                ),
+                Obx(() => RichText(
+                      text: TextSpan(children: [
+                        TextSpan(
+                            text: "Số điện thoại : ",
+                            style: CustomTextStyle.textFormFieldMedium.copyWith(
+                                fontSize: 12, color: Colors.grey.shade800)),
+                        TextSpan(
+                            text: _controller.phoneNumber.string,
+                            style: CustomTextStyle.textFormFieldBold
+                                .copyWith(color: Colors.black, fontSize: 12)),
+                      ]),
+                    )),
+                SizedBox(
+                  height: 16,
+                ),
+                Container(
+                  color: Colors.grey.shade300,
+                  height: 1,
+                  width: double.infinity,
+                ),
+                addressAction()
+              ],
+            ),
+          ),
+        ));
   }
 
   createAddressText(String strAddress, double topMargin) {
@@ -441,7 +426,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   Utils.getSizedBox(height: 6),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 0, vertical: 3),
-                    width: AppTheme.fullWidth(context)*0.7,
+                    width: AppTheme.fullWidth(context) * 0.7,
                     child: Row(
                       //crossAxisAlignment: CrossAxisAlignment.start,
                       //mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -456,12 +441,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
                         ),
                         Spacer(),
                         Text(
-                            "${formatter.format(cartItem.book.price - cartItem.book.price * cartItem.book.sale / 100).toString()}₫",
-                            style: CustomTextStyle.textFormFieldSemiBold
-                                .copyWith(color: Colors.green, fontSize: 15),
-                          ),
-
-
+                          "${formatter.format(cartItem.book.price - cartItem.book.price * cartItem.book.sale / 100).toString()}₫",
+                          style: CustomTextStyle.textFormFieldSemiBold
+                              .copyWith(color: Colors.green, fontSize: 15),
+                        ),
                       ],
                     ),
                   ),
@@ -512,10 +495,11 @@ class _CheckOutPageState extends State<CheckOutPage> {
               SizedBox(
                 height: 8,
               ),
-              createPriceItem("Giá trị đơn hàng", formatter.format(box.read("totalPrice")).toString() + "₫",
-                  Colors.grey.shade700),
               createPriceItem(
-                  "Phí vận chuyển", "FREE", Colors.teal.shade300),
+                  "Giá trị đơn hàng",
+                  formatter.format(box.read("totalPrice")).toString() + "₫",
+                  Colors.grey.shade700),
+              createPriceItem("Phí vận chuyển", "FREE", Colors.teal.shade300),
               SizedBox(
                 height: 8,
               ),
@@ -538,7 +522,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                         .copyWith(color: Colors.black, fontSize: 15),
                   ),
                   Text(
-                      formatter.format(box.read("totalPrice")).toString() + "₫",
+                    formatter.format(box.read("totalPrice")).toString() + "₫",
                     style: CustomTextStyle.textFormFieldMedium
                         .copyWith(color: Colors.green, fontSize: 15),
                   )

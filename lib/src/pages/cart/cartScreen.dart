@@ -184,7 +184,12 @@ class _CartState extends State<Cart> {
               Navigator.push(
                   context,
                   new MaterialPageRoute(
-                      builder: (context) => CheckOutPage())); ////
+                      builder: (context) => CheckOutPage())).then((val) {
+                _controller.checkEmpty(context);
+                setState(() {});
+              });
+              // new MaterialPageRoute(builder: (_)=>new PageTwo()),)
+              //     .then((val)=>val?_getRequests():null),////
             },
             color: Colors.green,
             padding: EdgeInsets.only(top: 12, left: 60, right: 60, bottom: 12),
@@ -293,7 +298,9 @@ class _CartState extends State<Cart> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text(
-                              "${formatter.format(cartItem.book.price - cartItem.book.price * cartItem.book.sale / 100).toString()}₫",
+                              "${formatter.format(cartItem.book.price -
+                                  cartItem.book.price * cartItem.book.sale /
+                                      100).toString()}₫",
                               style: CustomTextStyle.textFormFieldBlack
                                   .copyWith(color: Colors.green),
                             ),
@@ -304,7 +311,8 @@ class _CartState extends State<Cart> {
                                 color: Colors.white54,
                               ),
                               child: Text(
-                                "${formatter.format(cartItem.book.price).toString()}₫",
+                                "${formatter.format(cartItem.book.price)
+                                    .toString()}₫",
                                 style: TextStyle(
                                   fontSize: 15,
                                   color: Colors.black54,
@@ -339,7 +347,7 @@ class _CartState extends State<Cart> {
                                     child: Text(
                                       cartItem.quantity.toString(),
                                       style:
-                                          CustomTextStyle.textFormFieldSemiBold,
+                                      CustomTextStyle.textFormFieldSemiBold,
                                     ),
                                   ),
                                   SizedBox(
@@ -409,7 +417,6 @@ class _CartState extends State<Cart> {
 
   @override
   Widget build(BuildContext context) {
-    // checkEmpty();
     if (_controller.isEmpty == false) {
       return Scaffold(
         appBar: AppBar(
@@ -423,7 +430,7 @@ class _CartState extends State<Cart> {
               children: <Widget>[
                 createSubTitle(),
                 createCartList(
-                    () async => await _controller.getCartItems(context)),
+                        () async => await _controller.getCartItems(context)),
                 footer(context)
               ],
             );
@@ -435,47 +442,49 @@ class _CartState extends State<Cart> {
     }
   }
 
-  SafeArea emptyCart() {
-    return SafeArea(
-      child: Container(
-        decoration: BoxDecoration(color: Colors.white),
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: 70,
-              child: Container(
-                color: Color(0xFFFFFFFF),
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              height: 250,
-              child: Image.asset(
-                "assets/empty_shopping_cart.png",
-                height: 250,
-                width: double.infinity,
-              ),
-            ),
-            SizedBox(
-              height: 40,
-              child: Container(
-                color: Color(0xFFFFFFFF),
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              child: Text(
-                "You haven't anything to cart",
-                style: TextStyle(
-                  color: Color(0xFF67778E),
-                  fontFamily: 'Roboto-Light.ttf',
-                  fontSize: 20,
-                  fontStyle: FontStyle.normal,
+  Scaffold emptyCart() {
+    return Scaffold(
+      body: SafeArea(
+        child: Container(
+          decoration: BoxDecoration(color: Colors.white),
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 70,
+                child: Container(
+                  color: Color(0xFFFFFFFF),
                 ),
-                textAlign: TextAlign.center,
               ),
-            )
-          ],
+              Container(
+                width: double.infinity,
+                height: 250,
+                child: Image.asset(
+                  "assets/empty_shopping_cart.png",
+                  height: 250,
+                  width: double.infinity,
+                ),
+              ),
+              SizedBox(
+                height: 40,
+                child: Container(
+                  color: Color(0xFFFFFFFF),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                child: Text(
+                  "Bạn chưa có sản phẩm trong giỏ hàng",
+                  style: TextStyle(
+                    color: Color(0xFF67778E),
+                    fontFamily: 'Roboto-Light.ttf',
+                    fontSize: 20,
+                    fontStyle: FontStyle.normal,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
