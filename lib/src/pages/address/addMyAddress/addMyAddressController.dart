@@ -28,11 +28,12 @@ class AddMyProfileController extends GetxController{
 
   void onAddInfoProgressing(var data, BuildContext context){
     print(data);
-    Get.to(() =>AddressScreen());
+    //Get.to(() =>AddressScreen());
+    Get.back();
     FlushBar.showFlushBar(
       context,
       null,
-      "Cập nhật địa chỉ thành công!",
+      "Thêm địa chỉ thành công!",
       Icon(
         Icons.check,
         color: Colors.green,

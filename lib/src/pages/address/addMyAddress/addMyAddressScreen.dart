@@ -19,6 +19,11 @@ class AddMyAddressScreen extends StatefulWidget {
 }
 
 class _AddMyAddressScreenState extends State<AddMyAddressScreen> {
+  @override
+  void initState() {
+    //c.checkEmpty(context);
+    super.initState();
+  }
   final _controller = Get.put(AddMyProfileController());
  // final _getProfileController = Get.put(EditMyProfileController());
   final TextEditingController ProvinceController = TextEditingController();
@@ -97,7 +102,7 @@ class _AddMyAddressScreenState extends State<AddMyAddressScreen> {
         ),
 
         //elevation: 0.0,
-        title: Text("Thông Tin Cá Nhân"),
+        title: Text("Thêm Địa Chỉ"),
       ),
       body: Column(
         children: [
