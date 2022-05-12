@@ -100,7 +100,7 @@ class _EditMyAddressScreenState extends State<EditMyAddressScreen> {
         ),
 
         //elevation: 0.0,
-        title: Text("Thông Tin Cá Nhân"),
+        title: Text("Cập Nhật Địa Chỉ"),
       ),
       body: Column(
         children: [

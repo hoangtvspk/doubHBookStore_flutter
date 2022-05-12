@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 import '../../httpClient/config.dart';
+import '../../widgets/flushBar.dart';
 import '../login/signInScreen.dart';
 
 class AddressController extends GetxController {
@@ -30,9 +31,18 @@ class AddressController extends GetxController {
     }
 
   }
-  void onDeleteProgressing(http.Response data) {
+  void onDeleteProgressing(BuildContext context, http.Response data) {
     print(data.body);
-
+    Get.back();
+    FlushBar.showFlushBar(
+      context,
+      null,
+      "Xóa địa chỉ thành công!",
+      Icon(
+        Icons.check,
+        color: Colors.green,
+      ),
+    );
   }
 
   Future<List<Address>> getAddress(BuildContext context) async {
@@ -65,12 +75,12 @@ class AddressController extends GetxController {
           headers: <String, String>{
             "Content-Type": "application/json",
             "Authorization": userInfo["token"].toString()
-          }).then((value) => onDeleteProgressing(value));
+          }).then((value) => onDeleteProgressing(context, value));
     } else {
       Get.to(() => SignInPage());
     }
   }
-  static Future<void> showMyDialog(BuildContext context,action) async {
+  Future<void> showMyDialog(BuildContext context,int id) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -93,9 +103,9 @@ class AddressController extends GetxController {
             ),
             TextButton(
               child: Text("Xóa"),
-              onPressed: ()  {
-                action;
-                Navigator.of(context).pop();
+              onPressed: () async {
+                await deleteAddress(context, id);
+                //
               },
             ),
           ],

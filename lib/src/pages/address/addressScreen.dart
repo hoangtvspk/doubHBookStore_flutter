@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:doubhBookstore_flutter_springboot/src/checkout/checkoutScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/addressController.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/editMyAddress/editMyAddressScreen.dart';
@@ -35,7 +37,7 @@ class _AddressScreenState extends State<AddressScreen> {
           Utils.getSizedBox(height: 8),
           RaisedButton(
             onPressed: () {
-              Get.to(()=>AddMyAddressScreen());
+              Get.to(()=>AddMyAddressScreen())!.then((value) => onChange(value));
             },
             color: Colors.blue,
             padding: EdgeInsets.only(top: 12, left: 60, right: 60, bottom: 12),
@@ -53,10 +55,19 @@ class _AddressScreenState extends State<AddressScreen> {
       margin: EdgeInsets.only(top: 16),
     );
   }
-
+  late Future<List<Address>> addressesList = c.getAddress(context);
+  loadPage(){
+    setState(() {
+      addressesList = c.getAddress(context);
+    });
+  }
+  @override
+  void initState() {
+    super.initState();
+  }
   createAddressList() {
     return FutureBuilder(
-        future: c.getAddress(context),
+        future: addressesList,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.data == null) {
             return Container(child: Center(child: Icon(Icons.error)));
@@ -71,7 +82,10 @@ class _AddressScreenState extends State<AddressScreen> {
           );
         });
   }
-
+  FutureOr onChange(dynamic value) {
+    loadPage();
+    setState(() {});
+  }
   createCartListItem(Address address) {
     return Stack(
       children: <Widget>[
@@ -118,8 +132,9 @@ class _AddressScreenState extends State<AddressScreen> {
                   alignment: Alignment.center,
                   margin: EdgeInsets.only(right: 10, top: 8),
                   child: new IconButton(
-                    onPressed: ()   {
-                        c.deleteAddress(context, address.id);
+                    onPressed: () async  {
+                      await c.showMyDialog(context, address.id).then(onChange);
+                        loadPage();
                         setState(() {});
                     },
                     icon: new Icon(Icons.close, size: 15),
@@ -141,8 +156,8 @@ class _AddressScreenState extends State<AddressScreen> {
                   margin: EdgeInsets.only(right: 10, top: 10),
                   child: new IconButton(
                     onPressed: () {
-                      Get.to(()=>EditMyAddressScreen(),arguments: AddressDetailsArguments(address: address));
-                      setState(() {});
+                      Get.to(()=>EditMyAddressScreen(),arguments: AddressDetailsArguments(address: address))!.then(onChange);
+                      //setState(() {});
                     },
                     icon: new Icon(Icons.edit, size: 15),
                     color: Colors.white,
@@ -162,11 +177,7 @@ class _AddressScreenState extends State<AddressScreen> {
     );
   }
 
-  @override
-  void initState() {
-    //c.checkEmpty(context);
-    super.initState();
-  }
+
 
   @override
   Widget build(BuildContext context) {

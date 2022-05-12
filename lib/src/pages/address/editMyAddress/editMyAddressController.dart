@@ -28,7 +28,8 @@ class EditMyProfileController extends GetxController{
 
   void onEditInfoProgressing(var data, BuildContext context){
     print(data);
-    Get.to(() =>AddressScreen());
+    //Get.to(() =>AddressScreen());
+    Get.back();
     FlushBar.showFlushBar(
       context,
       null,
