@@ -1,3 +1,4 @@
+import 'package:doubhBookstore_flutter_springboot/src/checkout/checkoutController.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/checkout/checkoutScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/home/homeScreen.dart';
@@ -147,6 +148,8 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
   final _controller = Get.put(CartController());
+  final _controller1 = Get.put(CheckoutController());
+
   final box = GetStorage();
   var formatter = NumberFormat('#,###,000');
   final prefs = SharedPreferences.getInstance();
@@ -180,7 +183,8 @@ class _CartState extends State<Cart> {
           ),
           Utils.getSizedBox(height: 8),
           RaisedButton(
-            onPressed: () {
+            onPressed: () async{
+              await _controller1.getCheckoutInfo(context);
               Navigator.push(
                   context,
                   new MaterialPageRoute(
@@ -191,7 +195,7 @@ class _CartState extends State<Cart> {
               // new MaterialPageRoute(builder: (_)=>new PageTwo()),)
               //     .then((val)=>val?_getRequests():null),////
             },
-            color: Colors.green,
+            color: Colors.redAccent,
             padding: EdgeInsets.only(top: 12, left: 60, right: 60, bottom: 12),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(24))),
@@ -411,7 +415,7 @@ class _CartState extends State<Cart> {
   @override
   void initState() {
     _controller.checkEmpty(context);
-    print("before state");
+    //print("before state");
     super.initState();
   }
 

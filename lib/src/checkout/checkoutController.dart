@@ -50,6 +50,7 @@ class CheckoutController extends GetxController {
   // }
 
   Future<CheckOut> getCheckoutInfo(BuildContext context) async {
+    print("getcheckout");
     MyInfoModel myInfoModel = await _controller1.getBooks(context);
     List<Address> addresses = await _controller.getAddress(context);
     CheckOut checkout =
@@ -67,11 +68,12 @@ class CheckoutController extends GetxController {
         ", " +
         addresses[0].provinceCity;
 
-    email = strEmail.obs;
-    phoneNumber = strPhone.obs;
-    firstName = strFirstName.obs;
-    lastName = strLastName.obs;
-    address = strAddress.obs;
+     email = await strEmail.obs;
+    phoneNumber =await strPhone.obs;
+    firstName =await strFirstName.obs;
+    lastName =await strLastName.obs;
+    address =await strAddress.obs;
+    print(email.toString());
     return checkout;
   }
 
@@ -79,24 +81,24 @@ class CheckoutController extends GetxController {
     context.loaderOverlay.hide();
   }
 
-  Future order(BuildContext context) async {
-    print("order");
-    context.loaderOverlay.show(
-        widget: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircularProgressIndicator(),
-          SizedBox(height: 12),
-          Text(
-            'Đang xử lí ...',
-          ),
-        ],
-      ),
-    ));
-    List list = [];
+  Future<void> order(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     bool? isAuthh = await prefs.getBool("isAuth");
+    print("abc");
+    // context.loaderOverlay.show(widget: Center(
+    //   child: Column(
+    //     mainAxisSize: MainAxisSize.min,
+    //     children: [
+    //       CircularProgressIndicator(),
+    //       SizedBox(height: 12),
+    //
+    //       Text(
+    //         '......',
+    //       ),
+    //     ],
+    //   ),
+    // ));
+    List list = [];
     if (isAuthh == true) {
       dynamic userInfo = await (box.read("userInfo"));
       // UserLoginInfoModel userInfo = new UserLoginInfoModel(firstName: e["firstName"], lastName: e["lastName"], email: e["email"], token: e["token"], userRole: e["userRole"]);
@@ -116,9 +118,9 @@ class CheckoutController extends GetxController {
                 "email": email.toString(),
                 "phoneNumber": phoneNumber.toString()
               }))
-          .then((value) => onProgressing(value, list, 1))
+          .then((value) => onProgressing(value, 1))
           .whenComplete(() => cancelLoading(context));
-      ;
+
       print("success");
     } else {}
     // await saveToBox(list);
@@ -126,14 +128,13 @@ class CheckoutController extends GetxController {
     box.write("totalPrice", 0);
     box.write("totalItem", 0);
 
-    return list;
   }
 
-  onProgressing(http.Response data, list, int i) {
+  onProgressing(http.Response data, int i) {
     Map<String, dynamic> response = json.decode(utf8.decode(data.bodyBytes));
     JsonEncoder encoder = new JsonEncoder.withIndent('  ');
     String prettyprint = encoder.convert(response);
-    print(response);
+    // print(response);
     print(prettyprint);
 
     List<OrderItem> items = [];
@@ -177,6 +178,6 @@ class CheckoutController extends GetxController {
         totelPrice: response["totelPrice"],
         status: response["status"],
         orderItems: items);
-    print(_order);
+    // print(_order);
   }
 }

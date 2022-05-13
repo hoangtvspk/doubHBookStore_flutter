@@ -63,7 +63,7 @@ class _OrderPlacePageState extends State<OrderPlacePage> {
                           "View Order",
                           style: CustomTextStyle.textFormFieldMedium.copyWith(color: Colors.white),
                         ),
-                        color: Colors.pink,
+                        color: Colors.redAccent,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24))),
                       )
                     ],

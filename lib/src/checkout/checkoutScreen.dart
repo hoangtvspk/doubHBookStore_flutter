@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:money_formatter/money_formatter.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart';
 
@@ -28,6 +29,21 @@ class _CheckOutPageState extends State<CheckOutPage> {
   final _controller1 = Get.put(CartController());
   var formatter = NumberFormat('#,###,000');
   final box = GetStorage();
+  void onLoad(){
+    _scaffoldKey.currentState?.showSnackBar(
+        new SnackBar(duration: new Duration(seconds: 4), content:
+        new Row(
+          children: <Widget>[
+            new CircularProgressIndicator(),
+            new Text("  Đang xử lí...")
+          ],
+        ),
+        ));
+    // _handleSignIn()
+    //     .whenComplete(() =>
+    //     Navigator.of(context).pushNamed("/Home")
+    // );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +66,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
         ),
-        body: Builder(builder: (context) {
+        body: Builder(builder: (context1) {
           return Column(
             children: <Widget>[
               Expanded(
@@ -73,6 +89,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   child: RaisedButton(
                     onPressed: () async {
                       print("press order");
+                      onLoad();
                       await _controller.order(context);
                       Navigator.of(context).push(new MaterialPageRoute(
                           builder: (context) => OrderPlacePage()));
@@ -85,7 +102,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           fontSize: 14,
                           fontWeight: FontWeight.bold),
                     ),
-                    color: Colors.pink,
+                    color: Colors.redAccent,
                     textColor: Colors.white,
                   ),
                 ),
@@ -96,13 +113,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
         }),
       ),
     );
-  }
-
-  @override
-  void initState() {
-    _controller.getCheckoutInfo(context);
-    print("before state");
-    super.initState();
   }
 
   showThankYouBottomSheet(BuildContext context) {
@@ -154,7 +164,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                         style: CustomTextStyle.textFormFieldMedium
                             .copyWith(color: Colors.white),
                       ),
-                      color: Colors.pink,
+                      color: Colors.redAccent,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(24))),
                     )
