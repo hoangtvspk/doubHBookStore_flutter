@@ -16,6 +16,58 @@ import '../login/signInScreen.dart';
 class AddressController extends GetxController {
   final box = GetStorage();
   final prefs = SharedPreferences.getInstance();
+  dynamic addressController = null;
+
+  List checkListItems = [];
+
+  Future<List<Address>> loadAddressForChoose(
+      BuildContext context, int selected) async {
+    List<Address> addresses = await [];
+    final prefs = await SharedPreferences.getInstance();
+    bool? isAuthh = await prefs.getBool("isAuth");
+    if (isAuthh == true) {
+      dynamic userInfo = await (box.read("userInfo"));
+      // UserLoginInfoModel userInfo = new UserLoginInfoModel(firstName: e["firstName"], lastName: e["lastName"], email: e["email"], token: e["token"], userRole: e["userRole"]);
+
+      await http
+          .get(
+              Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
+                  Config.APP_API["getAddressByUser"]!),
+              headers: Config.HEADER)
+          .then((value) => onProgressing(value, addresses));
+    } else {
+      Get.to(() => SignInPage());
+    }
+    updateCheckListItem(addresses, selected);
+    return addresses;
+  }
+
+  void updateCheckListItem(List<Address> addresses, int selected) {
+    checkListItems = [];
+    int count = 0;
+    for (Address address in addresses) {
+      count ++;
+      bool value =false;
+      if (address.id == selected)
+        value= true;
+      if(selected ==-1 && count == 1){
+        value= true;
+      }
+        dynamic item = {
+          "id": address.id,
+          "value": value,
+          "title": address.address +
+              ", " +
+              address.neighborhoodVillage +
+              ", " +
+              address.districtTown +
+              ", " +
+              address.provinceCity
+        };
+      checkListItems.add(item);
+    }
+    print(checkListItems);
+  }
 
   void onProgressing(var data, addresses) {
     List<dynamic> responseJson = json.decode(utf8.decode(data.bodyBytes));
@@ -29,8 +81,8 @@ class AddressController extends GetxController {
           neighborhoodVillage: e["neighborhoodVillage"],
           address: e["address"]));
     }
-
   }
+
   void onDeleteProgressing(BuildContext context, http.Response data) {
     print(data.body);
     Get.back();
@@ -53,17 +105,19 @@ class AddressController extends GetxController {
       dynamic userInfo = await (box.read("userInfo"));
       // UserLoginInfoModel userInfo = new UserLoginInfoModel(firstName: e["firstName"], lastName: e["lastName"], email: e["email"], token: e["token"], userRole: e["userRole"]);
 
-      await http.get(
-          Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
-              Config.APP_API["getAddressByUser"]!),
-          headers:Config.HEADER).then((value) => onProgressing(value, addresses));
+      await http
+          .get(
+              Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
+                  Config.APP_API["getAddressByUser"]!),
+              headers: Config.HEADER)
+          .then((value) => onProgressing(value, addresses));
     } else {
       Get.to(() => SignInPage());
     }
     return addresses;
   }
-  Future deleteAddress(BuildContext context, int id) async {
 
+  Future deleteAddress(BuildContext context, int id) async {
     final prefs = await SharedPreferences.getInstance();
     bool? isAuthh = await prefs.getBool("isAuth");
     if (isAuthh == true) {
@@ -71,7 +125,8 @@ class AddressController extends GetxController {
       // UserLoginInfoModel userInfo = new UserLoginInfoModel(firstName: e["firstName"], lastName: e["lastName"], email: e["email"], token: e["token"], userRole: e["userRole"]);
       http.delete(
           Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
-              Config.APP_API["deleteAddress"]! + "$id"),
+              Config.APP_API["deleteAddress"]! +
+              "$id"),
           headers: <String, String>{
             "Content-Type": "application/json",
             "Authorization": userInfo["token"].toString()
@@ -80,7 +135,8 @@ class AddressController extends GetxController {
       Get.to(() => SignInPage());
     }
   }
-  Future<void> showMyDialog(BuildContext context,int id) async {
+
+  Future<void> showMyDialog(BuildContext context, int id) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -113,6 +169,7 @@ class AddressController extends GetxController {
       },
     );
   }
+
   Future<List<Address>> updateAddress(BuildContext context, int id) async {
     List<Address> addresses = await [];
     final prefs = await SharedPreferences.getInstance();
@@ -121,10 +178,12 @@ class AddressController extends GetxController {
       dynamic userInfo = await (box.read("userInfo"));
       // UserLoginInfoModel userInfo = new UserLoginInfoModel(firstName: e["firstName"], lastName: e["lastName"], email: e["email"], token: e["token"], userRole: e["userRole"]);
 
-      await http.get(
-          Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
-              Config.APP_API["updateAddress"]!),
-          headers: Config.HEADER).then((value) => onProgressing(value, addresses));
+      await http
+          .get(
+              Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
+                  Config.APP_API["updateAddress"]!),
+              headers: Config.HEADER)
+          .then((value) => onProgressing(value, addresses));
     } else {
       Get.to(() => SignInPage());
     }

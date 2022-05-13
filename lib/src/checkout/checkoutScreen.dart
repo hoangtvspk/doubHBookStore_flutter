@@ -1,7 +1,9 @@
 import 'package:doubhBookstore_flutter_springboot/src/checkout/checkoutController.dart';
+import 'package:doubhBookstore_flutter_springboot/src/checkout/editPlaceOrderScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/address.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/checkoutInfo.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/myInfoModel.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/address/addMyAddress/addMyAddressScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/cart/cartControllerr.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/orderPlaceScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/profile/myProfile/myProfileController.dart';
@@ -27,18 +29,20 @@ class _CheckOutPageState extends State<CheckOutPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
   final _controller = Get.put(CheckoutController());
   final _controller1 = Get.put(CartController());
+  final _controller2 = Get.put(AddressController());
   var formatter = NumberFormat('#,###,000');
   final box = GetStorage();
-  void onLoad(){
-    _scaffoldKey.currentState?.showSnackBar(
-        new SnackBar(duration: new Duration(seconds: 4), content:
-        new Row(
-          children: <Widget>[
-            new CircularProgressIndicator(),
-            new Text("  Đang xử lí...")
-          ],
-        ),
-        ));
+
+  void onLoad() {
+    _scaffoldKey.currentState?.showSnackBar(new SnackBar(
+      duration: new Duration(seconds: 4),
+      content: new Row(
+        children: <Widget>[
+          new CircularProgressIndicator(),
+          new Text("  Đang xử lí...")
+        ],
+      ),
+    ));
     // _handleSignIn()
     //     .whenComplete(() =>
     //     Navigator.of(context).pushNamed("/Home")
@@ -58,7 +62,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 Icons.arrow_back,
                 color: Colors.black,
               ),
-              onPressed: () async{
+              onPressed: () async {
                 Navigator.pop(context);
               }),
           title: Text(
@@ -230,8 +234,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
                     )
                   ],
                 ),
-                Obx(() => createAddressText("Địa chỉ: "+_controller.address.string, 16)),
-                Obx(() => createAddressText("Email: "+_controller.email.string, 6)),
+                Obx(() => createAddressText(
+                    "Địa chỉ: " + _controller.address.string, 16)),
+                Obx(() =>
+                    createAddressText("Email: " + _controller.email.string, 6)),
                 SizedBox(
                   height: 6,
                 ),
@@ -281,8 +287,17 @@ class _CheckOutPageState extends State<CheckOutPage> {
             flex: 2,
           ),
           FlatButton(
-            onPressed: () {
-              print("hello");
+            onPressed: () async {
+              await _controller2.loadAddressForChoose(
+                  context, _controller.selected);
+              Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (context) => EditPlaceOrderScreen()))
+                  .then((val) {
+                setState(() {});
+              });
+              // Get.to(() =>EditPlaceOrderScreen())!.then(null);
             },
             child: Text(
               "Thay đổi địa chỉ",
@@ -304,7 +319,18 @@ class _CheckOutPageState extends State<CheckOutPage> {
             flex: 3,
           ),
           FlatButton(
-            onPressed: () {},
+            onPressed: () async {
+              await _controller2.loadAddressForChoose(
+                  context, _controller.selected);
+              await Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (context) => AddMyAddressScreen()))
+                  .then((val) {
+                  _controller.updateUIAddress(_controller.selected);
+                setState(() {});
+              });
+            },
             child: Text("Địa chỉ mới",
                 style: CustomTextStyle.textFormFieldSemiBold
                     .copyWith(fontSize: 12, color: Colors.indigo.shade700)),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:doubhBookstore_flutter_springboot/src/checkout/checkoutController.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/address.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/myInfoUpdate.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/addressScreen.dart';
@@ -20,6 +21,7 @@ import 'package:http/http.dart' as http;
 import '../../../widgets/flushBar.dart';
 
 class AddMyProfileController extends GetxController{
+  final _controller = Get.put(CheckoutController());
 
   void cancelLoading(BuildContext context)async
   {
@@ -27,6 +29,7 @@ class AddMyProfileController extends GetxController{
   }
 
   void onAddInfoProgressing(var data, BuildContext context){
+    _controller.selected = data["id"];
     print(data);
     //Get.to(() =>AddressScreen());
     Get.back();

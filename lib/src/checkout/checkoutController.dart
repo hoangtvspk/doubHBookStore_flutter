@@ -23,6 +23,7 @@ import '../model/address.dart';
 import '../model/imageModel.dart';
 import '../model/myInfoModel.dart';
 import '../pages/address/addressController.dart';
+import '../pages/login/signInScreen.dart';
 import '../pages/profile/myProfile/myProfileController.dart';
 import '../widgets/flushBar.dart';
 
@@ -31,6 +32,7 @@ class CheckoutController extends GetxController {
   final prefs = SharedPreferences.getInstance();
   final _controller = Get.put(AddressController());
   final _controller1 = Get.put(MyProfileController());
+  int selected =-1;
   dynamic _order = null;
   RxBool isEmpty = false.obs;
 
@@ -50,11 +52,11 @@ class CheckoutController extends GetxController {
   // }
 
   Future<CheckOut> getCheckoutInfo(BuildContext context) async {
-    print("getcheckout");
+    print("default address");
     MyInfoModel myInfoModel = await _controller1.getBooks(context);
     List<Address> addresses = await _controller.getAddress(context);
     CheckOut checkout =
-        new CheckOut(myInfoModel: myInfoModel, addresses: addresses);
+    new CheckOut(myInfoModel: myInfoModel, addresses: addresses);
 
     String strEmail = myInfoModel.email;
     String strPhone = myInfoModel.phone;
@@ -68,11 +70,11 @@ class CheckoutController extends GetxController {
         ", " +
         addresses[0].provinceCity;
 
-     email = await strEmail.obs;
-    phoneNumber =await strPhone.obs;
-    firstName =await strFirstName.obs;
-    lastName =await strLastName.obs;
-    address =await strAddress.obs;
+    email = await strEmail.obs;
+    phoneNumber = await strPhone.obs;
+    firstName = await strFirstName.obs;
+    lastName = await strLastName.obs;
+    address = await strAddress.obs;
     print(email.toString());
     return checkout;
   }
@@ -105,19 +107,19 @@ class CheckoutController extends GetxController {
 
       await http
           .post(
-              Uri.parse(
-                  Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["order"]!),
-              headers: <String, String>{
-                "Content-Type": "application/json",
-                "Authorization": userInfo["token"].toString()
-              },
-              body: json.encode({
-                "address": address.toString(),
-                "firstName": firstName.toString(),
-                "lastName": lastName.toString(),
-                "email": email.toString(),
-                "phoneNumber": phoneNumber.toString()
-              }))
+          Uri.parse(
+              Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["order"]!),
+          headers: <String, String>{
+            "Content-Type": "application/json",
+            "Authorization": userInfo["token"].toString()
+          },
+          body: json.encode({
+            "address": address.toString(),
+            "firstName": firstName.toString(),
+            "lastName": lastName.toString(),
+            "email": email.toString(),
+            "phoneNumber": phoneNumber.toString()
+          }))
           .then((value) => onProgressing(value, 1))
           .whenComplete(() => cancelLoading(context));
 
@@ -127,7 +129,6 @@ class CheckoutController extends GetxController {
     box.write("cartInfo", []);
     box.write("totalPrice", 0);
     box.write("totalItem", 0);
-
   }
 
   onProgressing(http.Response data, int i) {
@@ -146,7 +147,7 @@ class CheckoutController extends GetxController {
       print(itemID.bookId);
       for (var imageModel in e["book"]["bookImages"]) {
         ImageModel image =
-            new ImageModel(id: imageModel["id"], image: imageModel["image"]);
+        new ImageModel(id: imageModel["id"], image: imageModel["image"]);
         images.add(image);
       }
 
@@ -164,7 +165,7 @@ class CheckoutController extends GetxController {
           detail: e["book"]["detail"],
           rating: e["book"]["rating"]);
       OrderItem item =
-          new OrderItem(id: itemID, quantity: e["quantity"], book: book);
+      new OrderItem(id: itemID, quantity: e["quantity"], book: book);
       items.add(item);
     }
     _order = new Order(
@@ -174,10 +175,62 @@ class CheckoutController extends GetxController {
         lastName: response["lastName"],
         phoneNumber: response["phoneNumber"],
         email: response["email"],
-        date: DateTime.parse(response["date"]   ),
+        date: DateTime.parse(response["date"]),
         totelPrice: response["totelPrice"],
         status: response["status"],
         orderItems: items);
     // print(_order);
+  }
+
+  void onProgressing1(http.Response data) {
+
+    dynamic responseJson = json.decode(utf8.decode(data.bodyBytes));
+    Address address1 =  new Address(
+        id: responseJson["id"],
+        provinceCity: responseJson["provinceCity"],
+        districtTown: responseJson["districtTown"],
+        neighborhoodVillage: responseJson["neighborhoodVillage"],
+        address: responseJson["address"]);
+
+    String strAddress = address1.address +
+        ", " +
+        address1.neighborhoodVillage +
+        ", " +
+        address1.districtTown +
+        ", " +
+        address1.provinceCity;
+
+    address = strAddress.obs;
+    print(address.toString());
+
+    // box.write("cartInfo", responseJson);
+    // Address address1 = new Address(
+    //     id: responseJson["id"],
+    //     provinceCity: responseJson["provinceCity"],
+    //     districtTown: responseJson["districtTown"],
+    //     neighborhoodVillage: responseJson["neighborhoodVillage"],
+    //     address: responseJson["address"]);
+  }
+
+  Future<void> updateUIAddress(int selected) async {
+    this.selected = selected;
+    print("selected: $selected");
+    final prefs = await SharedPreferences.getInstance();
+    bool? isAuthh = await prefs.getBool("isAuth");
+    if (isAuthh == true) {
+      dynamic userInfo = await (box.read("userInfo"));
+      // UserLoginInfoModel userInfo = new UserLoginInfoModel(firstName: e["firstName"], lastName: e["lastName"], email: e["email"], token: e["token"], userRole: e["userRole"]);
+
+      await http.get(
+          Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
+              Config.APP_API["getAddress"]! +
+              "$selected"),
+          headers: <String, String>{
+            "Content-Type": "application/json",
+            "Authorization": userInfo["token"].toString()
+          }).then((value) => onProgressing1(value));
+    } else {
+      Get.to(() => SignInPage());
+    }
   }
 }

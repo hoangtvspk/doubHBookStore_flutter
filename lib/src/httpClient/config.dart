@@ -28,7 +28,7 @@ class Config{
     "updateAddress": "/users/address/edit/:id",
     "deleteAddress": "/users/address/delete/:id",
     "getAddressByUser": "/users/address",
-    "getAddress": "/users/address/:id",
+    "getAddress": "/users/address/",
     "newBook": "/books/new",
     "bestSellingBook": "/books/best-selling",
     "bestDiscountBook": "/books/best-discount",
