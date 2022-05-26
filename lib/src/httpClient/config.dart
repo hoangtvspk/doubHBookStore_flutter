@@ -26,7 +26,7 @@ class Config{
     "addressOrder": "/users/address",
     "addAddress": "/users/address/add",
     "updateAddress": "/users/address/edit/:id",
-    "deleteAddress": "/users/address/delete/:id",
+    "deleteAddress": "/users/address/delete/",
     "getAddressByUser": "/users/address",
     "getAddress": "/users/address/",
     "newBook": "/books/new",
@@ -43,7 +43,7 @@ class Config{
   //   "baseURL": "http://192.168.1.13:8080/api/v1"
 
   static Map<String, String>  HTTP_CONFIG = {
-    "baseURL": "http://192.168.1.59:8080/api/v1"
+    "baseURL": "http://192.168.1.130:8080/api/v1"
   };
   static final box = GetStorage();
   static dynamic e = (box.read("userInfo"));

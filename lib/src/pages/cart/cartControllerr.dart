@@ -187,6 +187,7 @@ class CartController extends GetxController {
               name: e["book"]["nameBook"],
               price: e["book"]["price"],
               quantity: e["book"]["quantity"],
+              review: e["book"]["reviews"],
               rating: e["book"]["rating"],
               sale: e["book"]["discount"],
               isSelected: false));

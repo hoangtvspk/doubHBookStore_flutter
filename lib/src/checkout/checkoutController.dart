@@ -163,7 +163,8 @@ class CheckoutController extends GetxController {
           image: images,
           author: e["book"]["author"],
           detail: e["book"]["detail"],
-          rating: e["book"]["rating"]);
+          rating: e["book"]["rating"],
+          review: e["book"]["reviews"]);
       OrderItem item =
       new OrderItem(id: itemID, quantity: e["quantity"], book: book);
       items.add(item);

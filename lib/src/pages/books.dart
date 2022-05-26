@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:doubhBookstore_flutter_springboot/src/model/imageModel.dart';
+import 'package:doubhBookstore_flutter_springboot/src/model/reviewModel.dart';
+import 'package:doubhBookstore_flutter_springboot/src/model/userModel.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
@@ -37,16 +39,22 @@ class _BooksPageState extends State<BooksPage> {
   }
   void onProgressing(var data, bookList){
     final box = GetStorage();
+    print(data.body);
     List<dynamic> responseJson = json.decode(utf8.decode(data.bodyBytes));
     for (var e in responseJson) {
       List<ImageModel> imageList = [] ;
       for (int i =0;i<e["bookImages"].length;i++){
         imageList.add(ImageModel(id: e["bookImages"][i]["id"], image: e["bookImages"][i]["image"]));
       }
+      List<ReviewModel> reviewList = [] ;
+      for (int i =0;i<e["reviews"].length;i++){
+        reviewList.add(ReviewModel(id: e["reviews"][i]["id"], user: UserModel(id:e["reviews"][i]["user"]["id"] , email: e["reviews"][i]["user"]["email"], firstName: e["reviews"][i]["user"]["firstName"], lastName: e["reviews"][i]["user"]["lastName"]) , date: e["reviews"][i]["date"], message: e["reviews"][i]["message"], rating: e["reviews"][i]["rating"]));
+      }
+      print(e["reviews"]);
       Book book = new Book(id:e["id"],name: e["nameBook"],author:e["author"]
           ,category: CategoryModel(id: e["category"]["id"],nameCategory: e["category"]["nameCategory"])
           ,image: imageList,price:e["price"] ,sale: e["discount"],quantity: e["quantity"],isSelected: false
-          , detail: e["detail"], rating: e["rating"] );
+          , detail: e["detail"], rating: e["rating"] , review: reviewList);
 
       bookList.add(book);
     }

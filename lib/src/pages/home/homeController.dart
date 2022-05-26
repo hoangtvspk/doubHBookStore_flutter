@@ -25,7 +25,7 @@ class HomeController extends GetxController{
       for (int i =0;i<e["bookImages"].length;i++){
         imageList.add(ImageModel(id: e["bookImages"][i]["id"], image: e["bookImages"][i]["image"]));
       }
-      Book book = new Book(id:e["id"],name: e["nameBook"],author:e["author"] ,category: CategoryModel(id: e["category"]["id"],nameCategory: e["category"]["nameCategory"]),image: imageList,price:e["price"] ,sale: e["discount"],quantity: e["quantity"],isSelected: false,detail: e["detail"],rating: e["rating"] );
+      Book book = new Book(id:e["id"],name: e["nameBook"],author:e["author"] ,category: CategoryModel(id: e["category"]["id"],nameCategory: e["category"]["nameCategory"]),image: imageList,price:e["price"] ,sale: e["discount"],quantity: e["quantity"],isSelected: false,detail: e["detail"],rating: e["rating"],review: e["book"]["reviews"] );
 
       bookList.add(book);
     }
