@@ -54,10 +54,11 @@ class LoginController{
           "Tải khoản hoặc mật khẩu chưa chính xác.\nVui lòng nhập lại!",
           Icon(
             Icons.error_outline,
-            color: Colors.red,
+            color: Colors.red, 
           ),
         );
       }
     }
   }
+
 }

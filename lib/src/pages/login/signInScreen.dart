@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:doubhBookstore_flutter_springboot/src/httpClient/config.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/userLoginInfoModel.dart';
@@ -216,7 +215,8 @@ class _SignInState extends State<SignInPage> {
                       child: Material(
                         borderRadius: BorderRadius.circular(12.0),
                         child: InkWell(
-                          onTap: () {},
+                          onTap: () async {
+                          },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
@@ -292,6 +292,7 @@ class _SignInState extends State<SignInPage> {
                             String password = passwordController.text;
                             String email = emailController.text;
                             _controller.signIn(email, password, context,_formKey);
+                            print(Uri.base);
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.transparent,

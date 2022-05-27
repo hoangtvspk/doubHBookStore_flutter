@@ -12,6 +12,7 @@ class Order {
   final String status;
   final List<OrderItem> orderItems;
 
+  // Order(this.id, this.address, this.firstName, this.lastName, this.phoneNumber, this.email, this.date, this.totelPrice, this.status, this.orderItems);
   Order(
       {required this.id,
       required this.address,

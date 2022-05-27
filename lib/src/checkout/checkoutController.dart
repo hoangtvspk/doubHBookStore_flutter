@@ -33,7 +33,7 @@ class CheckoutController extends GetxController {
   final _controller = Get.put(AddressController());
   final _controller1 = Get.put(MyProfileController());
   int selected =-1;
-  dynamic _order = null;
+  late Order _order;
   RxBool isEmpty = false.obs;
 
   RxString address = "".obs;
@@ -164,7 +164,7 @@ class CheckoutController extends GetxController {
           author: e["book"]["author"],
           detail: e["book"]["detail"],
           rating: e["book"]["rating"],
-          review: e["book"]["reviews"]);
+          review: []);
       OrderItem item =
       new OrderItem(id: itemID, quantity: e["quantity"], book: book);
       items.add(item);
@@ -180,6 +180,7 @@ class CheckoutController extends GetxController {
         totelPrice: response["totelPrice"],
         status: response["status"],
         orderItems: items);
+    print(_order.date);
   }
 
   void onProgressing1(http.Response data) {

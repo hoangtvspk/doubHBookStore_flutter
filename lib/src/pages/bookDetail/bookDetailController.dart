@@ -76,7 +76,7 @@ class BookDetailController extends GetxController {
     formData.add("files", files, contentType: 'application/json');
     formData.add("review", review, contentType: 'application/json');
     Map<String, String> headers = <String, String>{
-      "Content-Type": formData.contentType,
+      "Content-Type": "multipart/form-data",
       // "Content-Type": "application/json",
       "Content-Length": formData.contentLength.toString(),
       "Authorization": userInfo["token"].toString()

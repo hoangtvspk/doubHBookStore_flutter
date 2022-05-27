@@ -19,6 +19,8 @@ import '../../model/categoryModel.dart';
 import '../../model/imageModel.dart';
 import 'package:http/http.dart' as http;
 
+import '../../model/reviewModel.dart';
+import '../../model/userModel.dart';
 import '../../widgets/flushBar.dart';
 import '../login/signInScreen.dart';
 
@@ -27,11 +29,11 @@ class CartController extends GetxController {
   final prefs = SharedPreferences.getInstance();
   RxBool isEmpty = false.obs;
 
-  void checkEmpty(BuildContext context)  {
-     this.getCartItems(context);
-    dynamic cartInfo =  box.read("cartInfo");
+  void checkEmpty(BuildContext context) {
+    this.getCartItems(context);
+    dynamic cartInfo = box.read("cartInfo");
     int count = 0;
-    for (var e in  cartInfo) {
+    for (var e in cartInfo) {
       count++;
     }
     if (box.read("cartInfo") == null) {
@@ -145,16 +147,14 @@ class CartController extends GetxController {
       cartItemRequests
           .add(CartItemRequest(id: e["id"], quantity: e["quantity"]));
     }
-    await http
-        .delete(
-            Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
-                Config.APP_API["deleteCartItem"]! +
-                "$id"),
-            headers: <String, String>{
-              "Content-Type": "application/json",
-              "Authorization": userInfo["token"].toString()
-            })
-        .then((value) => onProgressing(value, list, 1));
+    await http.delete(
+        Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
+            Config.APP_API["deleteCartItem"]! +
+            "$id"),
+        headers: <String, String>{
+          "Content-Type": "application/json",
+          "Authorization": userInfo["token"].toString()
+        }).then((value) => onProgressing(value, list, 1));
     if (list.length == 0) {
       isEmpty = true.obs;
     } else
@@ -162,14 +162,30 @@ class CartController extends GetxController {
     await saveToBox(list);
   }
 
-  void onProgressing(var data, cartItems, int flag) {
+  void onProgressing(http.Response data, cartItems, int flag) {
     List<dynamic> responseJson = json.decode(utf8.decode(data.bodyBytes));
+    print(responseJson);
     // box.write("cartInfo", responseJson);
     for (var e in responseJson) {
       List<ImageModel> imageList = [];
       imageList.add(ImageModel(
           id: e["book"]["bookImages"][0]["id"],
           image: e["book"]["bookImages"][0]["image"]));
+
+      List<ReviewModel> reviewModels = [];
+
+      for (int i = 0; i < e["book"]["reviews"].length; i++) {
+        reviewModels.add(ReviewModel(
+            id: e["book"]["reviews"][i]["id"],
+            user: UserModel(
+                id: e["book"]["reviews"][i]["user"]["id"],
+                email: e["book"]["reviews"][i]["user"]["email"],
+                firstName: e["book"]["reviews"][i]["user"]["firstName"],
+                lastName: e["book"]["reviews"][i]["user"]["lastName"]),
+            date: e["book"]["reviews"][i]["date"],
+            message: e["book"]["reviews"][i]["message"],
+            rating: e["book"]["reviews"][i]["rating"]));
+      }
       CartItem cartItem = new CartItem(
           id: ((flag == 1)
               ? CartItemID(
@@ -187,7 +203,7 @@ class CartController extends GetxController {
               name: e["book"]["nameBook"],
               price: e["book"]["price"],
               quantity: e["book"]["quantity"],
-              review: e["book"]["reviews"],
+              review: reviewModels,
               rating: e["book"]["rating"],
               sale: e["book"]["discount"],
               isSelected: false));
@@ -279,6 +295,7 @@ class CartController extends GetxController {
   }
 
   Future addToCart(int id, BuildContext context, RxInt count) async {
+    print("Add to cart");
     dynamic cartInfo = await box.read("cartInfo");
     dynamic userInfo = await box.read("userInfo");
     List<CartItem> list = await [];
