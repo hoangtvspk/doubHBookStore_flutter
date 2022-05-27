@@ -32,8 +32,8 @@ class CheckoutController extends GetxController {
   final prefs = SharedPreferences.getInstance();
   final _controller = Get.put(AddressController());
   final _controller1 = Get.put(MyProfileController());
-  int selected =-1;
-  late Order _order;
+  int selected = -1;
+  late Order orderSuccess ;
   RxBool isEmpty = false.obs;
 
   RxString address = "".obs;
@@ -56,7 +56,7 @@ class CheckoutController extends GetxController {
     MyInfoModel myInfoModel = await _controller1.getBooks(context);
     List<Address> addresses = await _controller.getAddress(context);
     CheckOut checkout =
-    new CheckOut(myInfoModel: myInfoModel, addresses: addresses);
+        new CheckOut(myInfoModel: myInfoModel, addresses: addresses);
 
     String strEmail = myInfoModel.email;
     String strPhone = myInfoModel.phone;
@@ -107,19 +107,19 @@ class CheckoutController extends GetxController {
 
       await http
           .post(
-          Uri.parse(
-              Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["order"]!),
-          headers: <String, String>{
-            "Content-Type": "application/json",
-            "Authorization": userInfo["token"].toString()
-          },
-          body: json.encode({
-            "address": address.toString(),
-            "firstName": firstName.toString(),
-            "lastName": lastName.toString(),
-            "email": email.toString(),
-            "phoneNumber": phoneNumber.toString()
-          }))
+              Uri.parse(
+                  Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["order"]!),
+              headers: <String, String>{
+                "Content-Type": "application/json",
+                "Authorization": userInfo["token"].toString()
+              },
+              body: json.encode({
+                "address": address.toString(),
+                "firstName": firstName.toString(),
+                "lastName": lastName.toString(),
+                "email": email.toString(),
+                "phoneNumber": phoneNumber.toString()
+              }))
           .then((value) => onProgressing(value, 1))
           .whenComplete(() => cancelLoading(context));
 
@@ -147,13 +147,13 @@ class CheckoutController extends GetxController {
       print(itemID.bookId);
       for (var imageModel in e["book"]["bookImages"]) {
         ImageModel image =
-        new ImageModel(id: imageModel["id"], image: imageModel["image"]);
+            new ImageModel(id: imageModel["id"], image: imageModel["image"]);
         images.add(image);
       }
 
       Book book = new Book(
           id: e["book"]["id"],
-          name: e["book"]["name"],
+          name: e["book"]["nameBook"],
           category: new CategoryModel(
               id: e["book"]["category"]["id"],
               nameCategory: e["book"]["category"]["nameCategory"]),
@@ -169,7 +169,7 @@ class CheckoutController extends GetxController {
       new OrderItem(id: itemID, quantity: e["quantity"], book: book);
       items.add(item);
     }
-    _order = new Order(
+    orderSuccess = new Order(
         id: response["id"],
         address: response["address"],
         firstName: response["firstName"],
@@ -177,16 +177,15 @@ class CheckoutController extends GetxController {
         phoneNumber: response["phoneNumber"],
         email: response["email"],
         date: DateTime.parse(response["date"]),
-        totelPrice: response["totelPrice"],
+        totelPrice: response["totalPrice"],
         status: response["status"],
         orderItems: items);
-    print(_order.date);
+
   }
 
   void onProgressing1(http.Response data) {
-
     dynamic responseJson = json.decode(utf8.decode(data.bodyBytes));
-    Address address1 =  new Address(
+    Address address1 = new Address(
         id: responseJson["id"],
         provinceCity: responseJson["provinceCity"],
         districtTown: responseJson["districtTown"],

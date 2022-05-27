@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart';
 
+import 'myOrders/orderSuccess.dart';
+
 class OrderPlacePage extends StatefulWidget {
   @override
   _OrderPlacePageState createState() => _OrderPlacePageState();
@@ -49,22 +51,29 @@ class _OrderPlacePageState extends State<OrderPlacePage> {
                           textAlign: TextAlign.center,
                           text: TextSpan(children: [
                             TextSpan(
-                              text:
-                              "\n\nThank you for your purchase. Our company values each and every customer. We strive to provide state-of-the-art devices that respond to our clients’ individual needs. If you have any questions or feedback, please don’t hesitate to reach out.",
-                              style: CustomTextStyle.textFormFieldMedium.copyWith(fontSize: 12, color: Colors.grey),
+                              text: "Đơn hàng được khởi tạo thành công!\n"
+                                  "Đơn hàng của quý khách đang trong quá trình xử lí. Cám ơn quý khách đã mua sắm tại DouBH.",
+                              style: CustomTextStyle.textFormFieldMedium
+                                  .copyWith(fontSize: 12, color: Colors.grey),
                             )
                           ])),
                       SizedBox(
                         height: 24,
                       ),
                       RaisedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (context) => OrderSuccessScreen()));
+                        },
                         child: Text(
-                          "View Order",
-                          style: CustomTextStyle.textFormFieldMedium.copyWith(color: Colors.white),
+                          "Xem đơn hàng",
+                          style: CustomTextStyle.textFormFieldMedium
+                              .copyWith(color: Colors.white),
                         ),
                         color: Colors.redAccent,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24))),
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(24))),
                       )
                     ],
                   ),
