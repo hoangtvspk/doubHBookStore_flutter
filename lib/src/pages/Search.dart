@@ -68,12 +68,6 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<List<Book>> getBooks() async {
 
-    Map<String, String>  search = {
-      "idCategory":"",
-      "keyWord":searchController.text,
-      "minPrice": "",
-      "maxPrice": ""
-    };
     String search2 = json.encode({
       "idCategory":"",
       "keyWord":searchController.text,

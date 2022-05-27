@@ -73,11 +73,11 @@ class BookCard extends StatelessWidget {
                     TitleText(
                       text:
                       "${formatter.format(book.price - book.price * book.sale / 100).toString()}₫",
-                      fontSize: 10,
+                      fontSize: 13,
                       color: Colors.black87,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 5),
+                      padding: const EdgeInsets.only(),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             vertical: 3, horizontal: 3),
@@ -88,7 +88,7 @@ class BookCard extends StatelessWidget {
                           color: Colors.white54,
                         ),
                         child: Text(
-                          "-${book.sale.toString()} %",
+                          "-${book.sale.toString()}%",
                           style: TextStyle(
                             fontSize: 8,
                             color: Colors.black54,
@@ -98,7 +98,7 @@ class BookCard extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 5),
+                      padding: const EdgeInsets.only(),
                       child: Text(
                         "${formatter.format(book.price).toString()}₫",
                         style: TextStyle(
