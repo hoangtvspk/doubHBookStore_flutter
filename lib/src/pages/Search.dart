@@ -130,7 +130,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _search() {
     return Container(
-      padding: const EdgeInsets.symmetric(),
+      padding: const EdgeInsets.only(right: 50),
       child: Row(
         children: <Widget>[
           Expanded(
@@ -301,9 +301,8 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: _search(),
+          title: _search(),
           centerTitle: true,
-
 
     ),
     body: SingleChildScrollView(
