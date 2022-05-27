@@ -1,5 +1,6 @@
 import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/widgets/extentions.dart';
+import 'package:doubhBookstore_flutter_springboot/src/widgets/title_text.dart';
 import 'package:flutter/material.dart';
 
 import '../themes/light_color.dart';
@@ -66,13 +67,57 @@ class BookCard extends StatelessWidget {
                      )
                  ),
                ),
-                Text(
-                    "₫"+ formatter.format(book.price).toString(),
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                      fontFamily: 'Segoe UI',
-                      color: Colors.redAccent,
-                      fontSize: 15),
+                (book.sale != null && book.sale != 0)
+                    ? Row(
+                  children: [
+                    TitleText(
+                      text:
+                      "${formatter.format(book.price - book.price * book.sale / 100).toString()}₫",
+                      fontSize: 10,
+                      color: Colors.black87,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 3, horizontal: 3),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Colors.deepOrange),
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white54,
+                        ),
+                        child: Text(
+                          "-${book.sale.toString()} %",
+                          style: TextStyle(
+                            fontSize: 8,
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5),
+                      child: Text(
+                        "${formatter.format(book.price).toString()}₫",
+                        style: TextStyle(
+                          fontSize: 8,
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w300,
+                          decoration: TextDecoration.lineThrough,
+                        ),
+                      ),
+                    )
+                  ],
+                )
+                    : Center(
+                  child: TitleText(
+                    text:
+                    "${formatter.format(book.price).toString()}₫",
+                    fontSize: 15,
+                    color: Colors.black87,
+                  ),
                 ),
 
               ],
