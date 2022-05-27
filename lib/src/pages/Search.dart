@@ -3,11 +3,10 @@ import 'dart:convert';
 
 import 'package:doubhBookstore_flutter_springboot/src/model/imageModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/reviewModel.dart';
+import 'package:doubhBookstore_flutter_springboot/src/model/searchModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/userModel.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/Search.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import 'package:http/http.dart' as http;
@@ -22,85 +21,70 @@ import '../themes/theme.dart';
 import '../widgets/bookCard.dart';
 import 'bookDetail/bookDetail.dart';
 
-class BooksPage extends StatefulWidget {
-  BooksPage({Key? key, this.title}) : super(key: key);
+class SearchPage extends StatefulWidget {
+  SearchPage({Key? key, this.SearhKey}) : super(key: key);
 
-  final String? title;
+  final String? SearhKey;
 
   @override
-  _BooksPageState createState() => _BooksPageState();
+  _SearchPageState createState() => _SearchPageState();
 }
 
-class _BooksPageState extends State<BooksPage> {
+class _SearchPageState extends State<SearchPage> {
+  @override
+  void initState() {
 
+    super.initState();
+  }
   double bookListHeight = 2000;
-
-  void cancelLoading() async
+  final TextEditingController searchController = TextEditingController();
+  void cancelLoading()async
   {
     context.loaderOverlay.hide();
   }
-
-  void onProgressing(var data, bookList) {
+  void onProgressing(var data, bookList){
     final box = GetStorage();
     print(data.body);
     List<dynamic> responseJson = json.decode(utf8.decode(data.bodyBytes));
     for (var e in responseJson) {
-      List<ImageModel> imageList = [];
-      for (int i = 0; i < e["bookImages"].length; i++) {
-        imageList.add(ImageModel(
-            id: e["bookImages"][i]["id"], image: e["bookImages"][i]["image"]));
+      List<ImageModel> imageList = [] ;
+      for (int i =0;i<e["bookImages"].length;i++){
+        imageList.add(ImageModel(id: e["bookImages"][i]["id"], image: e["bookImages"][i]["image"]));
       }
-      List<ReviewModel> reviewList = [];
-      for (int i = 0; i < e["reviews"].length; i++) {
-        reviewList.add(ReviewModel(id: e["reviews"][i]["id"],
-            user: UserModel(id: e["reviews"][i]["user"]["id"],
-                email: e["reviews"][i]["user"]["email"],
-                firstName: e["reviews"][i]["user"]["firstName"],
-                lastName: e["reviews"][i]["user"]["lastName"]),
-            date: e["reviews"][i]["date"],
-            message: e["reviews"][i]["message"],
-            rating: e["reviews"][i]["rating"]));
+      List<ReviewModel> reviewList = [] ;
+      for (int i =0;i<e["reviews"].length;i++){
+        reviewList.add(ReviewModel(id: e["reviews"][i]["id"], user: UserModel(id:e["reviews"][i]["user"]["id"] , email: e["reviews"][i]["user"]["email"], firstName: e["reviews"][i]["user"]["firstName"], lastName: e["reviews"][i]["user"]["lastName"]) , date: e["reviews"][i]["date"], message: e["reviews"][i]["message"], rating: e["reviews"][i]["rating"]));
       }
       print(e["reviews"]);
-      Book book = new Book(id: e["id"],
-          name: e["nameBook"],
-          author: e["author"]
-          ,
-          category: CategoryModel(id: e["category"]["id"],
-              nameCategory: e["category"]["nameCategory"])
-          ,
-          image: imageList,
-          price: e["price"],
-          sale: e["discount"],
-          quantity: e["quantity"],
-          isSelected: false
-          ,
-          detail: e["detail"],
-          rating: e["rating"],
-          review: reviewList);
+      Book book = new Book(id:e["id"],name: e["nameBook"],author:e["author"]
+          ,category: CategoryModel(id: e["category"]["id"],nameCategory: e["category"]["nameCategory"])
+          ,image: imageList,price:e["price"] ,sale: e["discount"],quantity: e["quantity"],isSelected: false
+          , detail: e["detail"], rating: e["rating"] , review: reviewList);
 
       bookList.add(book);
     }
+
   }
 
   Future<List<Book>> getBooks() async {
-    context.loaderOverlay.show(widget: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircularProgressIndicator(),
-          SizedBox(height: 12),
-          Text(
-            'Đang tải dữ liệu...',
-          ),
-        ],
-      ),
-    ));
 
+    Map<String, String>  search = {
+      "idCategory":"",
+      "keyWord":searchController.text,
+      "minPrice": "",
+      "maxPrice": ""
+    };
+    String search2 = json.encode({
+      "idCategory":"",
+      "keyWord":searchController.text,
+      "minPrice": "",
+      "maxPrice": ""
+    });
     List<Book> bookList = [];
     await http
-        .get(
-        Uri.parse(Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["book"]!))
+        .post(Uri.parse(Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["booksSearch"]!),
+        headers: <String, String>{"Content-Type": "application/json"},
+            body:search2)
         .then((value) => onProgressing(value, bookList))
         .whenComplete(() => cancelLoading());
     return bookList;
@@ -113,7 +97,7 @@ class _BooksPageState extends State<BooksPage> {
               image: AssetImage("assets/headerBackg.png"),
               fit: BoxFit.fill,
             )),
-        padding: EdgeInsets.only(top: 5, left: 20),
+        padding: EdgeInsets.only(top: 35, left: 40),
         child: Column(children: <Widget>[
           Row(
             children: <Widget>[
@@ -129,7 +113,7 @@ class _BooksPageState extends State<BooksPage> {
               Center(
                 // padding: const EdgeInsets.only(left: 80, bottom: 10),
                 child: Text(
-                  'DouBH',
+                  'Tìm kiếm',
                   textAlign: TextAlign.right,
                   style: TextStyle(
                     fontFamily: 'VL_Hapna',
@@ -146,38 +130,38 @@ class _BooksPageState extends State<BooksPage> {
 
   Widget _search() {
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Row(
-          children: <Widget>[
-        Expanded(
-        child: Container(
-          height: 30,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-              color: LightColor.lightGrey,
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          child: TextField(
-            onTap: (){
-                Get.to(()=> SearchPage());
-            },
-            decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: "Bạn tìm sách gì hôm nay...",
-                hintStyle: TextStyle(fontSize: 12),
-                contentPadding:
-                EdgeInsets.only(left: 10, right: 10, bottom: 18, top: 0),
-                prefixIcon: Icon(Icons.search, color: Colors.black54)),
+      padding: const EdgeInsets.symmetric(),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Container(
+              height: 40,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: LightColor.lightGrey,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: TextField(
+                controller: searchController,
+                onChanged: (text){
+                  setState(() {});
+                },
+                decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "Bạn tìm sách gì hôm nay...",
+                    hintStyle: TextStyle(fontSize: 15),
+                    contentPadding:
+                    EdgeInsets.only(left: 10, right: 10, top: 5),
+                    prefixIcon: Icon(Icons.search, color: Colors.black54)),
+              ),
+            ),
           ),
-    ),)
-    ,
-    ]
-    ,
-    )
-    ,
+        ],
+      ),
     );
   }
 
   Widget _bookList() {
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5),
       width: AppTheme.fullWidth(context),
@@ -193,8 +177,7 @@ class _BooksPageState extends State<BooksPage> {
                 AppTheme.fullWidth(context) * (snapshot.data.length / 2);
           }
           return Container(
-            height: AppTheme.fullWidth(context) * (snapshot.data.length / 2) *
-                15 / 20,
+            height: AppTheme.fullWidth(context) * (snapshot.data.length / 2)*15/20,
             child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -206,14 +189,13 @@ class _BooksPageState extends State<BooksPage> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
+
                   return BookCard.BookCard(
                     book: snapshot.data[index],
                     cardHeight: AppTheme.fullWidth(context),
                     cardWidth: AppTheme.fullWidth(context),
                     onSelected: (model) {
-                      Navigator.pushNamed(context, '/detail',
-                          arguments: BookDetailsArguments(book: snapshot
-                              .data[index]));
+                      Navigator.pushNamed(context,'/detail', arguments:BookDetailsArguments(book:snapshot.data[index]));
                     },
                   );
                 }),
@@ -317,32 +299,15 @@ class _BooksPageState extends State<BooksPage> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(slivers: <Widget>[
-      SliverAppBar(
-          pinned: true,
-          backgroundColor: Colors.transparent,
-          expandedHeight: 100.0,
-          actionsIconTheme: IconThemeData(opacity: 1.0),
-          flexibleSpace: Container(
-            height: 350,
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/headerBackg.png"),
-                  fit: BoxFit.fill,
-                )),
-            child: FlexibleSpaceBar(
-              background: _appBar(),
-              title: _search(),
-              centerTitle: true,
-              expandedTitleScale: 1,
-              titlePadding: const EdgeInsets.only(bottom: 10),
-            ),
-          )),
-      SliverList(
-          delegate: SliverChildListDelegate(<Widget>[
-            _bookCategories(),
-            _bookList(),
-          ]))
-    ]);
+    return Scaffold(
+        appBar: AppBar(
+        title: _search(),
+          centerTitle: true,
+
+
+    ),
+    body: SingleChildScrollView(
+      child: _bookList(),
+    ));
   }
 }

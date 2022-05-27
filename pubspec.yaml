@@ -47,6 +47,7 @@ dependencies:
   form_data: ^0.0.1-nullsafety.0
   money_formatter: ^0.0.3
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

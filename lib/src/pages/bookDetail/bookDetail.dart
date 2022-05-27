@@ -402,7 +402,7 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                           Padding(
                             padding: const EdgeInsets.only(right: 16.0),
                             child: Text(
-                              '${agrs.book.rating}',
+                              '${num.parse(agrs.book.rating.toStringAsExponential(1))}',
                               style: TextStyle(fontSize: 48),
                             ),
                           ),

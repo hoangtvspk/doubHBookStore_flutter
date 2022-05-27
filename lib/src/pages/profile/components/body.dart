@@ -5,6 +5,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../Search.dart';
 import '../../login/signInScreen.dart';
 import '../myProfile/myProfileScreen.dart';
 import 'profile_menu.dart';
@@ -75,7 +76,9 @@ class _BodyState extends State<Body> {
           ProfileMenu(
             text: "Trợ Giúp",
             icon: Icons.person_outline,
-            press: () {},
+            press: () {
+              Get.to(()=> SearchPage());
+            },
           ),
           ProfileMenu(
             text: "Đăng Xuất",

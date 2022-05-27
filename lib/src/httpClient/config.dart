@@ -34,7 +34,7 @@ class Config{
     "bestDiscountBook": "/books/best-discount",
     "relatedBooks": "/books/related-products/:id",
     "categoryBooks": "/books/categories",
-    "booksOfCate": "/books/search",
+    "booksSearch": "/books/search",
     "addReview": "/users/review/add",
     "addReplyReview": "/users/reviewrep/add",
     "cancelOrder": "/users/orders/canel/:id"

@@ -1,3 +1,4 @@
+import 'package:doubhBookstore_flutter_springboot/src/pages/Search.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/addMyAddress/addMyAddressScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/addressScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/profile/myProfile/editPassword/editPasswordScreen.dart';
@@ -28,5 +29,6 @@ routes() => [
   GetPage(name: "/address",page: () => AddressScreen()),
   GetPage(name: "/editAddress",page: () => EditMyAddressScreen()),
   GetPage(name: "/addAddress",page: () => AddMyAddressScreen()),
+  GetPage(name: "/search",page: () => SearchPage()),
 
 ];

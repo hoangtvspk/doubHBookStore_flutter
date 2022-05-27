@@ -11,6 +11,9 @@ import '../../model/bookModel.dart';
 import '../../model/categoryModel.dart';
 import '../../model/imageModel.dart';
 import 'package:http/http.dart' as http;
+
+import '../../model/reviewModel.dart';
+import '../../model/userModel.dart';
 class HomeController extends GetxController{
 
   void cancelLoading(BuildContext context)async
@@ -25,7 +28,15 @@ class HomeController extends GetxController{
       for (int i =0;i<e["bookImages"].length;i++){
         imageList.add(ImageModel(id: e["bookImages"][i]["id"], image: e["bookImages"][i]["image"]));
       }
-      Book book = new Book(id:e["id"],name: e["nameBook"],author:e["author"] ,category: CategoryModel(id: e["category"]["id"],nameCategory: e["category"]["nameCategory"]),image: imageList,price:e["price"] ,sale: e["discount"],quantity: e["quantity"],isSelected: false,detail: e["detail"],rating: e["rating"],review: e["book"]["reviews"] );
+      List<ReviewModel> reviewList = [] ;
+      for (int i =0;i<e["reviews"].length;i++){
+        reviewList.add(ReviewModel(id: e["reviews"][i]["id"], user: UserModel(id:e["reviews"][i]["user"]["id"] , email: e["reviews"][i]["user"]["email"], firstName: e["reviews"][i]["user"]["firstName"], lastName: e["reviews"][i]["user"]["lastName"]) , date: e["reviews"][i]["date"], message: e["reviews"][i]["message"], rating: e["reviews"][i]["rating"]));
+      }
+      print(e["reviews"]);
+      Book book = new Book(id:e["id"],name: e["nameBook"],author:e["author"]
+          ,category: CategoryModel(id: e["category"]["id"],nameCategory: e["category"]["nameCategory"])
+          ,image: imageList,price:e["price"] ,sale: e["discount"],quantity: e["quantity"],isSelected: false
+          , detail: e["detail"], rating: e["rating"] , review: reviewList);
 
       bookList.add(book);
     }

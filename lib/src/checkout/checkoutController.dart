@@ -180,7 +180,6 @@ class CheckoutController extends GetxController {
         totelPrice: response["totelPrice"],
         status: response["status"],
         orderItems: items);
-    // print(_order);
   }
 
   void onProgressing1(http.Response data) {
