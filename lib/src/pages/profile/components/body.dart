@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Search.dart';
 import '../../login/signInScreen.dart';
+import '../../myOrders/orderScreen.dart';
 import '../myProfile/myProfileScreen.dart';
 import 'profile_menu.dart';
 import 'profile_pic.dart';
@@ -69,8 +70,8 @@ class _BodyState extends State<Body> {
           ProfileMenu(
             text: "Quản Lý Đơn Hàng",
             icon: Icons.person_outline,
-            press: () {
-
+            press:  () => {
+              Get.to(() => OrderScreen())
             },
           ),
           ProfileMenu(

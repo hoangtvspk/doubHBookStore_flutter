@@ -16,7 +16,7 @@ import 'package:money_formatter/money_formatter.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart';
 
 import '../model/cartItem.dart';
-import '../orderController.dart';
+import '../pages/myOrders/orderController.dart';
 import '../pages/address/addressController.dart';
 import '../pages/trackOrderScreen.dart';
 import '../themes/theme.dart';

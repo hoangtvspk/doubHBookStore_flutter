@@ -14,10 +14,10 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import 'httpClient/config.dart';
-import 'model/bookModel.dart';
-import 'model/categoryModel.dart';
-import 'model/imageModel.dart';
+import '../../httpClient/config.dart';
+import '../../model/bookModel.dart';
+import '../../model/categoryModel.dart';
+import '../../model/imageModel.dart';
 
 class OrderController extends GetxController {
   final box = GetStorage();
@@ -42,7 +42,7 @@ class OrderController extends GetxController {
 
     } else {}
     print(list.length);
-    return list;
+    return list.reversed.toList();
   }
 
   onProgressing(http.Response data, List<Order> list) {
@@ -66,7 +66,7 @@ class OrderController extends GetxController {
 
         Book book = new Book(
             id: e["book"]["id"],
-            name: e["book"]["name"],
+            name: e["book"]["nameBook"],
             category: new CategoryModel(
                 id: e["book"]["category"]["id"],
                 nameCategory: e["book"]["category"]["nameCategory"]),
@@ -90,7 +90,7 @@ class OrderController extends GetxController {
           phoneNumber: i["phoneNumber"],
           email: i["email"],
           date: DateTime.parse(i["date"]),
-          totelPrice: i["totelPrice"],
+          totelPrice: i["totalPrice"],
           status: i["status"],
           orderItems: items));
     }
