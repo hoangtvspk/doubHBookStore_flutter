@@ -1,10 +1,10 @@
 import 'dart:convert';
-
-
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:form_data/form_data.dart' as formdata;
+
+// import 'package:form_data/form_data.dart' as formdata;
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
@@ -57,46 +57,20 @@ class BookDetailController extends GetxController {
 
   Future addReview(int bookId, String message, RxDouble rating) async {
     dynamic userInfo = await box.read("userInfo");
-    String review = json.encode({
-      "bookId": bookId,
-      "message": message,
-      "rating": rating.value,
-    });
+    print("addReview");
+    String review = json.encode(
+        {"bookId": bookId, "message": "message", "rating": rating.value});
     print(review);
-    String files = json.encode({
-    });
-    //File files = File([],"fileName");
-    print(files);
-    print(bookId);
-    print(rating);
-    print(message);
-    var formData = formdata.FormData();
-    print(userInfo["token"].toString());
-    //MultipartFile multipartFile = new MultipartFile(rate, filename: "filename");
-    formData.add("files", files, contentType: 'application/json');
-    formData.add("review", review, contentType: 'application/json');
-    Map<String, String> headers = <String, String>{
-      "Content-Type": "multipart/form-data",
-      // "Content-Type": "application/json",
-      "Content-Length": formData.contentLength.toString(),
-      "Authorization": userInfo["token"].toString()
-    };
     await http
         .post(
             Uri.parse(
                 Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["addReview"]!),
-            headers: headers,
-            body: formData.body)
+            headers: <String, String>{
+              "Content-Type": "application/json",
+              "Authorization": userInfo["token"].toString()
+            },
+            body: review)
         .then((value) => onProgressing(value));
-    // var request = http.MultipartRequest('POST', Uri.parse(
-    //     Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["addReview"]!))
-    //   ..fields['files'] = files
-    //   ..fields['review'] = review
-    //   ..headers.addAll(headers)
-    //   ..files.add(await http.MultipartFile.fromPath(
-    //       'package', 'build/package.tar.gz',
-    //       contentType: MediaType('application', 'x-tar')));
-    //  await request.send();
   }
 
   void onProgressing(http.Response data) {

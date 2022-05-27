@@ -16,6 +16,7 @@ import 'package:money_formatter/money_formatter.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart';
 
 import '../model/cartItem.dart';
+import '../orderController.dart';
 import '../pages/address/addressController.dart';
 import '../pages/trackOrderScreen.dart';
 import '../themes/theme.dart';
@@ -31,6 +32,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
   final _controller = Get.put(CheckoutController());
   final _controller1 = Get.put(CartController());
   final _controller2 = Get.put(AddressController());
+  final _controllerTest = Get.put(OrderController());
   var formatter = NumberFormat('#,###,000');
   final box = GetStorage();
 
@@ -96,6 +98,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       print("press order");
                       onLoad();
                       await _controller.order(context);
+                      await _controllerTest.getUserOrder(context);
                       Navigator.of(context).push(new MaterialPageRoute(
                           builder: (context) => OrderPlacePage()));
                       showThankYouBottomSheet(context);
