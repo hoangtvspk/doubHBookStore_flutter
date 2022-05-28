@@ -147,7 +147,7 @@ class _AddressScreenState extends State<AddressScreen> {
                   // ),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(4)),
-                      color: Colors.redAccent),
+                      color: Colors.grey.withOpacity(0.3)),
                 ),
                 Container(
                   width: 28,
@@ -169,7 +169,7 @@ class _AddressScreenState extends State<AddressScreen> {
                   // ),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(4)),
-                      color: Colors.blue),
+                      color: Colors.grey.withOpacity(0.3)),
                 ),
               ],
             )),

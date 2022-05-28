@@ -489,7 +489,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                         Text(
                           "${formatter.format(cartItem.book.price - cartItem.book.price * cartItem.book.sale / 100).toString()}₫",
                           style: CustomTextStyle.textFormFieldSemiBold
-                              .copyWith(color: Colors.green, fontSize: 15),
+                              .copyWith(color: Colors.redAccent, fontSize: 15),
                         ),
                       ],
                     ),
@@ -570,7 +570,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   Text(
                     formatter.format(box.read("totalPrice")).toString() + "₫",
                     style: CustomTextStyle.textFormFieldMedium
-                        .copyWith(color: Colors.green, fontSize: 15),
+                        .copyWith(color: Colors.redAccent, fontSize: 15),
                   )
                 ],
               )

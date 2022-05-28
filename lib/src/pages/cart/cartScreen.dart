@@ -176,7 +176,7 @@ class _CartState extends State<Cart> {
                 child: Text(
                   formatter.format(box.read("totalPrice")).toString() + "₫",
                   style: CustomTextStyle.textFormFieldBlack.copyWith(
-                      color: Colors.greenAccent.shade700, fontSize: 20),
+                      color: Colors.redAccent, fontSize: 20),
                 ),
               ),
             ],
@@ -301,14 +301,35 @@ class _CartState extends State<Cart> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text(
-                              "${formatter.format(cartItem.book.price -
-                                  cartItem.book.price * cartItem.book.sale /
-                                      100).toString()}₫",
-                              style: CustomTextStyle.textFormFieldBlack
-                                  .copyWith(color: Colors.green),
-                            ),
-                            Container(
+                            (cartItem.book.sale != "" && cartItem.book.sale != 0)?
+                            Row(
+                              children: [
+                                Text(
+                                  "${formatter.format(cartItem.book.price -
+                                      cartItem.book.price * cartItem.book.sale /
+                                          100).toString()}₫",
+                                  style: CustomTextStyle.textFormFieldBlack
+                                      .copyWith(color: Colors.redAccent),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 3, horizontal: 3),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white54,
+                                  ),
+                                  child: Text(
+                                    "${formatter.format(cartItem.book.price)
+                                        .toString()}₫",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.black54,
+                                      fontWeight: FontWeight.w300,
+                                      decoration: TextDecoration.lineThrough,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ):Container(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 3, horizontal: 3),
                               decoration: BoxDecoration(
@@ -317,12 +338,8 @@ class _CartState extends State<Cart> {
                               child: Text(
                                 "${formatter.format(cartItem.book.price)
                                     .toString()}₫",
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.w300,
-                                  decoration: TextDecoration.lineThrough,
-                                ),
+                                  style: CustomTextStyle.textFormFieldBlack
+                                      .copyWith(color: Colors.redAccent)
                               ),
                             ),
                             Padding(
@@ -405,7 +422,7 @@ class _CartState extends State<Cart> {
             // ),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(4)),
-                color: Colors.green),
+                color: Colors.grey.withOpacity(0.4)),
           ),
         )
       ],

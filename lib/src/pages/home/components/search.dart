@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import '../../../themes/light_color.dart';
+import '../../Search.dart';
 
 class Search extends StatelessWidget{
   @override
@@ -18,6 +21,9 @@ class Search extends StatelessWidget{
                   color: LightColor.lightGrey,
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               child: TextField(
+                onTap: (){
+                  Get.to(()=> SearchPage());
+                },
                 decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "Bạn tìm sách gì hôm nay...",

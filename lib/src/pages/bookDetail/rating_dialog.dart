@@ -27,6 +27,7 @@ class RatingDialog extends StatelessWidget {
     Widget onReview = InkWell(
       onTap: () async {
         c.addReview(book.id, messageController.text, c.rate);
+        Get.back();
       },
       child: Container(
         height: 60,

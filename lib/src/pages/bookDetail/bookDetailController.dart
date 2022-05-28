@@ -59,7 +59,7 @@ class BookDetailController extends GetxController {
     dynamic userInfo = await box.read("userInfo");
     print("addReview");
     String review = json.encode(
-        {"bookId": bookId, "message": "message", "rating": rating.value});
+        {"bookId": bookId, "message": message, "rating": rating.value});
     print(review);
     await http
         .post(

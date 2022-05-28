@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/reviewModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/bookDetail/bookDetailController.dart';
@@ -322,7 +324,19 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
       ],
     );
   }
-
+  // late Future<List<Address>> addressesList = c.getAddress(context);
+  // loadPage(){
+  //   setState(() {
+  //     addressesList = c.getAddress(context);
+  //   });
+  // }
+  FutureOr onChange(dynamic value) {
+    setState(() {});
+  }
+  @override
+  void initState() {
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final BookDetailsArguments agrs =
@@ -513,7 +527,7 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                                   child: RatingDialog.RatingDialog(book: agrs.book),
                                 );
                               },
-                            );
+                            ).then(onChange);
                           },
                           color: Colors.black,
                         ),

@@ -62,28 +62,28 @@ class _BodyState extends State<Body> {
           ),
           ProfileMenu(
             text: "Địa Chỉ Giao Hàng",
-            icon: Icons.person_outline,
+            icon: Icons.paste_rounded,
             press:  () => {
               Get.to(() => AddressScreen())
             },
           ),
           ProfileMenu(
             text: "Quản Lý Đơn Hàng",
-            icon: Icons.person_outline,
+            icon: Icons.bookmark_border_sharp,
             press:  () => {
               Get.to(() => OrderScreen())
             },
           ),
           ProfileMenu(
-            text: "Trợ Giúp",
-            icon: Icons.person_outline,
+            text: "Tìm kiếm",
+            icon: Icons.search,
             press: () {
               Get.to(()=> SearchPage());
             },
           ),
           ProfileMenu(
             text: "Đăng Xuất",
-            icon: Icons.person_outline,
+            icon: Icons.logout,
             press: () {signOut();},
           ),
         ],
