@@ -15,7 +15,7 @@ class Config{
     "userInfo": "/users/account/info",
     "editProfile": "/users/account/edit",
     "editPassword": "/auth/edit/password",
-    "bookDetail": "/books/:id",
+    "bookDetail": "/books/",
     "makeCart": "/users/makecart",
     "addToCart": "/users/cart/add",
     "getCart": "/users/getcart",
@@ -43,7 +43,7 @@ class Config{
   //   "baseURL": "http://192.168.1.13:8080/api/v1"
 
   static Map<String, String>  HTTP_CONFIG = {
-    "baseURL": "http://192.168.1.130:8080/api/v1"
+    "baseURL": "http://192.168.1.59:8080/api/v1"
   };
   static final box = GetStorage();
   static dynamic e = (box.read("userInfo"));

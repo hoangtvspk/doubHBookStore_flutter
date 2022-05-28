@@ -1,6 +1,7 @@
 
 
 import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/bookDetail/bookDetail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
@@ -26,7 +27,7 @@ class RatingDialog extends StatelessWidget {
 
     Widget onReview = InkWell(
       onTap: () async {
-        c.addReview(book.id, messageController.text, c.rate);
+        await c.addReview(book.id, messageController.text, c.rate);
         Get.back();
       },
       child: Container(

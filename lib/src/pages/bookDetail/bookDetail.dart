@@ -34,6 +34,7 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
   late Animation<double> animation;
   var formatter = NumberFormat('#,###,000');
   double rating = 0.0;
+  ScrollController _scrollController = ScrollController();
 
   List<BoxShadow> shadow = [
     BoxShadow(color: Colors.black12, offset: Offset(0, 3), blurRadius: 6)
@@ -324,6 +325,7 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
       ],
     );
   }
+
   // late Future<List<Address>> addressesList = c.getAddress(context);
   // loadPage(){
   //   setState(() {
@@ -333,17 +335,43 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
   FutureOr onChange(dynamic value) {
     setState(() {});
   }
+
+  FutureOr onChange1(dynamic value) {
+    Navigator.pop(context);
+    Navigator.pushNamed(context, '/detail',
+            arguments: BookDetailsArguments(book: c.book))
+        .then((value) => changeWhenReview());
+  }
+
+  void changeWhenReview() {
+    print("change When Review");
+    _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 500), curve: Curves.ease);
+  }
+
   @override
   void initState() {
+    print("init state bookdetail");
     super.initState();
+    if(c.isChangeReview == 1) {
+      c.isChangeReview= 0;
+      WidgetsBinding.instance
+          ?.addPostFrameCallback((_) => changeWhenReview());
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     final BookDetailsArguments agrs =
         ModalRoute.of(context)!.settings.arguments as BookDetailsArguments;
     List<ReviewModel> reviewList = [];
-    for (int i =0;i<agrs.book.review.length;i++){
-      reviewList.add(ReviewModel(id: agrs.book.review[i].id, user: agrs.book.review[i].user, date: agrs.book.review[i].date, message: agrs.book.review[i].message, rating:  agrs.book.review[i].rating));
+    for (int i = 0; i < agrs.book.review.length; i++) {
+      reviewList.add(ReviewModel(
+          id: agrs.book.review[i].id,
+          user: agrs.book.review[i].user,
+          date: agrs.book.review[i].date,
+          message: agrs.book.review[i].message,
+          rating: agrs.book.review[i].rating));
     }
     print(agrs.book.rating);
     return Scaffold(
@@ -367,181 +395,197 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
         elevation: 0.0,
       ),
       body: SingleChildScrollView(
+          controller: _scrollController,
           child: Container(
-        padding: const EdgeInsets.only(top: 50),
-        decoration: BoxDecoration(
-          color: Colors.white,
-        ),
-        child: Column(
-          children: <Widget>[
-            SizedBox(height: 15),
-            _bookImage(),
-            _detailWidget(),
-            Column(
+            padding: const EdgeInsets.only(top: 50),
+            decoration: BoxDecoration(
+              color: Colors.white,
+            ),
+            child: Column(
               children: <Widget>[
+                SizedBox(height: 15),
+                _bookImage(),
+                _detailWidget(),
                 Column(
                   children: <Widget>[
-
-                    Divider(),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 72.0, vertical: 16.0),
-                      child: Text(
-                        'Đánh giá từ khách hàng',
-                        style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.blueGrey),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
-                      height: 92,
-                      width: 92,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(agrs.book.image[0].image),
-                            fit: BoxFit.fill,
-                          ),
-                          color: Colors.yellow,
-                          shape: BoxShape.circle,
-                          boxShadow: shadow,
-                          border: Border.all(width: 8.0, color: Colors.white)),
-
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(right: 16.0),
-                            child: Text(
-                              '${num.parse(agrs.book.rating.toStringAsExponential(1))}',
-                              style: TextStyle(fontSize: 48),
-                            ),
-                          ),
-                          Column(children: <Widget>[
-                            RatingBarIndicator(
-                              rating: agrs.book.rating,
-                              itemBuilder: (context, index) => Icon(
-                                Icons.favorite,
-                                color: Color(0xffFF8993),
-                              ),
-                              itemCount: 5,
-                              itemSize: 35.0,
-                              direction: Axis.horizontal,
-                            ),
-                          ]),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
-                          child: Text('Phản hồi gần đây'),
-                    ),
                     Column(
                       children: <Widget>[
-                        ...reviewList
-                            .map((val) => Container(
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 4.0),
-                                padding: const EdgeInsets.all(8.0),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    //border: Border(bottom: BorderSide(color: Colors.grey, width: 0.1)),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5.0))),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 16.0),
-                                      child: CircleAvatar(
-                                        maxRadius: 14,
-                                        backgroundImage:
-                                            AssetImage('assets/chipheo.jpg'),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                        Divider(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 72.0, vertical: 16.0),
+                          child: Text(
+                            'Đánh giá từ khách hàng',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.blueGrey),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(8.0),
+                          height: 92,
+                          width: 92,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: NetworkImage(agrs.book.image[0].image),
+                                fit: BoxFit.fill,
+                              ),
+                              color: Colors.yellow,
+                              shape: BoxShape.circle,
+                              boxShadow: shadow,
+                              border:
+                                  Border.all(width: 8.0, color: Colors.white)),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(right: 16.0),
+                                child: Text(
+                                  '${num.parse(agrs.book.rating.toStringAsExponential(1))}',
+                                  style: TextStyle(fontSize: 48),
+                                ),
+                              ),
+                              Column(children: <Widget>[
+                                RatingBarIndicator(
+                                  rating: agrs.book.rating,
+                                  itemBuilder: (context, index) => Icon(
+                                    Icons.favorite,
+                                    color: Color(0xffFF8993),
+                                  ),
+                                  itemCount: 5,
+                                  itemSize: 35.0,
+                                  direction: Axis.horizontal,
+                                ),
+                              ]),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 16.0),
+                          child: Text('Phản hồi gần đây'),
+                        ),
+                        Column(
+                          children: <Widget>[
+                            ...reviewList
+                                .map((val) => Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 4.0),
+                                    padding: const EdgeInsets.all(8.0),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        //border: Border(bottom: BorderSide(color: Colors.grey, width: 0.1)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(5.0))),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: 16.0),
+                                          child: CircleAvatar(
+                                            maxRadius: 14,
+                                            backgroundImage: AssetImage(
+                                                'assets/chipheo.jpg'),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              Text(
-                                                '${val.user.lastName} ${val.user.firstName}',
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: <Widget>[
+                                                  Text(
+                                                    '${val.user.lastName} ${val.user.firstName}',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  Text(
+                                                    '${val.date}',
+                                                    style: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 10.0),
+                                                  )
+                                                ],
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8.0),
+                                                child: RatingBarIndicator(
+                                                  rating: val.rating.toDouble(),
+                                                  itemBuilder:
+                                                      (context, index) => Icon(
+                                                    Icons.favorite,
+                                                    color: Color(0xffFF8993),
+                                                  ),
+                                                  itemCount: 5,
+                                                  itemSize: 15.0,
+                                                  direction: Axis.horizontal,
+                                                ),
                                               ),
                                               Text(
-                                                '${val.date}',
+                                                '${val.message}',
                                                 style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 10.0),
-                                              )
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                              Divider(),
                                             ],
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 8.0),
-                                            child: RatingBarIndicator(
-                                              rating: val.rating.toDouble(),
-                                              itemBuilder: (context, index) => Icon(
-                                                Icons.favorite,
-                                                color: Color(0xffFF8993),
-                                              ),
-                                              itemCount: 5,
-                                              itemSize: 15.0,
-                                              direction: Axis.horizontal,
-                                            ),
-                                          ),
-                                          Text(
-                                            '${val.message}',
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                          Divider(),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                )))
-                            .toList(),
-                        Text("Để lại đánh giá",style: TextStyle(color: Colors.grey.shade400),),
-                        IconButton(
-                          icon: Icon(Icons.post_add, color: Colors.blue, size: 40,),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Dialog(
-                                  shape: BeveledRectangleBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                                  child: RatingDialog.RatingDialog(book: agrs.book),
-                                );
+                                        )
+                                      ],
+                                    )))
+                                .toList(),
+                            Text(
+                              "Để lại đánh giá",
+                              style: TextStyle(color: Colors.grey.shade400),
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.post_add,
+                                color: Colors.blue,
+                                size: 40,
+                              ),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Dialog(
+                                      shape: BeveledRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      child: RatingDialog.RatingDialog(
+                                          book: agrs.book),
+                                    );
+                                  },
+                                ).then(onChange1);
                               },
-                            ).then(onChange);
-                          },
-                          color: Colors.black,
+                              color: Colors.black,
+                            ),
+                            SizedBox(
+                              height: 30,
+                            )
+                          ],
                         ),
-                      SizedBox(height: 30,)
                       ],
                     ),
-
                   ],
                 ),
               ],
             ),
-          ],
-        ),
-      )),
+          )),
       bottomNavigationBar: Stack(
         children: [
           Container(
