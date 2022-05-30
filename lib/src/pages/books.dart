@@ -32,6 +32,7 @@ class BooksPage extends StatefulWidget {
 class _BooksPageState extends State<BooksPage> {
   double bookListHeight = 2000;
   bool cateSearch = false;
+  bool moneySearch = false;
 
   get newlist => null;
   String categoryValue = "0";
@@ -87,7 +88,7 @@ class _BooksPageState extends State<BooksPage> {
 
   List<Book> books = [];
 
-  Future<List<Book>> getBooks(bool cateSearch) async {
+  Future<List<Book>> getBooks(bool cateSearch, bool moneySearch) async {
     context.loaderOverlay.show(
         widget: Center(
           child: Column(
@@ -101,14 +102,63 @@ class _BooksPageState extends State<BooksPage> {
             ],
           ),
         ));
+    String minPrice = "";
+    String maxPrice = "";
 
+    if(moneySearch == true){
+      switch(priceValue){
+        case '0-50.000':
+          minPrice = '0';
+          maxPrice = '50000';
+          break;
+        case '50.000-70.000':
+          minPrice = '50000';
+          maxPrice = '70000';
+          break;
+        case '70.000-100.000':
+          minPrice = '70000';
+          maxPrice = '100000';
+          break;
+        case '100.000-150.000':
+          minPrice = '100000';
+          maxPrice = '150000';
+          break;
+        case '>150.000':
+          minPrice = '150000';
+          maxPrice = '1000000';
+          break;
+      }
+
+    }
+    else{
+      minPrice = "";
+      maxPrice = "";
+    }
     List<Book> bookList = [];
     if (cateSearch == true) {
+
       String search2 = json.encode({
         "idCategory": categoryValue,
         "keyWord": "",
-        "minPrice": "",
-        "maxPrice": ""
+        "minPrice": minPrice,
+        "maxPrice": maxPrice,
+      });
+      List<Book> bookList = [];
+      await http
+          .post(
+          Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
+              Config.APP_API["booksSearch"]!),
+          headers: <String, String>{"Content-Type": "application/json"},
+          body: search2)
+          .then((value) => onGetCateProgressing(value, bookList))
+          .whenComplete(() => cancelLoading());
+      return bookList;
+    }else{
+      String search2 = json.encode({
+        "idCategory": "",
+        "keyWord": "",
+        "minPrice": minPrice,
+        "maxPrice": maxPrice,
       });
       List<Book> bookList = [];
       await http
@@ -306,7 +356,7 @@ class _BooksPageState extends State<BooksPage> {
       //height: AppTheme.fullWidth(context) * 2,
       color: Colors.white,
       child: FutureBuilder(
-        future: getBooks(cateSearch),
+        future: getBooks(cateSearch,moneySearch),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.data == null) {
             return Container(child: Center(child: Icon(Icons.error)));
@@ -318,7 +368,7 @@ class _BooksPageState extends State<BooksPage> {
             height: AppTheme.fullWidth(context) *
                 (snapshot.data.length / 2) *
                 15 /
-                20,
+                20 + AppTheme.fullWidth(context),
             child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -454,15 +504,25 @@ class _BooksPageState extends State<BooksPage> {
                                 color: Colors.deepPurpleAccent,
                               ),
                               onChanged: (String? newValue) {
-                                setState(() {
-                                  priceValue = newValue!;
-                                });
+                                if (newValue == "Tất cả") {
+                                  setState(() {
+                                    priceValue = newValue!;
+                                    moneySearch = false;
+                                  });
+                                } else {
+                                  setState(() {
+                                    priceValue = newValue!;
+                                    moneySearch = true;
+                                  });
+                                }
                               },
                               items: <String>[
                                 'Tất cả',
-                                '10.000-50.000',
+                                '0-50.000',
                                 '50.000-70.000',
-                                '100.000-500.000'
+                                '70.000-100.000',
+                                '100.000-150.000',
+                                '>150.000'
                               ].map((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
