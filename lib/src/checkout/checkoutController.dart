@@ -130,6 +130,37 @@ class CheckoutController extends GetxController {
     box.write("totalPrice", 0);
     box.write("totalItem", 0);
   }
+  Future<void> orderByPaypal(BuildContext context) async {
+    print("orderPaypal");
+    final prefs = await SharedPreferences.getInstance();
+    bool? isAuthh = await prefs.getBool("isAuth");
+    List list = [];
+    if (isAuthh == true) {
+      dynamic userInfo = await (box.read("userInfo"));
+      await http
+          .post(
+          Uri.parse(
+              Config.HTTP_CONFIG["baseURL"]! +"/payment1/paypal"),
+          headers: <String, String>{
+            "Content-Type": "application/json",
+            "Authorization": userInfo["token"].toString()
+          },
+          body: json.encode({
+            "address": address.toString(),
+            "firstName": firstName.toString(),
+            "lastName": lastName.toString(),
+            "email": email.toString(),
+            "phoneNumber": phoneNumber.toString()
+          }));
+
+      print("success");
+    } else {}
+    // await saveToBox(list);
+    await box.write("cartInfo", []);
+    await box.write("totalPrice", 0);
+    await box.write("totalItem", 0);
+    print("finish");
+  }
 
   onProgressing(http.Response data, int i) {
     Map<String, dynamic> response = json.decode(utf8.decode(data.bodyBytes));

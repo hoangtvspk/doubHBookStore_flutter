@@ -16,6 +16,7 @@ import 'package:money_formatter/money_formatter.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart';
 
 import '../model/cartItem.dart';
+import '../pages/homepaypal/homePaypal.dart';
 import '../pages/mainLayout.dart';
 import '../pages/myOrders/orderController.dart';
 import '../pages/address/addressController.dart';
@@ -95,14 +96,19 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                   child: RaisedButton(
                     onPressed: () async {
-                      print("press order");
-                      onLoad();
-                      await _controller.order(context);
+
+                      //thanh toan khi nhan hang
+                      // onLoad();
+                      // await _controller.order(context);
+                      // Navigator.of(context).push(new MaterialPageRoute(
+                      //     builder: (context) => OrderPlacePage())).then((val) {
+                      //   Navigator.of(context).push(new MaterialPageRoute(
+                      //       builder: (context) => MainLayout()));
+                      // });
+
+                      //thanh toan paypal
                       Navigator.of(context).push(new MaterialPageRoute(
-                          builder: (context) => OrderPlacePage())).then((val) {
-                        Navigator.of(context).push(new MaterialPageRoute(
-                            builder: (context) => MainLayout()));
-                      });
+                                 builder: (context) => HomePaypal()));
                     },
                     child: Text(
                       "Đặt hàng",
