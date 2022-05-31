@@ -32,7 +32,7 @@ class Config{
     "newBook": "/books/new",
     "bestSellingBook": "/books/best-selling",
     "bestDiscountBook": "/books/best-discount",
-    "relatedBooks": "/books/related-products/:id",
+    "relatedBooks": "/books/related-products/1",
     "categoryBooks": "/books/categories",
     "booksSearch": "/books/search",
     "addReview": "/users/review/add",
@@ -43,7 +43,7 @@ class Config{
   //   "baseURL": "http://192.168.1.13:8080/api/v1"
 
   static Map<String, String>  HTTP_CONFIG = {
-    "baseURL": "http://192.168.1.59:8080/api/v1"
+    "baseURL": "http://192.168.1.130:8080/api/v1"
   };
   static final box = GetStorage();
   static dynamic e = (box.read("userInfo"));

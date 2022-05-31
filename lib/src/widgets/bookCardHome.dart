@@ -1,10 +1,20 @@
+import 'dart:convert';
+
 import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/widgets/extentions.dart';
 import 'package:doubhBookstore_flutter_springboot/src/widgets/title_text.dart';
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
+import '../httpClient/config.dart';
+import '../model/categoryModel.dart';
+import '../model/imageModel.dart';
+import '../model/reviewModel.dart';
+import '../model/userModel.dart';
+import '../pages/bookDetail/bookDetail.dart';
 import '../themes/light_color.dart';
 import "package:intl/intl.dart";
+import 'package:http/http.dart' as http;
 
 class BookCard extends StatelessWidget {
   final Book book;
@@ -129,4 +139,5 @@ class BookCard extends StatelessWidget {
       }, borderRadius: BorderRadius.all(Radius.circular(20))),
     );
   }
+
 }

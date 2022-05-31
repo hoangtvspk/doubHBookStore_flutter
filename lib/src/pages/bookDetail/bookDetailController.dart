@@ -16,6 +16,7 @@ import '../../model/imageModel.dart';
 import '../../model/reviewModel.dart';
 import '../../model/userModel.dart';
 import '../../widgets/flushBar.dart';
+import '../login/signInScreen.dart';
 
 class BookDetailController extends GetxController {
   var count = 1.obs;
@@ -23,6 +24,7 @@ class BookDetailController extends GetxController {
   final box = GetStorage();
   late Book book;
   int isChangeReview = 0;
+  var isFavor = false.obs;
   void increment(int quantity, BuildContext context) {
     if (count.value < quantity) {
       count.value++;
@@ -67,18 +69,29 @@ class BookDetailController extends GetxController {
     String review = json
         .encode({"bookId": bookId, "message": message, "rating": rating.value});
     print(review);
-    await http
-        .post(
-            Uri.parse(
-                Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["addReview"]!),
-            headers: <String, String>{
-              "Content-Type": "application/json",
-              "Authorization": userInfo["token"].toString()
-            },
-            body: review)
-        .then((value) => onProgressing(value));
-    isChangeReview=1;
+    if (userInfo == null) {
+      Get.to(() => SignInPage());
+    } else {
+      await http
+          .post(
+          Uri.parse(
+              Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["addReview"]!),
+          headers: <String, String>{
+            "Content-Type": "application/json",
+            "Authorization": userInfo["token"].toString()
+          },
+          body: review)
+          .then((value) => onProgressing(value));
+      isChangeReview = 1;
+    }
   }
+  addToFavor(){
+    isFavor.value = true;
+  }
+  removeToFavor(){
+    isFavor.value = false;
+  }
+
 
   // Future<Book> getBookByID(int bookId) async {
   //   // dynamic userInfo = await box.read("userInfo");
@@ -93,7 +106,7 @@ class BookDetailController extends GetxController {
   // }
 
   void onProgressing(http.Response data) {
-    print(data.body);
+
     dynamic e = json.decode(utf8.decode(data.bodyBytes));
     List<ImageModel> imageList = [] ;
     for (int i =0;i<e["bookImages"].length;i++){
