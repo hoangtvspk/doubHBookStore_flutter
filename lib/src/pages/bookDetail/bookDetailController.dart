@@ -68,10 +68,8 @@ class BookDetailController extends GetxController {
     print("addReview");
     String review = json
         .encode({"bookId": bookId, "message": message, "rating": rating.value});
-    print(review);
-    if (userInfo == null) {
-      Get.to(() => SignInPage());
-    } else {
+    print(userInfo);
+
       await http
           .post(
           Uri.parse(
@@ -83,7 +81,7 @@ class BookDetailController extends GetxController {
           body: review)
           .then((value) => onProgressing(value));
       isChangeReview = 1;
-    }
+
   }
   addToFavor(){
     isFavor.value = true;

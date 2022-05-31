@@ -18,7 +18,6 @@ import '../../httpClient/config.dart';
 import '../../model/bookModel.dart';
 import '../../model/categoryModel.dart';
 import '../../model/imageModel.dart';
-import '../../model/userLoginInfoModel.dart';
 import '../../model/userModel.dart';
 import '../../themes/light_color.dart';
 import '../../themes/theme.dart';
@@ -206,6 +205,14 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
         ModalRoute.of(context)!.settings.arguments as BookDetailsArguments;
     if (userInfo == null) {
       Get.to(() => SignInPage());
+      FlushBar.showFlushBar(
+          context,
+          null,
+          "Đăng nhập để tiếp tục!",
+          Icon(
+          Icons.check,
+          color: Colors.green,
+      ),);
     } else {
       await http
           .put(
@@ -225,6 +232,15 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
     dynamic userInfo = (box.read("userInfo"));
     if (userInfo == null) {
       Get.to(() => SignInPage());
+      FlushBar.showFlushBar(
+        context,
+        null,
+        "Đăng nhập để tiếp tục!",
+        Icon(
+          Icons.check,
+          color: Colors.green,
+        ),
+      );
     } else {
       await http
           .delete(
@@ -829,7 +845,18 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                                 size: 40,
                               ),
                               onPressed: () {
-                                showDialog(
+                                if (userInfo == null) {
+                                  Get.to(() => SignInPage());
+                                  FlushBar.showFlushBar(
+                                    context,
+                                    null,
+                                    "Đăng nhập để tiếp tục!",
+                                    Icon(
+                                      Icons.check,
+                                      color: Colors.green,
+                                    ),);
+                                } else {
+                                  showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
                                     return Dialog(
@@ -840,7 +867,7 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                                           book: agrs.book),
                                     );
                                   },
-                                ).then(onChange1);
+                                ).then(onChange1);}
                               },
                               color: Colors.black,
                             ),
