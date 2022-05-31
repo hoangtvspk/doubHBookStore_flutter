@@ -18,14 +18,15 @@ import '../../widgets/title_text.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomUtils.dart';
 
+import '../mainLayout.dart';
 
 class OrderSuccessScreen extends StatefulWidget {
   const OrderSuccessScreen({List<CartItem>? items, Key? key}) : super(key: key);
 
   @override
   _OrderDetailScreenState createState() => _OrderDetailScreenState();
-
 }
+
 class _OrderDetailScreenState extends State<OrderSuccessScreen> {
   final _controller = Get.put(CheckoutController());
   final _controller1 = Get.put(OrderController());
@@ -34,184 +35,174 @@ class _OrderDetailScreenState extends State<OrderSuccessScreen> {
   var formatter = NumberFormat('#,###,000');
   final prefs = SharedPreferences.getInstance();
 
-  Widget orderInfo(){
+  Widget orderInfo() {
     return Container(
-        margin: EdgeInsets.only(top: 10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-        ),
-        child: Column(
-          children: [
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(right: 8, left: 8, top: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white54,
-                        ),
-                        child: Text(
-
-                          "Mã đơn hàng: 097gex1gaat392${_controller.orderSuccess.id.toString()}",
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black54,
-                            fontWeight: FontWeight.w300,
-                          ),
+      margin: EdgeInsets.only(top: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+      ),
+      child: Column(
+        children: [
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(right: 8, left: 8, top: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white54,
+                      ),
+                      child: Text(
+                        "Mã đơn hàng: 097gex1gaat392${_controller.orderSuccess.id.toString()}",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w300,
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(right: 8, left: 8, top: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white54,
-                        ),
-                        child: Text(
-                          "Ngày đặt: ${_controller.orderSuccess.date
-                              .toString()}",
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black54,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(right: 8, left: 8, top: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white54,
-                        ),
-                        child: Text(
-                          "Trạng thái: ${_controller.orderSuccess.status
-                              .toString()}",
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black54,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white54,
-                        ),
-                        child: Text(
-                          "${_controller.orderSuccess.orderItems.length
-                              .toString()} sản phẩm:",
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black54,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: <Widget>[
-
-                        Container(
-                          color: Colors.transparent,
-                          padding: const EdgeInsets.only(
-                              bottom: 4, left: 5),
-                          child: Text("Thành tiền: ",
-                            style:TextStyle(
-                                color: Colors.grey
-                            ),
-                          ),
-                        ),
-                        Container(
-                          color: Colors.transparent,
-                          padding: const EdgeInsets.only(
-                              bottom: 2, right: 5),
-                          child: Text(_controller.orderSuccess.totelPrice.toString()+"đ",
-                            style:TextStyle(
-                                color: Colors.redAccent,
-                                fontSize: 22
-                            ),
-                          ),
-                        ),
-
-                      ],
                     ),
-                  )
-                ],
-              ),
+                  ],
+                ),
+              ],
             ),
-          ],
-        )
+          ),
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(right: 8, left: 8, top: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white54,
+                      ),
+                      child: Text(
+                        "Ngày đặt: ${_controller.orderSuccess.date.toString()}",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(right: 8, left: 8, top: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white54,
+                      ),
+                      child: Text(
+                        "Trạng thái: ${_controller.orderSuccess.status.toString()}",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: [
+                    Container(
+                      margin:
+                          EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white54,
+                      ),
+                      child: Text(
+                        "${_controller.orderSuccess.orderItems.length.toString()} sản phẩm:",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Container(
+                        color: Colors.transparent,
+                        padding: const EdgeInsets.only(bottom: 4, left: 5),
+                        child: Text(
+                          "Thành tiền: ",
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                      Container(
+                        color: Colors.transparent,
+                        padding: const EdgeInsets.only(bottom: 2, right: 5),
+                        child: Text(
+                          _controller.orderSuccess.totelPrice.toString() + "đ",
+                          style:
+                              TextStyle(color: Colors.redAccent, fontSize: 22),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   createOrderItemList(Future<List<Order>> Function() getOrder) {
-
-          return ListView.builder(
-            shrinkWrap: true,
-            primary: false,
-            itemBuilder: (BuildContext context, int index) {
-              return createOrderItemListItem(_controller.orderSuccess.orderItems[index]);
-            },
-            itemCount: _controller.orderSuccess.orderItems.length,
-          );
-
+    return ListView.builder(
+      shrinkWrap: true,
+      primary: false,
+      itemBuilder: (BuildContext context, int index) {
+        return createOrderItemListItem(
+            _controller.orderSuccess.orderItems[index]);
+      },
+      itemCount: _controller.orderSuccess.orderItems.length,
+    );
   }
 
   createOrderItemListItem(OrderItem orderItem) {
     return GestureDetector(
-      child:
-      Container(
+      child: Container(
           margin: EdgeInsets.only(top: 0),
           decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border(bottom: BorderSide(color: Colors.grey.withOpacity(0.5),width: 0.5))
-          ),
+              color: Colors.white,
+              border: Border(
+                  bottom: BorderSide(
+                      color: Colors.grey.withOpacity(0.5), width: 0.5))),
           child: Column(
             children: [
               Row(
                 children: <Widget>[
                   Container(
-                    margin: EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8),
+                    margin:
+                        EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8),
                     width: 60,
                     height: 80,
                     decoration: BoxDecoration(
@@ -251,8 +242,7 @@ class _OrderDetailScreenState extends State<OrderSuccessScreen> {
                                         color: Colors.white54,
                                       ),
                                       child: Text(
-                                        "${orderItem.book.category.nameCategory
-                                            .toString()}",
+                                        "${orderItem.book.category.nameCategory.toString()}",
                                         style: TextStyle(
                                           fontSize: 15,
                                           color: Colors.black54,
@@ -262,77 +252,74 @@ class _OrderDetailScreenState extends State<OrderSuccessScreen> {
                                     ),
                                   ],
                                 ),
-
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Row(
                                     // mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: <Widget>[
-
                                       Container(
                                         color: Colors.transparent,
                                         padding: const EdgeInsets.only(
                                             bottom: 2, right: 5, left: 5),
-                                        child: Text("x"+
-                                            orderItem.quantity.toString(),
-                                          style:TextStyle(
-                                              color: Colors.grey
-                                          ),
+                                        child: Text(
+                                          "x" + orderItem.quantity.toString(),
+                                          style: TextStyle(color: Colors.grey),
                                         ),
                                       ),
-
                                     ],
                                   ),
                                 )
                               ],
                             ),
-                          ),(orderItem.book.sale != null && orderItem.book.sale != "")?
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-
-                              Text(
-                                "${formatter.format(orderItem.book.price -
-                                    orderItem.book.price * orderItem.book.sale /
-                                        100).toString()}₫",
-                                style: CustomTextStyle.textFormFieldBlack
-                                    .copyWith(color: Colors.redAccent),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.only(left:5,right: 5),
-                                decoration: BoxDecoration(
-                                  color: Colors.white54,
-                                ),
-                                child: Text(
-                                  "${formatter.format(orderItem.book.price)
-                                      .toString()}₫",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.black54,
-                                    fontWeight: FontWeight.w300,
-                                    decoration: TextDecoration.lineThrough,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ):Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.only(left:5,right: 5),
-                                decoration: BoxDecoration(
-                                  color: Colors.white54,
-                                ),
-                                child: Text(
-                                  "${formatter.format(orderItem.book.price)
-                                      .toString()}₫",
-                                  style: CustomTextStyle.textFormFieldBlack
-                                      .copyWith(color: Colors.redAccent),
-                                ),
-                              ),
-                            ],
                           ),
+                          (orderItem.book.sale != null &&
+                                  orderItem.book.sale != "")
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      "${formatter.format(orderItem.book.price - orderItem.book.price * orderItem.book.sale / 100).toString()}₫",
+                                      style: CustomTextStyle.textFormFieldBlack
+                                          .copyWith(color: Colors.redAccent),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.only(
+                                          left: 5, right: 5),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white54,
+                                      ),
+                                      child: Text(
+                                        "${formatter.format(orderItem.book.price).toString()}₫",
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.black54,
+                                          fontWeight: FontWeight.w300,
+                                          decoration:
+                                              TextDecoration.lineThrough,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.only(
+                                          left: 5, right: 5),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white54,
+                                      ),
+                                      child: Text(
+                                        "${formatter.format(orderItem.book.price).toString()}₫",
+                                        style: CustomTextStyle
+                                            .textFormFieldBlack
+                                            .copyWith(color: Colors.redAccent),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                         ],
                       ),
                     ),
@@ -340,10 +327,8 @@ class _OrderDetailScreenState extends State<OrderSuccessScreen> {
                   )
                 ],
               ),
-
             ],
-          )
-      ),
+          )),
     );
   }
 
@@ -368,7 +353,29 @@ class _OrderDetailScreenState extends State<OrderSuccessScreen> {
               children: <Widget>[
                 orderInfo(),
                 createOrderItemList(
-                        () async => await _controller1.getUserOrder(context)),
+                    () async => await _controller1.getUserOrder(context)),
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                    child: RaisedButton(
+                      onPressed: () async {
+                        Navigator.of(context).push(new MaterialPageRoute(
+                            builder: (context) => MainLayout()));
+                      },
+                      child: Text(
+                        "Tiếp tục mua sắm",
+                        style: CustomTextStyle.textFormFieldMedium.copyWith(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      color: Colors.blue,
+                      textColor: Colors.white,
+                    ),
+                  ),
+                  flex: 10,
+                )
               ],
             );
           },

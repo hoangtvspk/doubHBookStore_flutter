@@ -54,7 +54,7 @@ class _HomePaypalState extends State<HomePaypal> {
               print(result.paymentMethodNonce.description);
               print(result.paymentMethodNonce.nonce);
               print("if ne");
-              await _controller.orderByPaypal(context);
+              // await _controller.orderByPaypal(context);
             }
           },
         )));

@@ -33,7 +33,10 @@ class CheckoutController extends GetxController {
   final _controller = Get.put(AddressController());
   final _controller1 = Get.put(MyProfileController());
   int selected = -1;
-  late Order orderSuccess ;
+  int existedAddress = 0;
+
+  late Order orderSuccess;
+
   RxBool isEmpty = false.obs;
 
   RxString address = "".obs;
@@ -51,55 +54,54 @@ class CheckoutController extends GetxController {
   // "phoneNumber":"0983553096"
   // }
 
-  Future<CheckOut> getCheckoutInfo(BuildContext context) async {
+  Future<void> getCheckoutInfo(BuildContext context) async {
     print("default address");
     MyInfoModel myInfoModel = await _controller1.getBooks(context);
     List<Address> addresses = await _controller.getAddress(context);
-    CheckOut checkout =
-        new CheckOut(myInfoModel: myInfoModel, addresses: addresses);
-
+    String strAddress = "";
+    if (addresses.length > 0) {
+      existedAddress = 1;
+      strAddress = addresses[0].address +
+          ", " +
+          addresses[0].neighborhoodVillage +
+          ", " +
+          addresses[0].districtTown +
+          ", " +
+          addresses[0].provinceCity;
+    }else
+      existedAddress = 0;
     String strEmail = myInfoModel.email;
     String strPhone = myInfoModel.phone;
     String strFirstName = myInfoModel.lastName;
     String strLastName = myInfoModel.firstName;
-    String strAddress = addresses[0].address +
-        ", " +
-        addresses[0].neighborhoodVillage +
-        ", " +
-        addresses[0].districtTown +
-        ", " +
-        addresses[0].provinceCity;
 
     email = await strEmail.obs;
     phoneNumber = await strPhone.obs;
     firstName = await strFirstName.obs;
     lastName = await strLastName.obs;
     address = await strAddress.obs;
-    print(email.toString());
-    return checkout;
+    print(email.toString() + address.string);
   }
 
   void cancelLoading(BuildContext context) async {
     context.loaderOverlay.hide();
   }
 
-  Future<void> order(BuildContext context) async {
+  Future<void> order(
+      BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) async {
     final prefs = await SharedPreferences.getInstance();
     bool? isAuthh = await prefs.getBool("isAuth");
-    print("abc");
-    // context.loaderOverlay.show(widget: Center(
-    //   child: Column(
-    //     mainAxisSize: MainAxisSize.min,
-    //     children: [
-    //       CircularProgressIndicator(),
-    //       SizedBox(height: 12),
-    //
-    //       Text(
-    //         '......',
-    //       ),
-    //     ],
-    //   ),
-    // ));
+    print("1");
+    scaffoldKey.currentState?.showSnackBar(new SnackBar(
+      // duration: new Duration(seconds: 4),
+      content: new Row(
+        children: <Widget>[
+          new CircularProgressIndicator(),
+          new Text("  Đang xử lí...")
+        ],
+      ),
+    ));
+
     List list = [];
     if (isAuthh == true) {
       dynamic userInfo = await (box.read("userInfo"));
@@ -120,8 +122,7 @@ class CheckoutController extends GetxController {
                 "email": email.toString(),
                 "phoneNumber": phoneNumber.toString()
               }))
-          .then((value) => onProgressing(value, 1))
-          .whenComplete(() => cancelLoading(context));
+          .then((value) => onProgressing(value, 1));
 
       print("success");
     } else {}
@@ -130,35 +131,43 @@ class CheckoutController extends GetxController {
     box.write("totalPrice", 0);
     box.write("totalItem", 0);
   }
-  Future<void> orderByPaypal(BuildContext context) async {
+
+  Future<void> orderByPaypal(
+      BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) async {
     print("orderPaypal");
     final prefs = await SharedPreferences.getInstance();
     bool? isAuthh = await prefs.getBool("isAuth");
-    List list = [];
+    scaffoldKey.currentState?.showSnackBar(new SnackBar(
+      // duration: new Duration(seconds: 4),
+      content: new Row(
+        children: <Widget>[
+          new CircularProgressIndicator(),
+          new Text("  Đang xử lí...")
+        ],
+      ),
+    ));
+
     if (isAuthh == true) {
       dynamic userInfo = await (box.read("userInfo"));
       await http
-          .post(
-          Uri.parse(
-              Config.HTTP_CONFIG["baseURL"]! +"/payment1/paypal"),
-          headers: <String, String>{
-            "Content-Type": "application/json",
-            "Authorization": userInfo["token"].toString()
-          },
-          body: json.encode({
-            "address": address.toString(),
-            "firstName": firstName.toString(),
-            "lastName": lastName.toString(),
-            "email": email.toString(),
-            "phoneNumber": phoneNumber.toString()
-          }));
-
-      print("success");
+          .post(Uri.parse(Config.HTTP_CONFIG["baseURL"]! + "/payment1/paypal"),
+              headers: <String, String>{
+                "Content-Type": "application/json",
+                "Authorization": userInfo["token"].toString()
+              },
+              body: json.encode({
+                "address": address.toString(),
+                "firstName": firstName.toString(),
+                "lastName": lastName.toString(),
+                "email": email.toString(),
+                "phoneNumber": phoneNumber.toString()
+              }))
+          .then((value) => onProgressing(value, 1));
     } else {}
     // await saveToBox(list);
-    await box.write("cartInfo", []);
-    await box.write("totalPrice", 0);
-    await box.write("totalItem", 0);
+    box.write("cartInfo", []);
+    box.write("totalPrice", 0);
+    box.write("totalItem", 0);
     print("finish");
   }
 
@@ -197,7 +206,7 @@ class CheckoutController extends GetxController {
           rating: e["book"]["rating"],
           review: []);
       OrderItem item =
-      new OrderItem(id: itemID, quantity: e["quantity"], book: book);
+          new OrderItem(id: itemID, quantity: e["quantity"], book: book);
       items.add(item);
     }
     orderSuccess = new Order(
@@ -211,7 +220,6 @@ class CheckoutController extends GetxController {
         totelPrice: response["totalPrice"],
         status: response["status"],
         orderItems: items);
-
   }
 
   void onProgressing1(http.Response data) {
@@ -222,7 +230,7 @@ class CheckoutController extends GetxController {
         districtTown: responseJson["districtTown"],
         neighborhoodVillage: responseJson["neighborhoodVillage"],
         address: responseJson["address"]);
-
+    existedAddress =1;
     String strAddress = address1.address +
         ", " +
         address1.neighborhoodVillage +

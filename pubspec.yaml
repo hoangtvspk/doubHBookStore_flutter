@@ -77,9 +77,9 @@ flutter:
     - family: Roboto-Light
       fonts:
         - asset: assets/fonts/Roboto-Light.ttf
-    - family: AppIcons
-      fonts:
-        - asset: assets/fonts/AppIcons.ttf
+#    - family: AppIcons
+#      fonts:
+#        - asset: assets/fonts/AppIcons.ttf
 
 
   #  - images/a_dot_ham.jpeg

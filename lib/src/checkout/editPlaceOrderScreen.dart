@@ -27,7 +27,7 @@ class _EditPlaceOrderScreenState extends State<EditPlaceOrderScreen> {
   final box = GetStorage();
   var formatter = NumberFormat('#,###,000');
   final prefs = SharedPreferences.getInstance();
-  int selected = -1;
+  // int selected = -1;
 
   @override
   void initState() {
@@ -56,8 +56,8 @@ class _EditPlaceOrderScreenState extends State<EditPlaceOrderScreen> {
                 element["value"] = false;
               }
               c.checkListItems[index]["value"] = value;
-              selected = c.checkListItems[index]["id"];
-              c1.selected = selected;
+              c1.selected = c.checkListItems[index]["id"];
+              // c1.selected = selected;
             });
           },
         ),
@@ -75,7 +75,7 @@ class _EditPlaceOrderScreenState extends State<EditPlaceOrderScreen> {
           Utils.getSizedBox(height: 8),
           RaisedButton(
             onPressed: () async {
-              await c1.updateUIAddress(selected);
+              await c1.updateUIAddress(c1.selected);
               Navigator.pop(context);
             },
             color: Colors.blue,

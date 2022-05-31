@@ -5,6 +5,7 @@ import 'package:doubhBookstore_flutter_springboot/src/pages/cart/cartControllerr
 import 'package:doubhBookstore_flutter_springboot/src/pages/orderPlaceScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_braintree/flutter_braintree.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +17,7 @@ import '../pages/homepaypal/homePaypal.dart';
 import '../pages/mainLayout.dart';
 import '../themes/theme.dart';
 import '../utils/CustomUtils.dart';
+import '../widgets/flushBar.dart';
 
 class CheckOutPage extends StatefulWidget {
   @override
@@ -91,12 +93,45 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                   child: RaisedButton(
                     onPressed: () async {
-                      if (_selectedPayment == "paypal") {
-                        Navigator.of(context).push(new MaterialPageRoute(
-                            builder: (context) => HomePaypal()));
+                      if (_controller.existedAddress == 0) {
+                        FlushBar.showFlushBar(
+                          context,
+                          null,
+                          "Bạn hãy thêm địa chỉ đơn hàng!",
+                          Icon(
+                            Icons.error_outline,
+                            color: Colors.red,
+                          ),
+                        );
                       } else {
-                        onLoad();
-                        await _controller.order(context);
+                        if (_selectedPayment == "paypal") {
+                          var request = BraintreeDropInRequest(
+                              tokenizationKey:
+                                  "sandbox_38fq3fr3_jvbyb7ymfc5ktgft",
+                              collectDeviceData: true,
+                              paypalRequest: BraintreePayPalRequest(
+                                amount:
+                                    (box.read("totalPrice") / 23000).toString(),
+                                //ten user
+                                displayName: _controller.lastName.toString() +
+                                    " " +
+                                    _controller.firstName.toString(),
+                              ),
+                              cardEnabled: true);
+                          BraintreeDropInResult? result =
+                              await BraintreeDropIn.start(request);
+                          if (result != null) {
+                            print(result.paymentMethodNonce.description);
+                            print(result.paymentMethodNonce.nonce);
+                            await _controller.orderByPaypal(
+                                context, _scaffoldKey);
+                          }
+
+                          // Navigator.of(context).push(new MaterialPageRoute(
+                          //     builder: (context) => HomePaypal()));
+                        } else {
+                          await _controller.order(context, _scaffoldKey);
+                        }
                         Navigator.of(context)
                             .push(new MaterialPageRoute(
                                 builder: (context) => OrderPlacePage()))
@@ -105,16 +140,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
                               builder: (context) => MainLayout()));
                         });
                       }
-                      //thanh toan khi nhan hang
-                      // onLoad();
-                      // await _controller.order(context);
-                      // Navigator.of(context).push(new MaterialPageRoute(
-                      //     builder: (context) => OrderPlacePage())).then((val) {
-                      //   Navigator.of(context).push(new MaterialPageRoute(
-                      //       builder: (context) => MainLayout()));
-                      // });
-
-                      //thanh toan paypal
                     },
                     child: Text(
                       "Đặt hàng",
@@ -667,41 +692,39 @@ class _CheckOutPageState extends State<CheckOutPage> {
               });
             },
             title: Text('Thanh toán qua Paypal'),
-
             trailing: Icon(
               Icons.payment,
               color: Colors.blue,
             ),
           ),
-      // Transform.translate(
-      //   offset: Offset(-16, 0),
-      //   child:
-        ListTile(
-          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-              horizontalTitleGap: 0,
-              // minVerticalPadding: 0,
-              // contentPadding: EdgeInsets.symmetric(vertical: 0,horizontal: 0),
-              leading: Radio<String>(
-                value: 'tienmat',
-                groupValue: _selectedPayment,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedPayment = value!;
-                  });
-                },
-              ),
-              onTap: () {
+          // Transform.translate(
+          //   offset: Offset(-16, 0),
+          //   child:
+          ListTile(
+            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+            horizontalTitleGap: 0,
+            // minVerticalPadding: 0,
+            // contentPadding: EdgeInsets.symmetric(vertical: 0,horizontal: 0),
+            leading: Radio<String>(
+              value: 'tienmat',
+              groupValue: _selectedPayment,
+              onChanged: (value) {
                 setState(() {
-                  _selectedPayment = 'tienmat';
+                  _selectedPayment = value!;
                 });
               },
-              title: Text('Thanh toán trực tiếp'),
-              trailing: Icon(
-                Icons.money,
-                color: Colors.blue,
-              ),
             ),
-
+            onTap: () {
+              setState(() {
+                _selectedPayment = 'tienmat';
+              });
+            },
+            title: Text('Thanh toán trực tiếp'),
+            trailing: Icon(
+              Icons.money,
+              color: Colors.blue,
+            ),
+          ),
         ],
       ),
     );
