@@ -1,26 +1,19 @@
 import 'package:doubhBookstore_flutter_springboot/src/checkout/checkoutController.dart';
 import 'package:doubhBookstore_flutter_springboot/src/checkout/editPlaceOrderScreen.dart';
-import 'package:doubhBookstore_flutter_springboot/src/model/address.dart';
-import 'package:doubhBookstore_flutter_springboot/src/model/checkoutInfo.dart';
-import 'package:doubhBookstore_flutter_springboot/src/model/myInfoModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/addMyAddress/addMyAddressScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/cart/cartControllerr.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/orderPlaceScreen.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/profile/myProfile/myProfileController.dart';
+import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 import 'package:money_formatter/money_formatter.dart';
-import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart';
 
 import '../model/cartItem.dart';
+import '../pages/address/addressController.dart';
 import '../pages/homepaypal/homePaypal.dart';
 import '../pages/mainLayout.dart';
-import '../pages/myOrders/orderController.dart';
-import '../pages/address/addressController.dart';
-import '../pages/trackOrderScreen.dart';
 import '../themes/theme.dart';
 import '../utils/CustomUtils.dart';
 
@@ -36,6 +29,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
   final _controller2 = Get.put(AddressController());
   var formatter = NumberFormat('#,###,000');
   final box = GetStorage();
+  String _selectedPayment = 'paypal';
 
   void onLoad() {
     _scaffoldKey.currentState?.showSnackBar(new SnackBar(
@@ -64,7 +58,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
           leading: IconButton(
               icon: Icon(
                 Icons.arrow_back,
-                color: Colors.black,
+                color: Colors.white,
               ),
               onPressed: () async {
                 Navigator.pop(context);
@@ -84,7 +78,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       selectedAddressSection(),
                       // standardDelivery(),
                       checkoutItem(),
-                      priceSection()
+                      priceSection(),
+                      typeOfPayment(),
                     ],
                   ),
                 ),
@@ -96,7 +91,20 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                   child: RaisedButton(
                     onPressed: () async {
-
+                      if (_selectedPayment == "paypal") {
+                        Navigator.of(context).push(new MaterialPageRoute(
+                            builder: (context) => HomePaypal()));
+                      } else {
+                        onLoad();
+                        await _controller.order(context);
+                        Navigator.of(context)
+                            .push(new MaterialPageRoute(
+                                builder: (context) => OrderPlacePage()))
+                            .then((val) {
+                          Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (context) => MainLayout()));
+                        });
+                      }
                       //thanh toan khi nhan hang
                       // onLoad();
                       // await _controller.order(context);
@@ -107,8 +115,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       // });
 
                       //thanh toan paypal
-                      Navigator.of(context).push(new MaterialPageRoute(
-                                 builder: (context) => HomePaypal()));
                     },
                     child: Text(
                       "Đặt hàng",
@@ -339,11 +345,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
               await _controller2.loadAddressForChoose(
                   context, _controller.selected);
               await Navigator.push(
-                      context,
-                      new MaterialPageRoute(
-                          builder: (context) => AddMyAddressScreen()))
-                  .then((val) {
-                  _controller.updateUIAddress(_controller.selected);
+                  context,
+                  new MaterialPageRoute(
+                      builder: (context) => AddMyAddressScreen())).then((val) {
+                _controller.updateUIAddress(_controller.selected);
                 setState(() {});
               });
             },
@@ -613,6 +618,90 @@ class _CheckOutPageState extends State<CheckOutPage> {
             style: CustomTextStyle.textFormFieldMedium
                 .copyWith(color: color, fontSize: 13),
           )
+        ],
+      ),
+    );
+  }
+
+  typeOfPayment() {
+    return Container(
+      margin: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+          border: Border.all(color: Colors.grey.shade200)),
+      padding: EdgeInsets.only(left: 12, top: 8, right: 12, bottom: 0),
+      child: Column(
+        children: [
+          Container(
+            //padding: const EdgeInsets.only(left: 20),
+            alignment: Alignment.topLeft,
+            child: Text(
+              "Chọn phương thức thanh toán",
+              style: CustomTextStyle.textFormFieldMedium.copyWith(
+                  fontSize: 13,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600),
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            height: 0.5,
+            margin: EdgeInsets.symmetric(vertical: 4),
+            color: Colors.grey.shade400,
+          ),
+          ListTile(
+            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+            horizontalTitleGap: 0,
+            leading: Radio<String>(
+              value: 'paypal',
+              groupValue: _selectedPayment,
+              onChanged: (value) {
+                setState(() {
+                  _selectedPayment = value!;
+                });
+              },
+            ),
+            onTap: () {
+              setState(() {
+                _selectedPayment = 'paypal';
+              });
+            },
+            title: Text('Thanh toán qua Paypal'),
+
+            trailing: Icon(
+              Icons.payment,
+              color: Colors.blue,
+            ),
+          ),
+      // Transform.translate(
+      //   offset: Offset(-16, 0),
+      //   child:
+        ListTile(
+          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+              horizontalTitleGap: 0,
+              // minVerticalPadding: 0,
+              // contentPadding: EdgeInsets.symmetric(vertical: 0,horizontal: 0),
+              leading: Radio<String>(
+                value: 'tienmat',
+                groupValue: _selectedPayment,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedPayment = value!;
+                  });
+                },
+              ),
+              onTap: () {
+                setState(() {
+                  _selectedPayment = 'tienmat';
+                });
+              },
+              title: Text('Thanh toán trực tiếp'),
+              trailing: Icon(
+                Icons.money,
+                color: Colors.blue,
+              ),
+            ),
+
         ],
       ),
     );
