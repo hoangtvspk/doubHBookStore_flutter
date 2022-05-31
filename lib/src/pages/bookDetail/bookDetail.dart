@@ -191,7 +191,7 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
           detail: e["detail"],
           rating: e["rating"],
           review: reviewList);
-      if (agrs.book.id == book.id && c.isFavor == false) {
+      if (agrs.book.id == book.id && isLove == false) {
         setState(() {
           isLove = true;
         });
