@@ -1,21 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:doubhBookstore_flutter_springboot/src/model/imageModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/reviewModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/userModel.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/Search.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:loader_overlay/loader_overlay.dart';
-
 import '../httpClient/config.dart';
 import '../model/bookModel.dart';
 import '../model/categoryModel.dart';
-import '../themes/light_color.dart';
 import '../themes/theme.dart';
 import '../widgets/bookCard.dart';
 import 'bookDetail/bookDetail.dart';
