@@ -1,5 +1,5 @@
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/addressScreen.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/favouriteBooks.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/profile/favouriteBooks.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';

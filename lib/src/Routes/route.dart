@@ -1,7 +1,7 @@
 import 'package:doubhBookstore_flutter_springboot/src/pages/books/Search.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/addMyAddress/addMyAddressScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/addressScreen.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/favouriteBooks.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/profile/favouriteBooks.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/myOrders/orderDetailScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/myOrders/orderScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/profile/myProfile/editPassword/editPasswordScreen.dart';

@@ -151,12 +151,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   ProfileMenu(
                     text: "Chỉnh sửa thông tin",
                     icon: Icons.person_outline,
-                    press: () => {Get.to(() => EditMyProfileScreen())},
+                    press: () => {Get.to(() => EditMyProfileScreen())?.then((value) => setState(() {}))},
                   ),
                   ProfileMenu(
                     text: "Cập nhật mật khẩu",
                     icon: Icons.password_outlined,
-                    press: () => {Get.to(() => EditPasswordScreen())},
+                    press: () => {Get.to(() => EditPasswordScreen())?.then((value) => setState(() {}))},
                   ),
                 ],
               );

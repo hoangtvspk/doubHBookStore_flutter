@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:loader_overlay/loader_overlay.dart';
-import '../httpClient/config.dart';
-import '../model/bookModel.dart';
-import '../model/categoryModel.dart';
-import '../themes/theme.dart';
-import '../widgets/bookCard.dart';
-import 'bookDetail/bookDetail.dart';
+import '../../httpClient/config.dart';
+import '../../model/bookModel.dart';
+import '../../model/categoryModel.dart';
+import '../../themes/theme.dart';
+import '../../widgets/bookCard.dart';
+import '../bookDetail/bookDetail.dart';
 
 class FavouriteBooks extends StatefulWidget {
   FavouriteBooks({Key? key, this.title}) : super(key: key);
@@ -98,6 +98,7 @@ class _FavouriteBooksState extends State<FavouriteBooks> {
         ));
 
     List<Book> bookList = [];
+    print(Config.HEADER);
     await http
         .get(Uri.parse(Config.HTTP_CONFIG["baseURL"]! + "/users/lovedbook"),
         headers: Config.HEADER)
@@ -108,43 +109,6 @@ class _FavouriteBooksState extends State<FavouriteBooks> {
 
 
 
-  Widget _appBar() {
-    return Container(
-        decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/headerBackg.png"),
-              fit: BoxFit.fill,
-            )),
-        padding: EdgeInsets.only(top: 5, left: 20),
-        child: Column(children: <Widget>[
-          Row(
-            children: <Widget>[
-              Container(
-                  decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      image: DecorationImage(
-                        image: AssetImage("assets/bookicon2.png"),
-                        fit: BoxFit.contain,
-                      )),
-                  height: 50,
-                  width: 50),
-              Center(
-                // padding: const EdgeInsets.only(left: 80, bottom: 10),
-                child: Text(
-                  'DouBH',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontFamily: 'VL_Hapna',
-                    fontSize: 27,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white70,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ]));
-  }
   late Future<List<Book>> bookList = getBooks(cateSearch,moneySearch);
   loadPage(){
     setState(() {

@@ -20,7 +20,7 @@ class EditPasswordController extends GetxController{
   void onEditPassProgressing(var data, BuildContext context){
 
       if (data.statusCode == 200) {
-        Get.to(() =>MyProfileScreen());
+        Navigator.pop(context);
         FlushBar.showFlushBar(
           context,
           null,
@@ -34,7 +34,7 @@ class EditPasswordController extends GetxController{
         FlushBar.showFlushBar(
           context,
           null,
-          "${data.toString()}Mật khẩu chưa chính xác hoặc chưa trùng khớp.\nVui lòng nhập lại!",
+          "Bạn hãy nhập đúng thông tin mật khẩu và đảm bảo độ dài mật khẩu trên 6 kí tự.\nVui lòng nhập lại!",
           Icon(
             Icons.error_outline,
             color: Colors.red,

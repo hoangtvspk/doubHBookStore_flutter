@@ -21,10 +21,12 @@ import '../../pages/profile/myProfile/myProfileController.dart';
 class CheckoutController extends GetxController {
   final box = GetStorage();
   final prefs = SharedPreferences.getInstance();
-  final _controller = Get.put(AddressController());
-  final _controller1 = Get.put(MyProfileController());
+  final _controllerAddress = Get.put(AddressController());
+  final _controllerProfile = Get.put(MyProfileController());
   int selected = -1;
   int existedAddress = 0;
+  int existedPhoneNumber = 0;
+
   late Order orderSuccess;
   RxBool isEmpty = false.obs;
   RxString address = "".obs;
@@ -35,8 +37,8 @@ class CheckoutController extends GetxController {
 
   Future<void> getCheckoutInfo(BuildContext context) async {
     print("default address");
-    MyInfoModel myInfoModel = await _controller1.getBooks(context);
-    List<Address> addresses = await _controller.getAddress(context);
+    MyInfoModel myInfoModel = await _controllerProfile.getBooks(context);
+    List<Address> addresses = await _controllerAddress.getAddress(context);
     String strAddress = "";
     if (addresses.length > 0) {
       existedAddress = 1;
@@ -47,10 +49,16 @@ class CheckoutController extends GetxController {
           addresses[0].districtTown +
           ", " +
           addresses[0].provinceCity;
-    }else
+    } else
       existedAddress = 0;
     String strEmail = myInfoModel.email;
-    String strPhone = myInfoModel.phone;
+    String strPhone = "";
+    if (myInfoModel.phone != null) {
+      existedPhoneNumber = 0;
+      strPhone = myInfoModel.phone;
+    } else {
+      existedPhoneNumber = 1;
+    }
     String strFirstName = myInfoModel.lastName;
     String strLastName = myInfoModel.firstName;
 
@@ -72,6 +80,7 @@ class CheckoutController extends GetxController {
     bool? isAuthh = await prefs.getBool("isAuth");
     print("1");
     scaffoldKey.currentState?.showSnackBar(new SnackBar(
+      duration: new Duration(seconds: 5),
       content: new Row(
         children: <Widget>[
           new CircularProgressIndicator(),
@@ -110,6 +119,7 @@ class CheckoutController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     bool? isAuthh = await prefs.getBool("isAuth");
     scaffoldKey.currentState?.showSnackBar(new SnackBar(
+      duration: new Duration(seconds: 7),
       content: new Row(
         children: <Widget>[
           new CircularProgressIndicator(),
@@ -143,9 +153,6 @@ class CheckoutController extends GetxController {
 
   onProgressingOrder(http.Response data) {
     Map<String, dynamic> response = json.decode(utf8.decode(data.bodyBytes));
-    // JsonEncoder encoder = new JsonEncoder.withIndent('  ');
-    // String prettyprint = encoder.convert(response);
-    // print(prettyprint);
 
     List<OrderItem> items = [];
     for (var e in response["orderItems"]) {
@@ -199,7 +206,7 @@ class CheckoutController extends GetxController {
         districtTown: responseJson["districtTown"],
         neighborhoodVillage: responseJson["neighborhoodVillage"],
         address: responseJson["address"]);
-    existedAddress =1;
+    existedAddress = 1;
     String strAddress = address1.address +
         ", " +
         address1.neighborhoodVillage +

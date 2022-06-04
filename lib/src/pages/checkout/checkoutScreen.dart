@@ -86,7 +86,18 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                   child: RaisedButton(
                     onPressed: () async {
-                      if (_controllerCheckOut.existedAddress == 0) {
+                      if (_controllerCheckOut.existedPhoneNumber == 0) {
+                        FlushBar.showFlushBar(
+                          context,
+                          null,
+                          "Bạn hãy cập nhật số điện thoại trong thông tin cá nhân!",
+                          Icon(
+                            Icons.error_outline,
+                            color: Colors.red,
+                          ),
+                        );
+                      }
+                      else if (_controllerCheckOut.existedAddress == 0) {
                         FlushBar.showFlushBar(
                           context,
                           null,
