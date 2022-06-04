@@ -1,8 +1,7 @@
-import 'package:doubhBookstore_flutter_springboot/src/checkout/checkoutController.dart';
-import 'package:doubhBookstore_flutter_springboot/src/checkout/editPlaceOrderScreen.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/checkout/checkoutController.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/addMyAddress/addMyAddressScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/cart/cartControllerr.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/orderPlaceScreen.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/checkout/orderPlaceScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_braintree/flutter_braintree.dart';
@@ -10,14 +9,13 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:money_formatter/money_formatter.dart';
-
-import '../model/cartItem.dart';
-import '../pages/address/addressController.dart';
-import '../pages/homepaypal/homePaypal.dart';
-import '../pages/mainLayout.dart';
-import '../themes/theme.dart';
-import '../utils/CustomUtils.dart';
-import '../widgets/flushBar.dart';
+import '../../model/cartItem.dart';
+import '../../pages/address/addressController.dart';
+import '../../pages/mainLayout.dart';
+import '../../themes/theme.dart';
+import '../../utils/CustomUtils.dart';
+import '../../widgets/flushBar.dart';
+import 'editPlaceOrderScreen.dart';
 
 class CheckOutPage extends StatefulWidget {
   @override
@@ -26,9 +24,9 @@ class CheckOutPage extends StatefulWidget {
 
 class _CheckOutPageState extends State<CheckOutPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
-  final _controller = Get.put(CheckoutController());
-  final _controller1 = Get.put(CartController());
-  final _controller2 = Get.put(AddressController());
+  final _controllerCheckOut = Get.put(CheckoutController());
+  final _controllerCart = Get.put(CartController());
+  final _controllerAddress = Get.put(AddressController());
   var formatter = NumberFormat('#,###,000');
   final box = GetStorage();
   String _selectedPayment = 'paypal';
@@ -43,10 +41,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
         ],
       ),
     ));
-    // _handleSignIn()
-    //     .whenComplete(() =>
-    //     Navigator.of(context).pushNamed("/Home")
-    // );
   }
 
   @override
@@ -78,7 +72,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   child: ListView(
                     children: <Widget>[
                       selectedAddressSection(),
-                      // standardDelivery(),
                       checkoutItem(),
                       priceSection(),
                       typeOfPayment(),
@@ -93,7 +86,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                   child: RaisedButton(
                     onPressed: () async {
-                      if (_controller.existedAddress == 0) {
+                      if (_controllerCheckOut.existedAddress == 0) {
                         FlushBar.showFlushBar(
                           context,
                           null,
@@ -113,9 +106,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                 amount:
                                     (box.read("totalPrice") / 23000).toString(),
                                 //ten user
-                                displayName: _controller.lastName.toString() +
+                                displayName: _controllerCheckOut.lastName.toString() +
                                     " " +
-                                    _controller.firstName.toString(),
+                                    _controllerCheckOut.firstName.toString(),
                               ),
                               cardEnabled: true);
                           BraintreeDropInResult? result =
@@ -123,14 +116,14 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           if (result != null) {
                             print(result.paymentMethodNonce.description);
                             print(result.paymentMethodNonce.nonce);
-                            await _controller.orderByPaypal(
+                            await _controllerCheckOut.orderByPaypal(
                                 context, _scaffoldKey);
                           }
 
                           // Navigator.of(context).push(new MaterialPageRoute(
                           //     builder: (context) => HomePaypal()));
                         } else {
-                          await _controller.order(context, _scaffoldKey);
+                          await _controllerCheckOut.order(context, _scaffoldKey);
                         }
                         Navigator.of(context)
                             .push(new MaterialPageRoute(
@@ -260,9 +253,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Obx(() => Text(
-                          _controller.lastName.string +
+                          _controllerCheckOut.lastName.string +
                               " " +
-                              _controller.firstName.string,
+                              _controllerCheckOut.firstName.string,
                           style: CustomTextStyle.textFormFieldSemiBold
                               .copyWith(fontSize: 14),
                         )),
@@ -282,9 +275,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   ],
                 ),
                 Obx(() => createAddressText(
-                    "Địa chỉ: " + _controller.address.string, 16)),
+                    "Địa chỉ: " + _controllerCheckOut.address.string, 16)),
                 Obx(() =>
-                    createAddressText("Email: " + _controller.email.string, 6)),
+                    createAddressText("Email: " + _controllerCheckOut.email.string, 6)),
                 SizedBox(
                   height: 6,
                 ),
@@ -295,7 +288,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             style: CustomTextStyle.textFormFieldMedium.copyWith(
                                 fontSize: 12, color: Colors.grey.shade800)),
                         TextSpan(
-                            text: _controller.phoneNumber.string,
+                            text: _controllerCheckOut.phoneNumber.string,
                             style: CustomTextStyle.textFormFieldBold
                                 .copyWith(color: Colors.black, fontSize: 12)),
                       ]),
@@ -335,8 +328,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
           ),
           FlatButton(
             onPressed: () async {
-              await _controller2.loadAddressForChoose(
-                  context, _controller.selected);
+              await _controllerAddress.loadAddressForChoose(
+                  context, _controllerCheckOut.selected);
               Navigator.push(
                       context,
                       new MaterialPageRoute(
@@ -367,13 +360,13 @@ class _CheckOutPageState extends State<CheckOutPage> {
           ),
           FlatButton(
             onPressed: () async {
-              await _controller2.loadAddressForChoose(
-                  context, _controller.selected);
+              await _controllerAddress.loadAddressForChoose(
+                  context, _controllerCheckOut.selected);
               await Navigator.push(
                   context,
                   new MaterialPageRoute(
                       builder: (context) => AddMyAddressScreen())).then((val) {
-                _controller.updateUIAddress(_controller.selected);
+                _controllerCheckOut.updateUIAddress(_controllerCheckOut.selected);
                 setState(() {});
               });
             },
@@ -452,7 +445,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
               border: Border.all(color: Colors.grey.shade200)),
           padding: EdgeInsets.only(left: 12, top: 8, right: 12, bottom: 8),
           child: FutureBuilder(
-              future: _controller1.getCartItems(context),
+              future: _controllerCart.getCartItems(context),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.data == null) {
                   return Container(child: Center(child: Icon(Icons.error)));

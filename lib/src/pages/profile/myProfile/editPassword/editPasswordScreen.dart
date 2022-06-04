@@ -1,9 +1,6 @@
-import 'package:doubhBookstore_flutter_springboot/src/model/myInfoModel.dart';
-import 'package:doubhBookstore_flutter_springboot/src/model/myInfoUpdate.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-
 import '../../../../themes/light_color.dart';
 import '../../../../widgets/input_text.dart';
 import '../../components/profile_menu.dart';
@@ -11,7 +8,6 @@ import 'editPasswordController.dart';
 
 class EditPasswordScreen extends StatefulWidget {
   EditPasswordScreen({Key? key, this.title}) : super(key: key);
-
   final String? title;
 
   @override
@@ -19,8 +15,7 @@ class EditPasswordScreen extends StatefulWidget {
 }
 
 class _EditPasswordScreenState extends State<EditPasswordScreen> {
-  final _controller = Get.put(EditPasswordController());
- // final _getProfileController = Get.put(EditMyProfileController());
+  final _controllerEditPassword = Get.put(EditPasswordController());
   final TextEditingController newPassswordController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController newPasssword2Controller = TextEditingController();
@@ -104,7 +99,7 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                     String newPassword = newPassswordController.text;
                     String password = passwordController.text;
                     String newPassword2 = newPasssword2Controller.text;
-                    _controller.editMyPassword(password,newPassword,newPassword2, context);
+                    _controllerEditPassword.editMyPassword(password,newPassword,newPassword2, context);
                   },
                   style: ElevatedButton.styleFrom(
                     primary: Colors.transparent,

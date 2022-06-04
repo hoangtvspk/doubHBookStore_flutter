@@ -1,23 +1,12 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:doubhBookstore_flutter_springboot/src/httpClient/config.dart';
-import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
-import 'package:doubhBookstore_flutter_springboot/src/model/userLoginInfoModel.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/home/homeScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/login/signInController.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/signUp.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/register/signUp.dart';
 import 'package:doubhBookstore_flutter_springboot/src/themes/theme.dart';
-import 'package:doubhBookstore_flutter_springboot/src/widgets/flushBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../themes/light_color.dart';
 import '../../widgets/input_text.dart';
-import '../mainLayout.dart';
 
 class SignInPage extends StatefulWidget {
   SignInPage() : super();
@@ -27,7 +16,7 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInState extends State<SignInPage> {
-  final _controller = Get.put(LoginController());
+  final _controllerLogin = Get.put(LoginController());
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -291,7 +280,7 @@ class _SignInState extends State<SignInPage> {
                           onPressed: () async {
                             String password = passwordController.text;
                             String email = emailController.text;
-                            _controller.signIn(email, password, context,_formKey);
+                            _controllerLogin.signIn(email, password, context,_formKey);
                             print(Uri.base);
                           },
                           style: ElevatedButton.styleFrom(

@@ -1,19 +1,11 @@
 import 'dart:convert';
-
 import 'package:doubhBookstore_flutter_springboot/src/model/order.dart';
-import 'package:doubhBookstore_flutter_springboot/src/model/request/cartItemRequest.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/cart/emptyCartScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:form_data/form_data.dart' as formdata;
-
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:intl/intl.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
 import '../../httpClient/config.dart';
 import '../../model/bookModel.dart';
 import '../../model/categoryModel.dart';
@@ -23,7 +15,6 @@ class OrderController extends GetxController {
   final box = GetStorage();
   final prefs = SharedPreferences.getInstance();
   RxBool isEmpty = false.obs;
-  // late Order _order;
 
   Future<List<Order>> getUserOrder(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();

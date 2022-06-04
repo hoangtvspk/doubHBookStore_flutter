@@ -1,24 +1,17 @@
 import 'dart:convert';
-
 import 'package:doubhBookstore_flutter_springboot/src/model/request/cartItemRequest.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/cart/emptyCartScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:form_data/form_data.dart' as formdata;
-
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:intl/intl.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../httpClient/config.dart';
 import '../../model/bookModel.dart';
 import '../../model/cartItem.dart';
 import '../../model/categoryModel.dart';
 import '../../model/imageModel.dart';
 import 'package:http/http.dart' as http;
-
 import '../../model/reviewModel.dart';
 import '../../model/userModel.dart';
 import '../../widgets/flushBar.dart';
@@ -52,8 +45,6 @@ class CartController extends GetxController {
     dynamic userInfo = await box.read("userInfo");
     List<CartItemRequest> cartItemRequests = await [];
     List<CartItem> list = await [];
-    print("+");
-    //Chuyen doi ve json thong qua cartItem
     for (var e in await cartInfo) {
       cartItemRequests
           .add(CartItemRequest(id: e["id"], quantity: e["quantity"]));
@@ -76,13 +67,6 @@ class CartController extends GetxController {
             color: Colors.red,
           ),
         );
-        // Get.snackbar(
-        //     "Thông báo",
-        //     "Số lượng sách " +
-        //         book.name +
-        //         " không vượt quá " +
-        //         book.quantity.toString() +
-        //         " cuốn");
         return;
       }
     }
@@ -107,8 +91,6 @@ class CartController extends GetxController {
     dynamic userInfo = await box.read("userInfo");
     List<CartItemRequest> cartItemRequests = await [];
     List<CartItem> list = await [];
-    print("+");
-    //Chuyen doi ve json thong qua cartItem
     for (var e in await cartInfo) {
       cartItemRequests
           .add(CartItemRequest(id: e["id"], quantity: e["quantity"]));
@@ -164,8 +146,6 @@ class CartController extends GetxController {
 
   void onProgressing(http.Response data, cartItems, int flag) {
     List<dynamic> responseJson = json.decode(utf8.decode(data.bodyBytes));
-    print(responseJson);
-    // box.write("cartInfo", responseJson);
     for (var e in responseJson) {
       List<ImageModel> imageList = [];
       imageList.add(ImageModel(
@@ -223,15 +203,11 @@ class CartController extends GetxController {
     }
     var json =
         await jsonEncode(cartItemRequests.map((e) => e.toJson()).toList());
-    // print(json);
-
     List<CartItem> list = await [];
     final prefs = await SharedPreferences.getInstance();
     bool? isAuthh = await prefs.getBool("isAuth");
     if (isAuthh == true) {
       dynamic userInfo = await (box.read("userInfo"));
-      // UserLoginInfoModel userInfo = new UserLoginInfoModel(firstName: e["firstName"], lastName: e["lastName"], email: e["email"], token: e["token"], userRole: e["userRole"]);
-
       await http
           .post(
               Uri.parse(
@@ -251,11 +227,7 @@ class CartController extends GetxController {
               body: json)
           .then((value) => onProgressing(value, list, 0));
     }
-
     await saveToBox(list);
-    // if(list.length == 0){
-    //   Get.to(Get.to(() =>EmptyShoppingCartScreen()));
-    // }
     return list;
   }
 
@@ -273,13 +245,9 @@ class CartController extends GetxController {
       Book book = item.book;
       totalPrice += (item.quantity * book.price * (1 - book.sale * 0.01));
     }
-
     box.write("cartInfo", e);
     box.write("totalItem", list.length);
     box.write("totalPrice", totalPrice);
-    // print(box.read("userInfo"));
-    // var json = jsonEncode(cartItemRequests.map((e) => e.toJson()).toList());
-    // box.write("cartInfo", json);
   }
 
   onAddtoCart(BuildContext context) {
@@ -296,7 +264,6 @@ class CartController extends GetxController {
 
   Future addToCart(int id, BuildContext context, RxInt count) async {
     print("Add to cart");
-    dynamic cartInfo = await box.read("cartInfo");
     dynamic userInfo = await box.read("userInfo");
     List<CartItem> list = await [];
 

@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:doubhBookstore_flutter_springboot/src/checkout/checkoutScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/addressController.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/editMyAddress/editMyAddressScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart';
@@ -140,11 +138,6 @@ class _AddressScreenState extends State<AddressScreen> {
                     icon: new Icon(Icons.close, size: 15),
                     color: Colors.white,
                   ),
-                  // child: Icon(
-                  //   Icons.close,
-                  //   color: Colors.white,
-                  //   size: 20,
-                  // ),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(4)),
                       color: Colors.grey.withOpacity(0.3)),
@@ -162,11 +155,6 @@ class _AddressScreenState extends State<AddressScreen> {
                     icon: new Icon(Icons.edit, size: 15),
                     color: Colors.white,
                   ),
-                  // child: Icon(
-                  //   Icons.close,
-                  //   color: Colors.white,
-                  //   size: 20,
-                  // ),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(4)),
                       color: Colors.grey.withOpacity(0.3)),
@@ -181,8 +169,6 @@ class _AddressScreenState extends State<AddressScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // checkEmpty();
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Địa chỉ giao hàng"),

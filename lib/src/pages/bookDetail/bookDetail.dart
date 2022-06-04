@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/reviewModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/bookDetail/bookDetailController.dart';
@@ -12,7 +11,6 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-
 import '../../httpClient/config.dart';
 import '../../model/bookModel.dart';
 import '../../themes/light_color.dart';
@@ -39,64 +37,9 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
   List<BoxShadow> shadow = [
     BoxShadow(color: Colors.black12, offset: Offset(0, 3), blurRadius: 6)
   ];
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   controller =
-  //       AnimationController(vsync: this, duration: Duration(milliseconds: 300));
-  //   animation = Tween<double>(begin: 0, end: 1).animate(
-  //       CurvedAnimation(parent: controller, curve: Curves.easeInToLinear));
-  //   controller.forward();
-  // }
-  //
-  // @override
-  // void dispose() {
-  //   controller.dispose();
-  //   super.dispose();
-  // }
   void cancelLoading() async {
     context.loaderOverlay.hide();
   }
-
-  void onProgressing(var data, bookList) {
-    // List<dynamic> responseJson = json.decode(utf8.decode(data.bodyBytes));
-    // for (var e in responseJson) {
-    //   Book book = new Book();
-    //   book.id = e["id"];
-    //   book.name = e["nameBook"];
-    //   book.author = e["author"];
-    //   book.category = e["category"]["nameCategory"];
-    //   book.image = e["bookImages"][0]["image"].toString();
-    //   book.price = e["price"];
-    //   bookList.add(book);
-    // }
-  }
-
-  Future<Book> getBooks() async {
-    context.loaderOverlay.show(
-        widget: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircularProgressIndicator(),
-          SizedBox(height: 12),
-          Text(
-            'Đang tải dữ liệu...',
-          ),
-        ],
-      ),
-    ));
-
-    Book? book;
-    await http
-        .get(
-            Uri.parse(Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["book"]!))
-        .then((value) => onProgressing(value, book))
-        .whenComplete(() => cancelLoading());
-    return book!;
-  }
-
   final List<String> bannerList = [
     "https://www.nxbtre.com.vn/Images/Book/nxbtre_full_02162019_031655.jpg",
     "https://www.teahub.io/photos/full/55-550023_wallpaper-book-garland-light-darkness-reading-dark-books.jpg",

@@ -1,5 +1,3 @@
-import 'package:doubhBookstore_flutter_springboot/src/model/myInfoModel.dart';
-import 'package:doubhBookstore_flutter_springboot/src/model/myInfoUpdate.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -20,7 +18,6 @@ class EditMyAddressScreen extends StatefulWidget {
 
 class _EditMyAddressScreenState extends State<EditMyAddressScreen> {
   final _controller = Get.put(EditMyProfileController());
- // final _getProfileController = Get.put(EditMyProfileController());
   final TextEditingController ProvinceController = TextEditingController();
   final TextEditingController districtTownController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
@@ -40,7 +37,6 @@ class _EditMyAddressScreenState extends State<EditMyAddressScreen> {
                     children: [
                       InputTextWidget(
                           labelText: "Tỉnh/Thành Phố",
-                          // initialValue: myInfoModel.firstName.toString(),
                           controller: ProvinceController..text=agrs.address.provinceCity.toString(),
                           icon: Icons.public,
                           obscureText: false,
@@ -94,7 +90,6 @@ class _EditMyAddressScreenState extends State<EditMyAddressScreen> {
               onPressed: () {
                 Get.back();
               },
-              //tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
             );
           },
         ),
@@ -115,7 +110,6 @@ class _EditMyAddressScreenState extends State<EditMyAddressScreen> {
                     String district = districtTownController.text;
                     String neiborhood = neighborhoodVillageController.text;
                     String address = addressController.text;
-                    //Address myAddress = new Address(id: agrs.address.id, provinceCity: province, districtTown: district, neighborhoodVillage: neiborhood, address: address)
                     _controller.editMyProfile(agrs.address.id,province,district,neiborhood,address, context);
                   },
                   style: ElevatedButton.styleFrom(

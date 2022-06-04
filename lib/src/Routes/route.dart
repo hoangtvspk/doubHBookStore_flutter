@@ -1,4 +1,4 @@
-import 'package:doubhBookstore_flutter_springboot/src/pages/Search.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/books/Search.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/addMyAddress/addMyAddressScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/addressScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/myOrders/orderDetailScreen.dart';
@@ -8,8 +8,7 @@ import 'package:doubhBookstore_flutter_springboot/src/pages/register/active.dart
 import 'package:doubhBookstore_flutter_springboot/src/pages/bookDetail/bookDetail.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/home/homeScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/mainLayout.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/signUp.dart';
-import 'package:flutter/material.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/register/signUp.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
 import '../pages/address/editMyAddress/editMyAddressScreen.dart';

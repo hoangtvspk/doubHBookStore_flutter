@@ -1,17 +1,13 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../httpClient/config.dart';
 import '../../model/bookModel.dart';
 import '../../model/categoryModel.dart';
 import '../../model/imageModel.dart';
 import 'package:http/http.dart' as http;
-
 import '../../model/reviewModel.dart';
 import '../../model/userModel.dart';
 class HomeController extends GetxController{
@@ -85,19 +81,6 @@ class HomeController extends GetxController{
         Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["bestSellingBook"]!))
         .then((value) => onProgressing(value, bookList))
         .whenComplete(() => cancelLoading(context));
-    // List<dynamic> responseJson = json.decode(utf8.decode(data.bodyBytes));
-    // // for (var e in responseJson) {
-    // //   Book book = new Book(id:e["id"],name: e["nameBook"],author:e["author"] ,category: e["category"]["nameCategory"],image: e["bookImages"][0]["image"].toString(),price:e["price"] ,sale: e["discount"],quantity: e["quantity"],isSelected: false );
-    // //   // book.id = e["id"];
-    // //   // book.name = e["nameBook"];
-    // //   // book.author = e["author"];
-    // //   // book.category = e["category"]["nameCategory"];
-    // //   // book.image = e["bookImages"][0]["image"].toString();
-    // //   // book.price = e["price"];
-    // //   // book.sale = e["discount"];
-    // //   bookList.add(book);
-    // }
-
     return bookList;
   }
 

@@ -1,15 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-// import 'package:form_data/form_data.dart' as formdata;
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 import '../../httpClient/config.dart';
 import '../../model/categoryModel.dart';
 import '../../model/imageModel.dart';
@@ -79,18 +74,6 @@ class BookDetailController extends GetxController {
         .then((value) => onProgressing(value));
     isChangeReview=1;
   }
-
-  // Future<Book> getBookByID(int bookId) async {
-  //   // dynamic userInfo = await box.read("userInfo");
-  //   await http.get(
-  //       Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
-  //           Config.APP_API["bookDetail"]! +
-  //           "$bookId"),
-  //       headers: <String, String>{
-  //         "Content-Type": "application/json",
-  //       }).then((value) => onProgressing(value, book));
-  //   return book;
-  // }
 
   void onProgressing(http.Response data) {
     print(data.body);

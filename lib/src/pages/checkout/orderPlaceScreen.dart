@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart';
 
-import 'myOrders/orderSuccess.dart';
+import '../myOrders/orderSuccess.dart';
 
 class OrderPlacePage extends StatefulWidget {
   @override

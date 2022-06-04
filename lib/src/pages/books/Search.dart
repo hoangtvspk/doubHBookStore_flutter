@@ -1,25 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:doubhBookstore_flutter_springboot/src/model/imageModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/reviewModel.dart';
-import 'package:doubhBookstore_flutter_springboot/src/model/searchModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/userModel.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
-
 import 'package:http/http.dart' as http;
 import 'package:loader_overlay/loader_overlay.dart';
-
-import '../httpClient/config.dart';
-import '../model/bookModel.dart';
-
-import '../model/categoryModel.dart';
-import '../themes/light_color.dart';
-import '../themes/theme.dart';
-import '../widgets/bookCard.dart';
-import 'bookDetail/bookDetail.dart';
+import '../../httpClient/config.dart';
+import '../../model/bookModel.dart';
+import '../../model/categoryModel.dart';
+import '../../themes/light_color.dart';
+import '../../themes/theme.dart';
+import '../../widgets/bookCard.dart';
+import '../bookDetail/bookDetail.dart';
 
 class SearchPage extends StatefulWidget {
   SearchPage({Key? key, this.SearhKey}) : super(key: key);
@@ -43,7 +36,6 @@ class _SearchPageState extends State<SearchPage> {
     context.loaderOverlay.hide();
   }
   void onProgressing(var data, bookList){
-    final box = GetStorage();
     print(data.body);
     List<dynamic> responseJson = json.decode(utf8.decode(data.bodyBytes));
     for (var e in responseJson) {
@@ -67,13 +59,6 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<List<Book>> getBooks() async {
-
-    Map<String, String>  search = {
-      "idCategory":"",
-      "keyWord":searchController.text,
-      "minPrice": "",
-      "maxPrice": ""
-    };
     String search2 = json.encode({
       "idCategory":"",
       "keyWord":searchController.text,
@@ -88,44 +73,6 @@ class _SearchPageState extends State<SearchPage> {
         .then((value) => onProgressing(value, bookList))
         .whenComplete(() => cancelLoading());
     return bookList;
-  }
-
-  Widget _appBar() {
-    return Container(
-        decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/headerBackg.png"),
-              fit: BoxFit.fill,
-            )),
-        padding: EdgeInsets.only(top: 35, left: 40),
-        child: Column(children: <Widget>[
-          Row(
-            children: <Widget>[
-              Container(
-                  decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      image: DecorationImage(
-                        image: AssetImage("assets/bookicon2.png"),
-                        fit: BoxFit.contain,
-                      )),
-                  height: 50,
-                  width: 50),
-              Center(
-                // padding: const EdgeInsets.only(left: 80, bottom: 10),
-                child: Text(
-                  'Tìm kiếm',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontFamily: 'VL_Hapna',
-                    fontSize: 27,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white70,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ]));
   }
 
   Widget _search() {
@@ -204,99 +151,8 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
   }
-
   String categoryValue = 'Tất cả';
   String priceValue = 'Tất cả';
-
-  Widget _bookCategories() {
-    return Container(
-        color: Colors.white,
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          dragStartBehavior: DragStartBehavior.start,
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 20),
-                child: Text(
-                  "Thể loại:",
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.blueGrey),
-                ),
-              ),
-              Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: DropdownButton<String>(
-                    value: categoryValue,
-                    style:
-                    const TextStyle(color: Colors.blueGrey, fontSize: 12),
-                    underline: Container(
-                      height: 2,
-                      color: Colors.deepPurpleAccent,
-                    ),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        categoryValue = newValue!;
-                      });
-                    },
-                    items: <String>[
-                      'Tất cả',
-                      'Tiểu Thuyết',
-                      'Trinh Thám',
-                      'Cổ tích',
-                      'Truyện Dài'
-                    ].map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  )),
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Text(
-                  "Giá:",
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.blueGrey),
-                ),
-              ),
-              Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: DropdownButton<String>(
-                    value: priceValue,
-                    style:
-                    const TextStyle(color: Colors.blueGrey, fontSize: 12),
-                    underline: Container(
-                      height: 2,
-                      color: Colors.deepPurpleAccent,
-                    ),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        priceValue = newValue!;
-                      });
-                    },
-                    items: <String>[
-                      'Tất cả',
-                      '10.000-50.000',
-                      '50.000-70.000',
-                      '100.000-500.000'
-                    ].map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  ))
-            ],
-          ),
-        ));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

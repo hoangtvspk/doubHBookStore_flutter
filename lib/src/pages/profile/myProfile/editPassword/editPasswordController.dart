@@ -1,20 +1,13 @@
 import 'dart:convert';
-
-import 'package:doubhBookstore_flutter_springboot/src/model/myInfoUpdate.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/profile/myProfile/editMyProfile/editMyProfileScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/profile/myProfile/myProfileScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-
 import '../../../../httpClient/config.dart';
-import '../../../../model/imageModel.dart';
-import '../../../../model/myInfoModel.dart';
 import '../../../../model/userLoginInfoModel.dart';
 import 'package:http/http.dart' as http;
-
 import '../../../../widgets/flushBar.dart';
 
 class EditPasswordController extends GetxController{

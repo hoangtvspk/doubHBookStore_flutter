@@ -4,8 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../Search.dart';
+import '../../books/Search.dart';
 import '../../login/signInScreen.dart';
 import '../../myOrders/orderScreen.dart';
 import '../myProfile/myProfileScreen.dart';
@@ -35,14 +34,10 @@ class _BodyState extends State<Body> {
     });
   }
   void signOut() async{
-    // Navigator.pushNamed(context, "/signin");
     Get.to(() =>SignInPage());
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isAuth', false);
     box.remove("userInfo");
-    // box.remove("cartInfo");
-    // // box.remove("totalPrice");
-    // box.remove("totalItem");
   }
   @override
   Widget build(BuildContext context){

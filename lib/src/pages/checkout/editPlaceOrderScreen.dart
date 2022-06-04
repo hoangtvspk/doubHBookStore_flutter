@@ -1,9 +1,5 @@
 import 'dart:async';
-
-import 'package:doubhBookstore_flutter_springboot/src/checkout/checkoutController.dart';
-import 'package:doubhBookstore_flutter_springboot/src/checkout/checkoutScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/addressController.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/address/editMyAddress/editMyAddressScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomUtils.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +7,9 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'checkoutController.dart';
 
-import '../model/address.dart';
+
 
 class EditPlaceOrderScreen extends StatefulWidget {
   const EditPlaceOrderScreen({Key? key}) : super(key: key);
@@ -27,7 +24,6 @@ class _EditPlaceOrderScreenState extends State<EditPlaceOrderScreen> {
   final box = GetStorage();
   var formatter = NumberFormat('#,###,000');
   final prefs = SharedPreferences.getInstance();
-  // int selected = -1;
 
   @override
   void initState() {
@@ -97,8 +93,6 @@ class _EditPlaceOrderScreenState extends State<EditPlaceOrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // checkEmpty();
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Địa chỉ giao hàng"),

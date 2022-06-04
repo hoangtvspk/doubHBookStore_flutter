@@ -3,10 +3,8 @@ import 'package:doubhBookstore_flutter_springboot/src/model/myInfoUpdate.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-
 import '../../../../themes/light_color.dart';
 import '../../../../widgets/input_text.dart';
-import '../../components/profile_menu.dart';
 import 'editMyProfileController.dart';
 
 class EditMyProfileScreen extends StatefulWidget {
@@ -19,8 +17,7 @@ class EditMyProfileScreen extends StatefulWidget {
 }
 
 class _EditMyProfileScreenState extends State<EditMyProfileScreen> {
-  final _controller = Get.put(EditMyProfileController());
- // final _getProfileController = Get.put(EditMyProfileController());
+  final _controllerEditProfile = Get.put(EditMyProfileController());
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
@@ -30,7 +27,7 @@ class _EditMyProfileScreenState extends State<EditMyProfileScreen> {
     return SingleChildScrollView(
 
         child: FutureBuilder(
-            future: _controller.getMyProfile(context),
+            future: _controllerEditProfile.getMyProfile(context),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               MyInfoModel myInfoModel = snapshot.data;
               if (snapshot.data == null) {
@@ -113,8 +110,7 @@ class _EditMyProfileScreenState extends State<EditMyProfileScreen> {
                     String firstName = firstNameController.text;
                     String lastName = lastNameController.text;
                     String phone = phoneController.text;
-                    MyInfoUpdateModel myInfoUpdate = new MyInfoUpdateModel(firstName: firstName, lastName: lastName, phone: phone);
-                    _controller.editMyProfile(lastName,firstName,phone, context);
+                    _controllerEditProfile.editMyProfile(lastName,firstName,phone, context);
                   },
                   style: ElevatedButton.styleFrom(
                     primary: Colors.transparent,

@@ -1,8 +1,4 @@
-import 'package:doubhBookstore_flutter_springboot/src/checkout/checkoutController.dart';
-import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
-import 'package:doubhBookstore_flutter_springboot/src/checkout/checkoutScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/order.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/home/homeScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/myOrders/orderController.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/myOrders/orderDetailScreen.dart';
 import 'package:flutter/material.dart';
@@ -10,11 +6,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../model/cartItem.dart';
-import '../../themes/light_color.dart';
-import '../../themes/theme.dart';
-import '../../widgets/title_text.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomUtils.dart';
 
@@ -27,9 +19,7 @@ class OrderScreen extends StatefulWidget {
 
 }
 class _OrderScreenState extends State<OrderScreen> {
-  final _controller = Get.put(OrderController());
-  final _controller1 = Get.put(CheckoutController());
-
+  final _controllerOrder = Get.put(OrderController());
   final box = GetStorage();
   var formatter = NumberFormat('#,###,000');
   final prefs = SharedPreferences.getInstance();
@@ -324,7 +314,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_controller.isEmpty == false) {
+    if (_controllerOrder.isEmpty == false) {
       return Scaffold(
         appBar: AppBar(
           title: Text("Lịch sử đơn hàng"),
@@ -336,7 +326,7 @@ class _OrderScreenState extends State<OrderScreen> {
             return ListView(
               children: <Widget>[
                 createOrderList(
-                        () async => await _controller.getUserOrder(context)),
+                        () async => await _controllerOrder.getUserOrder(context)),
               ],
             );
           },

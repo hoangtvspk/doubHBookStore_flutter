@@ -1,19 +1,11 @@
-import 'package:doubhBookstore_flutter_springboot/src/checkout/checkoutController.dart';
-import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
-import 'package:doubhBookstore_flutter_springboot/src/checkout/checkoutScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/order.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/home/homeScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/myOrders/orderController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../model/cartItem.dart';
-import '../../themes/light_color.dart';
-import '../../themes/theme.dart';
-import '../../widgets/title_text.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomUtils.dart';
 
@@ -351,7 +343,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
   @override
   void initState() {
-    //print("before state");
     super.initState();
   }
 
@@ -432,6 +423,5 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 class OrderDetailsArguments {
   final Order order;
 
-  // static const Book bookDef = const Book(id: 1,name: "g",category: "",price: 1,sale:20,quantity: 1,isSelected:  true,image: "g",author: "gg");
   OrderDetailsArguments({required this.order});
 }

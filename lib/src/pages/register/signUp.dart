@@ -8,11 +8,11 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:loader_overlay/loader_overlay.dart';
 
-import '../httpClient/config.dart';
-import '../themes/light_color.dart';
-import '../themes/theme.dart';
-import '../widgets/flushBar.dart';
-import '../widgets/input_text.dart';
+import '../../httpClient/config.dart';
+import '../../themes/light_color.dart';
+import '../../themes/theme.dart';
+import '../../widgets/flushBar.dart';
+import '../../widgets/input_text.dart';
 
 class SignUpPage extends StatefulWidget {
   SignUpPage() : super();
@@ -29,9 +29,6 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController cfpasswordController = TextEditingController();
   bool _isLoading = false;
-  bool _isLoaderVisible = false;
-
-  Timer? _timer;
 
   void cancelLoading() async {
     await EasyLoading.dismiss();
@@ -111,10 +108,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final double r = (195 / 360); //  rapport for web test(304 / 540);
-    final coverHeight = screenWidth * r;
-
     Widget _widgetList() {
       return  Container(
           margin: EdgeInsets.only(top: 110, left: 10, right: 10, bottom: 20),

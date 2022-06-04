@@ -1,155 +1,25 @@
-import 'package:doubhBookstore_flutter_springboot/src/checkout/checkoutController.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
-import 'package:doubhBookstore_flutter_springboot/src/checkout/checkoutScreen.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/home/homeScreen.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/checkout/checkoutController.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/checkout/checkoutScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../model/cartItem.dart';
-import '../../themes/light_color.dart';
-import '../../themes/theme.dart';
-import '../../widgets/title_text.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomTextStyle.dart';
 import 'package:doubhBookstore_flutter_springboot/src/utils/CustomUtils.dart';
-
 import 'cartControllerr.dart';
 
 class Cart extends StatefulWidget {
   const Cart({List<CartItem>? items, Key? key}) : super(key: key);
-
-  Widget _item(Book model) {
-    return Container(
-      height: 80,
-      margin: const EdgeInsets.only(bottom: 20.0),
-      child: Row(
-        children: <Widget>[
-          AspectRatio(
-            aspectRatio: 1.2,
-            child: Stack(
-              children: <Widget>[
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(70),
-                  child: SizedBox.fromSize(
-                    size: Size.fromRadius(80),
-                    child: Image.asset(model.image[0].image,
-                        fit: BoxFit.contain, height: 90, width: 90),
-                  ),
-                )
-              ],
-            ),
-          ),
-          Expanded(
-              child: ListTile(
-                  title: TitleText(
-                    text: model.name,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  subtitle: Row(
-                    children: <Widget>[
-                      TitleText(
-                        text: model.price.toString() + "₫",
-                        fontSize: 14,
-                      ),
-                      TitleText(
-                        text: ' \VNĐ ',
-                        color: LightColor.red,
-                        fontSize: 12,
-                      ),
-                    ],
-                  ),
-                  trailing: Container(
-                    width: 35,
-                    height: 35,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: LightColor.lightGrey.withAlpha(150),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: TitleText(
-                      text: 'x${model.quantity}',
-                      fontSize: 12,
-                    ),
-                  )))
-        ],
-      ),
-    );
-  }
-
-  Widget _price() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        TitleText(
-          text: ' sản phẩm',
-          color: LightColor.grey,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-        TitleText(
-          text: '155.000 VNĐ',
-          fontSize: 18,
-        ),
-      ],
-    );
-  }
-
-  Widget _submitButton(BuildContext context) {
-    return FlatButton(
-        onPressed: () {},
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        color: LightColor.orange,
-        child: Container(
-          alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(vertical: 12),
-          width: AppTheme.fullWidth(context) * .7,
-          child: TitleText(
-            text: 'Tiếp tục',
-            color: LightColor.background,
-            fontWeight: FontWeight.w500,
-          ),
-        ));
-  }
-
   @override
   _CartState createState() => _CartState();
-
-// @override
-// Widget build(BuildContext context) {
-//   return Container(
-//     padding: AppTheme.padding,
-//     child: SingleChildScrollView(
-//       child: Column(
-//         children: <Widget>[
-//           ListView(
-//             children: <Widget>[
-//               createHeader(),
-//               createSubTitle(),
-//               createCartList(),
-//               footer(context)
-//             ],
-//           ),
-//           Divider(
-//             thickness: 1,
-//             height: 30,
-//           ),
-//           _price(),
-//           SizedBox(height: 30),
-//           _submitButton(context),
-//           SizedBox(height: 50),
-//         ],
-//       ),
-//     ),
-//   );
-// }
 }
 
 class _CartState extends State<Cart> {
-  final _controller = Get.put(CartController());
-  final _controller1 = Get.put(CheckoutController());
-
+  final _controllerCart = Get.put(CartController());
+  final _controllerCheckout = Get.put(CheckoutController());
   final box = GetStorage();
   var formatter = NumberFormat('#,###,000');
   final prefs = SharedPreferences.getInstance();
@@ -184,12 +54,12 @@ class _CartState extends State<Cart> {
           Utils.getSizedBox(height: 8),
           RaisedButton(
             onPressed: () async{
-              await _controller1.getCheckoutInfo(context);
+              await _controllerCheckout.getCheckoutInfo(context);
               Navigator.push(
                   context,
                   new MaterialPageRoute(
                       builder: (context) => CheckOutPage())).then((val) {
-                _controller.checkEmpty(context);
+                _controllerCart.checkEmpty(context);
                 setState(() {});
               });
               // new MaterialPageRoute(builder: (_)=>new PageTwo()),)
@@ -353,7 +223,7 @@ class _CartState extends State<Cart> {
                                     width: 30,
                                     child: new IconButton(
                                       onPressed: () async {
-                                        await _controller.removeOne(
+                                        await _controllerCart.removeOne(
                                             cartItem.book.id, cartItem.book);
                                         setState(() {});
                                       },
@@ -376,7 +246,7 @@ class _CartState extends State<Cart> {
                                     width: 30,
                                     child: new IconButton(
                                       onPressed: () async {
-                                        await _controller.addOne(
+                                        await _controllerCart.addOne(
                                             cartItem.book.id,
                                             cartItem.book,
                                             context);
@@ -409,7 +279,7 @@ class _CartState extends State<Cart> {
             margin: EdgeInsets.only(right: 10, top: 8),
             child: new IconButton(
               onPressed: () async {
-                await _controller.removeItem(cartItem.book.id);
+                await _controllerCart.removeItem(cartItem.book.id);
                 setState(() {});
               },
               icon: new Icon(Icons.close, size: 15),
@@ -431,14 +301,13 @@ class _CartState extends State<Cart> {
 
   @override
   void initState() {
-    _controller.checkEmpty(context);
-    //print("before state");
+    _controllerCart.checkEmpty(context);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_controller.isEmpty == false) {
+    if (_controllerCart.isEmpty == false) {
       return Scaffold(
         appBar: AppBar(
           title: Text("Giỏ hàng"),
@@ -451,7 +320,7 @@ class _CartState extends State<Cart> {
               children: <Widget>[
                 createSubTitle(),
                 createCartList(
-                        () async => await _controller.getCartItems(context)),
+                        () async => await _controllerCart.getCartItems(context)),
                 footer(context)
               ],
             );

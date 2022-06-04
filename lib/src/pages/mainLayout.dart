@@ -1,13 +1,9 @@
-import 'package:doubhBookstore_flutter_springboot/src/pages/books.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/books/books.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/cart/cartScreen.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/profile.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/profile/profile_screen.dart';
-import 'package:doubhBookstore_flutter_springboot/src/widgets/extentions.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-
 import '../themes/light_color.dart';
 import '../themes/theme.dart';
 import '../widgets/BottomNavigationBar/bottom_navigation_bar.dart';

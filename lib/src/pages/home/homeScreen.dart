@@ -1,8 +1,3 @@
-import 'dart:convert';
-
-import 'package:doubhBookstore_flutter_springboot/src/model/categoryModel.dart';
-import 'package:doubhBookstore_flutter_springboot/src/model/imageModel.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/home/components/appBar.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/home/components/banner.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/home/components/search.dart';
@@ -10,13 +5,7 @@ import 'package:doubhBookstore_flutter_springboot/src/pages/home/homeController.
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:http/http.dart' as http;
-import 'package:loader_overlay/loader_overlay.dart';
-
-import '../../httpClient/config.dart';
 import '../../model/bookModel.dart';
-
-import '../../themes/light_color.dart';
 import '../../themes/theme.dart';
 import '../../widgets/bookCardHome.dart';
 import '../bookDetail/bookDetail.dart';
@@ -31,7 +20,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _controller = Get.put(HomeController());
+  final _controllerHom = Get.put(HomeController());
   Widget _title(var cont) {
     return Container(
       color: Colors.white,
@@ -113,11 +102,11 @@ class _HomePageState extends State<HomePage> {
           delegate: SliverChildListDelegate(<Widget>[
         HomeBanner(),
         _title("Sách mới cập nhật"),
-        _bookWidget(() => _controller.getNewBooks(context)),
+        _bookWidget(() => _controllerHom.getNewBooks(context)),
         _title("Sách bán chạy"),
-        _bookWidget(() => _controller.getBestSaleBooks(context)),
+        _bookWidget(() => _controllerHom.getBestSaleBooks(context)),
         _title("Khuyến mãi"),
-        _bookWidget(() => _controller.getBestDiscountBooks(context)),
+        _bookWidget(() => _controllerHom.getBestDiscountBooks(context)),
       ]))
     ]);
   }

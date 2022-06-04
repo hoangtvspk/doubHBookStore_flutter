@@ -1,11 +1,6 @@
-import 'package:doubhBookstore_flutter_springboot/src/model/myInfoModel.dart';
-import 'package:doubhBookstore_flutter_springboot/src/model/myInfoUpdate.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-
-import '../../../model/address.dart';
-import '../../../themes/light_color.dart';
 import '../../../widgets/input_text.dart';
 import 'addMyAddressController.dart';
 
@@ -21,11 +16,9 @@ class AddMyAddressScreen extends StatefulWidget {
 class _AddMyAddressScreenState extends State<AddMyAddressScreen> {
   @override
   void initState() {
-    //c.checkEmpty(context);
     super.initState();
   }
   final _controller = Get.put(AddMyProfileController());
- // final _getProfileController = Get.put(EditMyProfileController());
   final TextEditingController ProvinceController = TextEditingController();
   final TextEditingController districtTownController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
@@ -117,7 +110,6 @@ class _AddMyAddressScreenState extends State<AddMyAddressScreen> {
                     String district = districtTownController.text;
                     String neiborhood = neighborhoodVillageController.text;
                     String address = addressController.text;
-                    //Address myAddress = new Address(id: agrs.address.id, provinceCity: province, districtTown: district, neighborhoodVillage: neiborhood, address: address)
                     _controller.addMyProfile(province,district,neiborhood,address, context);
                   },
                   style: ElevatedButton.styleFrom(

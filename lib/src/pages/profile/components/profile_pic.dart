@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -47,27 +46,6 @@ class _ProfilePicState extends State<ProfilePic> {
               CircleAvatar(
                 backgroundImage: AssetImage("assets/matbiec.jpg"),
               ),
-              // Positioned(
-              //   right: -16,
-              //   bottom: 0,
-              //   child: SizedBox(
-              //     height: 46,
-              //     width: 46,
-              //     child: TextButton(
-              //       style: TextButton.styleFrom(
-              //         shape: RoundedRectangleBorder(
-              //           borderRadius: BorderRadius.circular(50),
-              //           side: BorderSide(color: Colors.white),
-              //         ),
-              //         primary: Colors.white,
-              //         backgroundColor: Color(0xFFF5F6F9),
-              //       ),
-              //       onPressed: () {},
-              //       child: SvgPicture.asset("assets/icons/Camera Icon.svg"),
-              //     ),
-              //   ),
-              // ),
-
             ],
           ),
         ),

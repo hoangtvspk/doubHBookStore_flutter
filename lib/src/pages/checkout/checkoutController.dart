@@ -1,31 +1,22 @@
 import 'dart:convert';
-
 import 'package:doubhBookstore_flutter_springboot/src/model/bookModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/categoryModel.dart';
-import 'package:doubhBookstore_flutter_springboot/src/model/checkoutInfo.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/order.dart';
-import 'package:doubhBookstore_flutter_springboot/src/model/request/cartItemRequest.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:form_data/form_data.dart' as formdata;
-
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:http/http.dart' as http;
-
-import '../httpClient/config.dart';
-import '../model/address.dart';
-import '../model/imageModel.dart';
-import '../model/myInfoModel.dart';
-import '../pages/address/addressController.dart';
-import '../pages/login/signInScreen.dart';
-import '../pages/profile/myProfile/myProfileController.dart';
-import '../widgets/flushBar.dart';
+import '../../httpClient/config.dart';
+import '../../model/address.dart';
+import '../../model/imageModel.dart';
+import '../../model/myInfoModel.dart';
+import '../../pages/address/addressController.dart';
+import '../../pages/login/signInScreen.dart';
+import '../../pages/profile/myProfile/myProfileController.dart';
 
 class CheckoutController extends GetxController {
   final box = GetStorage();
@@ -34,25 +25,13 @@ class CheckoutController extends GetxController {
   final _controller1 = Get.put(MyProfileController());
   int selected = -1;
   int existedAddress = 0;
-
   late Order orderSuccess;
-
   RxBool isEmpty = false.obs;
-
   RxString address = "".obs;
   RxString firstName = "".obs;
   RxString lastName = "".obs;
   RxString email = "".obs;
   RxString phoneNumber = "".obs;
-
-  // RxString address ="".obs;
-  // {
-  // "address":"125 thôn 15",
-  // "firstName":"Hoang",
-  // "lastName":"Tran",
-  // "email":"hoangtv.spk@gmail.com",
-  // "phoneNumber":"0983553096"
-  // }
 
   Future<void> getCheckoutInfo(BuildContext context) async {
     print("default address");
@@ -93,7 +72,6 @@ class CheckoutController extends GetxController {
     bool? isAuthh = await prefs.getBool("isAuth");
     print("1");
     scaffoldKey.currentState?.showSnackBar(new SnackBar(
-      // duration: new Duration(seconds: 4),
       content: new Row(
         children: <Widget>[
           new CircularProgressIndicator(),
@@ -102,11 +80,8 @@ class CheckoutController extends GetxController {
       ),
     ));
 
-    List list = [];
     if (isAuthh == true) {
       dynamic userInfo = await (box.read("userInfo"));
-      // UserLoginInfoModel userInfo = new UserLoginInfoModel(firstName: e["firstName"], lastName: e["lastName"], email: e["email"], token: e["token"], userRole: e["userRole"]);
-
       await http
           .post(
               Uri.parse(
@@ -122,11 +97,8 @@ class CheckoutController extends GetxController {
                 "email": email.toString(),
                 "phoneNumber": phoneNumber.toString()
               }))
-          .then((value) => onProgressing(value, 1));
-
-      print("success");
+          .then((value) => onProgressingOrder(value));
     } else {}
-    // await saveToBox(list);
     box.write("cartInfo", []);
     box.write("totalPrice", 0);
     box.write("totalItem", 0);
@@ -138,7 +110,6 @@ class CheckoutController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     bool? isAuthh = await prefs.getBool("isAuth");
     scaffoldKey.currentState?.showSnackBar(new SnackBar(
-      // duration: new Duration(seconds: 4),
       content: new Row(
         children: <Widget>[
           new CircularProgressIndicator(),
@@ -162,21 +133,19 @@ class CheckoutController extends GetxController {
                 "email": email.toString(),
                 "phoneNumber": phoneNumber.toString()
               }))
-          .then((value) => onProgressing(value, 1));
+          .then((value) => onProgressingOrder(value));
     } else {}
-    // await saveToBox(list);
     box.write("cartInfo", []);
     box.write("totalPrice", 0);
     box.write("totalItem", 0);
     print("finish");
   }
 
-  onProgressing(http.Response data, int i) {
+  onProgressingOrder(http.Response data) {
     Map<String, dynamic> response = json.decode(utf8.decode(data.bodyBytes));
-    JsonEncoder encoder = new JsonEncoder.withIndent('  ');
-    String prettyprint = encoder.convert(response);
-    // print(response);
-    print(prettyprint);
+    // JsonEncoder encoder = new JsonEncoder.withIndent('  ');
+    // String prettyprint = encoder.convert(response);
+    // print(prettyprint);
 
     List<OrderItem> items = [];
     for (var e in response["orderItems"]) {
@@ -222,7 +191,7 @@ class CheckoutController extends GetxController {
         orderItems: items);
   }
 
-  void onProgressing1(http.Response data) {
+  void onProgressingUpdateUIAddress(http.Response data) {
     dynamic responseJson = json.decode(utf8.decode(data.bodyBytes));
     Address address1 = new Address(
         id: responseJson["id"],
@@ -240,15 +209,6 @@ class CheckoutController extends GetxController {
         address1.provinceCity;
 
     address = strAddress.obs;
-    print(address.toString());
-
-    // box.write("cartInfo", responseJson);
-    // Address address1 = new Address(
-    //     id: responseJson["id"],
-    //     provinceCity: responseJson["provinceCity"],
-    //     districtTown: responseJson["districtTown"],
-    //     neighborhoodVillage: responseJson["neighborhoodVillage"],
-    //     address: responseJson["address"]);
   }
 
   Future<void> updateUIAddress(int selected) async {
@@ -258,8 +218,6 @@ class CheckoutController extends GetxController {
     bool? isAuthh = await prefs.getBool("isAuth");
     if (isAuthh == true) {
       dynamic userInfo = await (box.read("userInfo"));
-      // UserLoginInfoModel userInfo = new UserLoginInfoModel(firstName: e["firstName"], lastName: e["lastName"], email: e["email"], token: e["token"], userRole: e["userRole"]);
-
       await http.get(
           Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
               Config.APP_API["getAddress"]! +
@@ -267,7 +225,7 @@ class CheckoutController extends GetxController {
           headers: <String, String>{
             "Content-Type": "application/json",
             "Authorization": userInfo["token"].toString()
-          }).then((value) => onProgressing1(value));
+          }).then((value) => onProgressingUpdateUIAddress(value));
     } else {
       Get.to(() => SignInPage());
     }

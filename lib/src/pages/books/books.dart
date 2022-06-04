@@ -4,21 +4,20 @@ import 'dart:convert';
 import 'package:doubhBookstore_flutter_springboot/src/model/imageModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/reviewModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/userModel.dart';
-import 'package:doubhBookstore_flutter_springboot/src/pages/Search.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/books/Search.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:loader_overlay/loader_overlay.dart';
 
-import '../httpClient/config.dart';
-import '../model/bookModel.dart';
-import '../model/categoryModel.dart';
-import '../themes/light_color.dart';
-import '../themes/theme.dart';
-import '../widgets/bookCard.dart';
-import 'bookDetail/bookDetail.dart';
+import '../../httpClient/config.dart';
+import '../../model/bookModel.dart';
+import '../../model/categoryModel.dart';
+import '../../themes/light_color.dart';
+import '../../themes/theme.dart';
+import '../../widgets/bookCard.dart';
+import '../bookDetail/bookDetail.dart';
 
 class BooksPage extends StatefulWidget {
   BooksPage({Key? key, this.title}) : super(key: key);
@@ -43,8 +42,6 @@ class _BooksPageState extends State<BooksPage> {
   }
 
   void onProgressing(var data, bookList) {
-    final box = GetStorage();
-    print(data.body);
     List<dynamic> responseJson = json.decode(utf8.decode(data.bodyBytes));
     for (var e in responseJson) {
       List<ImageModel> imageList = [];
@@ -65,7 +62,6 @@ class _BooksPageState extends State<BooksPage> {
             message: e["reviews"][i]["message"],
             rating: e["reviews"][i]["rating"]));
       }
-      print(e["reviews"]);
       Book book = new Book(
           id: e["id"],
           name: e["nameBook"],
@@ -134,7 +130,6 @@ class _BooksPageState extends State<BooksPage> {
       minPrice = "";
       maxPrice = "";
     }
-    List<Book> bookList = [];
     if (cateSearch == true) {
 
       String search2 = json.encode({
@@ -171,16 +166,9 @@ class _BooksPageState extends State<BooksPage> {
           .whenComplete(() => cancelLoading());
       return bookList;
     }
-    await http
-        .get(
-        Uri.parse(Config.HTTP_CONFIG["baseURL"]! + Config.APP_API["book"]!))
-        .then((value) => onProgressing(value, bookList))
-        .whenComplete(() => cancelLoading());
-    return bookList;
   }
 
   void onGetCateProgressing(var data, bookList) {
-    final box = GetStorage();
     print(data.body);
     List<dynamic> responseJson = json.decode(utf8.decode(data.bodyBytes));
     for (var e in responseJson) {
@@ -270,8 +258,6 @@ class _BooksPageState extends State<BooksPage> {
   }
 
   void onGetCategoriesProgressing(var data, categoriesList) {
-    final box = GetStorage();
-    print(data.body);
     List<dynamic> responseJson = json.decode(utf8.decode(data.bodyBytes));
     for (var e in responseJson) {
       CategoryModel categoryModel =
@@ -427,11 +413,8 @@ class _BooksPageState extends State<BooksPage> {
                     AppTheme.fullWidth(context) * (snapshot.data.length / 2);
               }
               List<String> category = ["0"];
-              //List<String> responseJson = json.decode(utf8.decode(snapshot.data));
               for (var e in snapshot.data as List<CategoryModel>) {
                 category.add(e.id.toString());
-                print(category);
-                //category.add(e["nameCategory"].toString());
               }
               print(category);
               return Container(
@@ -476,7 +459,6 @@ class _BooksPageState extends State<BooksPage> {
                                 }
                               },
                               items: category.map((String value) {
-                                print(value);
                                 return DropdownMenuItem<String>(
                                   value: value.toString(),
                                   child: _CateName(int.parse(value)),
