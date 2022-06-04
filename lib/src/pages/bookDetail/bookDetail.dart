@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:doubhBookstore_flutter_springboot/src/model/reviewModel.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/bookDetail/bookDetailController.dart';
@@ -8,15 +10,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:loader_overlay/loader_overlay.dart';
+
 import '../../httpClient/config.dart';
 import '../../model/bookModel.dart';
+import '../../model/categoryModel.dart';
+import '../../model/imageModel.dart';
+import '../../model/userModel.dart';
 import '../../themes/light_color.dart';
 import '../../themes/theme.dart';
+import '../../widgets/bookCardHome.dart';
+import '../../widgets/flushBar.dart';
 import '../../widgets/title_text.dart';
 import '../cart/cartControllerr.dart';
+import '../login/signInScreen.dart';
 
 class BookDetail extends StatefulWidget {
   BookDetail({Key? key}) : super(key: key);
@@ -28,26 +37,339 @@ class BookDetail extends StatefulWidget {
 class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
   final _controller = Get.put(CartController());
   final BookDetailController c = Get.put(BookDetailController());
-  late AnimationController controller;
+
   late Animation<double> animation;
   var formatter = NumberFormat('#,###,000');
   double rating = 0.0;
   ScrollController _scrollController = ScrollController();
+  bool isLove = false;
+  final box = GetStorage();
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    if (c.isChangeReview == 1) {
+      c.isChangeReview = 0;
+      WidgetsBinding.instance?.addPostFrameCallback((_) => changeWhenReview());
+    }
+    dynamic userInfo = (box.read("userInfo"));
+    print(userInfo.toString());
+  }
 
   List<BoxShadow> shadow = [
     BoxShadow(color: Colors.black12, offset: Offset(0, 3), blurRadius: 6)
   ];
-  void cancelLoading() async {
-    context.loaderOverlay.hide();
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   controller =
+  //       AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+  //   animation = Tween<double>(begin: 0, end: 1).animate(
+  //       CurvedAnimation(parent: controller, curve: Curves.easeInToLinear));
+  //   controller.forward();
+  // }
+  //
+  @override
+  void dispose() {
+    super.dispose();
   }
-  final List<String> bannerList = [
-    "https://www.nxbtre.com.vn/Images/Book/nxbtre_full_02162019_031655.jpg",
-    "https://www.teahub.io/photos/full/55-550023_wallpaper-book-garland-light-darkness-reading-dark-books.jpg",
-    "https://c4.wallpaperflare.com/wallpaper/129/868/891/book-of-life-wallpaper-preview.jpg",
-    "https://www.pixelstalk.net/wp-content/uploads/2016/06/Free-Desktop-Book-Wallpapers-HD.jpg",
-    "https://images5.alphacoders.com/443/443740.jpg",
-    "https://www.heat-up.mx/wp-content/uploads/2014/10/book-table-close-up-photo-wallpaper-1680x1050.jpg",
-  ];
+
+  void cancelLoading() async {
+    // context.loaderOverlay.hide();
+  }
+
+  void onGetBookProgressing(var data, bookList) {
+    List<dynamic> responseJson = json.decode(utf8.decode(data.bodyBytes));
+
+    for (var e in responseJson) {
+      List<ImageModel> imageList = [];
+      for (int i = 0; i < e["bookImages"].length; i++) {
+        imageList.add(ImageModel(
+            id: e["bookImages"][i]["id"], image: e["bookImages"][i]["image"]));
+      }
+      List<ReviewModel> reviewList = [];
+      for (int i = 0; i < e["reviews"].length; i++) {
+        reviewList.add(ReviewModel(
+            id: e["reviews"][i]["id"],
+            user: UserModel(
+                id: e["reviews"][i]["user"]["id"],
+                email: e["reviews"][i]["user"]["email"],
+                firstName: e["reviews"][i]["user"]["firstName"],
+                lastName: e["reviews"][i]["user"]["lastName"]),
+            date: e["reviews"][i]["date"],
+            message: e["reviews"][i]["message"],
+            rating: e["reviews"][i]["rating"]));
+      }
+
+      Book book = new Book(
+          id: e["id"],
+          name: e["nameBook"],
+          author: e["author"],
+          category: CategoryModel(
+              id: e["category"]["id"],
+              nameCategory: e["category"]["nameCategory"]),
+          image: imageList,
+          price: e["price"],
+          sale: e["discount"],
+          quantity: e["quantity"],
+          isSelected: false,
+          detail: e["detail"],
+          rating: e["rating"],
+          review: reviewList);
+
+      bookList.add(book);
+    }
+  }
+
+  Future<List<Book>> getBooks() async {
+    final BookDetailsArguments agrs =
+        ModalRoute.of(context)!.settings.arguments as BookDetailsArguments;
+
+    List<Book> bookList = [];
+    await http
+        .get(Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
+            "/books/related-products/${agrs.book.category.id}"))
+        .then((value) => onGetBookProgressing(value, bookList))
+        .whenComplete(() => cancelLoading());
+
+
+    return bookList;
+  }
+
+  Future<List<Book>> getLoveBooks() async {
+    final BookDetailsArguments agrs =
+        ModalRoute.of(context)!.settings.arguments as BookDetailsArguments;
+    List<Book> bookList = [];
+    await http
+        .get(Uri.parse(Config.HTTP_CONFIG["baseURL"]! + "/users/lovedbook"),
+            headers: Config.HEADER)
+        .then((value) => onGetLoveBookProgressing(value, bookList))
+        .whenComplete(() => cancelLoading());
+    return bookList;
+  }
+
+  void onGetLoveBookProgressing(var data, bookList) {
+    final BookDetailsArguments agrs =
+        ModalRoute.of(context)!.settings.arguments as BookDetailsArguments;
+    List<dynamic> responseJson = json.decode(utf8.decode(data.bodyBytes));
+    for (var e in responseJson) {
+      List<ImageModel> imageList = [];
+      for (int i = 0; i < e["bookImages"].length; i++) {
+        imageList.add(ImageModel(
+            id: e["bookImages"][i]["id"], image: e["bookImages"][i]["image"]));
+      }
+      List<ReviewModel> reviewList = [];
+      for (int i = 0; i < e["reviews"].length; i++) {
+        reviewList.add(ReviewModel(
+            id: e["reviews"][i]["id"],
+            user: UserModel(
+                id: e["reviews"][i]["user"]["id"],
+                email: e["reviews"][i]["user"]["email"],
+                firstName: e["reviews"][i]["user"]["firstName"],
+                lastName: e["reviews"][i]["user"]["lastName"]),
+            date: e["reviews"][i]["date"],
+            message: e["reviews"][i]["message"],
+            rating: e["reviews"][i]["rating"]));
+      }
+
+      Book book = new Book(
+          id: e["id"],
+          name: e["nameBook"],
+          author: e["author"],
+          category: CategoryModel(
+              id: e["category"]["id"],
+              nameCategory: e["category"]["nameCategory"]),
+          image: imageList,
+          price: e["price"],
+          sale: e["discount"],
+          quantity: e["quantity"],
+          isSelected: false,
+          detail: e["detail"],
+          rating: e["rating"],
+          review: reviewList);
+      if (agrs.book.id == book.id && isLove == false) {
+        setState(() {
+          isLove = true;
+        });
+      }
+      bookList.add(book);
+    }
+  }
+
+  Future addToFavor() async {
+    dynamic userInfo = (box.read("userInfo"));
+    final BookDetailsArguments agrs =
+        ModalRoute.of(context)!.settings.arguments as BookDetailsArguments;
+    if (userInfo == null) {
+      Get.to(() => SignInPage());
+      FlushBar.showFlushBar(
+          context,
+          null,
+          "Đăng nhập để tiếp tục!",
+          Icon(
+          Icons.check,
+          color: Colors.green,
+      ),);
+    } else {
+      await http
+          .put(
+        Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
+            "/users/lovedbook/add/" +
+            agrs.book.id.toString()),
+        headers: Config.HEADER,
+      )
+          .then((value) => onAddLoveBookProgressing(value))
+          .whenComplete(() {});
+    }
+  }
+
+  Future removeFavor() async {
+    final BookDetailsArguments agrs =
+        ModalRoute.of(context)!.settings.arguments as BookDetailsArguments;
+    dynamic userInfo = (box.read("userInfo"));
+    if (userInfo == null) {
+      Get.to(() => SignInPage());
+      FlushBar.showFlushBar(
+        context,
+        null,
+        "Đăng nhập để tiếp tục!",
+        Icon(
+          Icons.check,
+          color: Colors.green,
+        ),
+      );
+    } else {
+      await http
+          .delete(
+        Uri.parse(Config.HTTP_CONFIG["baseURL"]! +
+            "/users/lovedbook/remove/" +
+            agrs.book.id.toString()),
+        headers: Config.HEADER,
+      )
+          .then((value) => onRemoveLoveBookProgressing(value))
+          .whenComplete(() {});
+    }
+  }
+
+  void onAddLoveBookProgressing(var data) {
+    setState(() {
+      isLove = true;
+    });
+    c.isFavor.value = true;
+    FlushBar.showFlushBar(
+      context,
+      null,
+      "Đã Thêm Vào Yêu Thích",
+      Icon(
+        Icons.check,
+        color: Colors.green,
+      ),
+    );
+  }
+
+  void onRemoveLoveBookProgressing(var data) {
+    setState(() {
+      isLove = false;
+    });
+    c.isFavor.value = false;
+    FlushBar.showFlushBar(
+      context,
+      null,
+      "Đã Xóa Khỏi Yêu Thích",
+      Icon(
+        Icons.delete_outlined,
+        color: Colors.red,
+      ),
+    );
+  }
+
+  Widget _relatedBookWidget() {
+    return Container(
+      margin: EdgeInsets.only(bottom: 5),
+      width: AppTheme.fullWidth(context),
+      height: AppTheme.fullWidth(context) * .63,
+      color: Colors.white,
+      child: FutureBuilder(
+        future: getBooks(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.data == null) {
+            return Container(child: Center(child: Icon(Icons.error)));
+          }
+          return GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 1,
+                childAspectRatio: 5 / 2.8,
+              ),
+              padding: EdgeInsets.only(left: 10),
+              scrollDirection: Axis.horizontal,
+              itemCount: snapshot.data.length,
+              itemBuilder: (BuildContext context, int index) {
+                return BookCard.BookCard(
+                  book: snapshot.data[index],
+                  cardWidth: AppTheme.fullWidth(context),
+                  onSelected: (model) {
+                    Navigator.pushNamed(context, '/detail',
+                        arguments:
+                            BookDetailsArguments(book: snapshot.data[index]));
+                  },
+                );
+              });
+        },
+      ),
+    );
+  }
+
+  Widget _lovedBookWidget() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.only(left: 20),
+          child: TitleText(
+            text: "Sách bạn yêu thích:",
+            fontSize: 15,
+            color: Colors.grey,
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(bottom: 5),
+          width: AppTheme.fullWidth(context),
+          height: AppTheme.fullWidth(context) * .63,
+          color: Colors.white,
+          child: FutureBuilder(
+            future: getLoveBooks(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.data == null || snapshot.data.length == 0) {
+                return Container(child: Center(child: Text("Chưa có sản phẩm nào!")));
+              }
+              return GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 1,
+                    childAspectRatio: 5 / 2.8,
+                  ),
+                  padding: EdgeInsets.only(left: 10),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return BookCard.BookCard(
+                      book: snapshot.data[index],
+                      cardWidth: AppTheme.fullWidth(context),
+                      onSelected: (model) {
+                        Navigator.pushNamed(context, '/detail',
+                            arguments: BookDetailsArguments(
+                                book: snapshot.data[index]));
+                      },
+                    );
+                  });
+            },
+          ),
+        )
+      ],
+    );
+  }
 
   Widget _bookImage() {
     final BookDetailsArguments agrs =
@@ -55,36 +377,38 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
 
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 50),
-        child: CarouselSlider(
-          options: CarouselOptions(
-            enlargeCenterPage: true,
-            enableInfiniteScroll: false,
-            autoPlay: true,
-            height: AppTheme.fullWidth(context),
-          ),
-          items: agrs.book.image
-              .map((e) => ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: <Widget>[
-                        Image.network(
-                          e.image,
-                          fit: BoxFit.cover,
-                        )
-                      ],
-                    ),
-                  ))
-              .toList(),
+        child: Stack(
+          children: [
+            CarouselSlider(
+              options: CarouselOptions(
+                enlargeCenterPage: true,
+                enableInfiniteScroll: false,
+                autoPlay: true,
+                height: AppTheme.fullWidth(context),
+              ),
+              items: agrs.book.image
+                  .map((e) => ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: <Widget>[
+                            Image.network(
+                              e.image,
+                              fit: BoxFit.cover,
+                            )
+                          ],
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ],
         ));
   }
 
   Widget _detailWidget() {
     final BookDetailsArguments agrs =
         ModalRoute.of(context)!.settings.arguments as BookDetailsArguments;
-    print(agrs);
 
-    // print(book);
     return Container(
       padding: AppTheme.padding.copyWith(bottom: 0),
       child: SingleChildScrollView(
@@ -227,7 +551,6 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                   child: new IconButton(
                     onPressed: () => {
                       c.increment(agrs.book.quantity, context),
-                      print(agrs.book.rating)
                     },
                     icon: new Icon(Icons.add, size: 24),
                     color: Colors.grey.shade700,
@@ -247,6 +570,12 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
               height: 20,
             ),
             _description(),
+            Divider(),
+            TitleText(
+              text: "Sách liên quan:",
+              fontSize: 15,
+              color: Colors.grey,
+            ),
           ],
         ),
       ),
@@ -287,20 +616,8 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
   }
 
   void changeWhenReview() {
-    print("change When Review");
     _scrollController.animateTo(_scrollController.position.maxScrollExtent,
         duration: Duration(milliseconds: 500), curve: Curves.ease);
-  }
-
-  @override
-  void initState() {
-    print("init state bookdetail");
-    super.initState();
-    if(c.isChangeReview == 1) {
-      c.isChangeReview= 0;
-      WidgetsBinding.instance
-          ?.addPostFrameCallback((_) => changeWhenReview());
-    }
   }
 
   @override
@@ -316,7 +633,7 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
           message: agrs.book.review[i].message,
           rating: agrs.book.review[i].rating));
     }
-    print(agrs.book.rating);
+    dynamic userInfo = (box.read("userInfo"));
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -334,6 +651,30 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
             );
           },
         ),
+        title: Container(
+          padding: EdgeInsets.only(left: AppTheme.fullWidth(context) - 150),
+          child: (isLove)
+              ? IconButton(
+                  icon: Icon(
+                    Icons.favorite,
+                    color: Color(0xffFF8993),
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    removeFavor();
+                  },
+                )
+              : IconButton(
+                  icon: Icon(
+                    Icons.favorite_border_outlined,
+                    color: Color(0xffFF8993),
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    addToFavor();
+                  },
+                ),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0.0,
       ),
@@ -349,6 +690,8 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                 SizedBox(height: 15),
                 _bookImage(),
                 _detailWidget(),
+                _relatedBookWidget(),
+                (userInfo != null)?_lovedBookWidget():SizedBox(),
                 Column(
                   children: <Widget>[
                     Column(
@@ -502,7 +845,18 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                                 size: 40,
                               ),
                               onPressed: () {
-                                showDialog(
+                                if (userInfo == null) {
+                                  Get.to(() => SignInPage());
+                                  FlushBar.showFlushBar(
+                                    context,
+                                    null,
+                                    "Đăng nhập để tiếp tục!",
+                                    Icon(
+                                      Icons.check,
+                                      color: Colors.green,
+                                    ),);
+                                } else {
+                                  showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
                                     return Dialog(
@@ -513,7 +867,7 @@ class _BookDetailState extends State<BookDetail> with TickerProviderStateMixin {
                                           book: agrs.book),
                                     );
                                   },
-                                ).then(onChange1);
+                                ).then(onChange1);}
                               },
                               color: Colors.black,
                             ),

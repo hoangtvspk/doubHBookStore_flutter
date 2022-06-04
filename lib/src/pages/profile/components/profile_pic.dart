@@ -19,9 +19,11 @@ class _ProfilePicState extends State<ProfilePic> {
   Future check() async{
     final prefs = await SharedPreferences.getInstance();
     bool? isAuthh = await prefs.getBool("isAuth");
-    setState(() {
-      isAuth = isAuthh;
-    });
+    if(isAuth != isAuthh){
+      setState(() {
+        isAuth = isAuthh;
+      });
+    }
     if(isAuth! == true) {
       final box = GetStorage();
       dynamic e = (box.read("userInfo"));

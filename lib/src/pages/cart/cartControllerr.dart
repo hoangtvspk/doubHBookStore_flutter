@@ -269,6 +269,14 @@ class CartController extends GetxController {
 
     if (userInfo == null) {
       Get.to(() => SignInPage());
+      FlushBar.showFlushBar(
+        context,
+        null,
+        "Đăng nhập để tiếp tục!",
+        Icon(
+          Icons.check,
+          color: Colors.green,
+        ),);
     } else {
       String idBook = json.encode({
         "id": id,

@@ -1,6 +1,7 @@
 import 'package:doubhBookstore_flutter_springboot/src/pages/books/Search.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/addMyAddress/addMyAddressScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/addressScreen.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/favouriteBooks.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/myOrders/orderDetailScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/myOrders/orderScreen.dart';
 import 'package:doubhBookstore_flutter_springboot/src/pages/profile/myProfile/editPassword/editPasswordScreen.dart';
@@ -33,5 +34,6 @@ routes() => [
   GetPage(name: "/search",page: () => SearchPage()),
   GetPage(name: "/myOrders",page: () => OrderScreen()),
   GetPage(name: "/orderDetail",page: () => OrderDetailScreen()),
+  GetPage(name: "/favouriteBooks",page: () => FavouriteBooks()),
 
 ];

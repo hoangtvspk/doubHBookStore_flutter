@@ -1,4 +1,5 @@
 import 'package:doubhBookstore_flutter_springboot/src/pages/address/addressScreen.dart';
+import 'package:doubhBookstore_flutter_springboot/src/pages/favouriteBooks.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -70,12 +71,13 @@ class _BodyState extends State<Body> {
             },
           ),
           ProfileMenu(
-            text: "Tìm kiếm",
-            icon: Icons.search,
-            press: () {
-              Get.to(()=> SearchPage());
+            text: "Sách Yêu Thích",
+            icon: Icons.favorite_border,
+            press:  () => {
+              Get.to(() => FavouriteBooks())
             },
           ),
+
           ProfileMenu(
             text: "Đăng Xuất",
             icon: Icons.logout,
