@@ -54,10 +54,10 @@ class CheckoutController extends GetxController {
     String strEmail = myInfoModel.email;
     String strPhone = "";
     if (myInfoModel.phone != null) {
-      existedPhoneNumber = 0;
+      existedPhoneNumber = 1;
       strPhone = myInfoModel.phone;
     } else {
-      existedPhoneNumber = 1;
+      existedPhoneNumber = 0;
     }
     String strFirstName = myInfoModel.lastName;
     String strLastName = myInfoModel.firstName;
@@ -80,7 +80,6 @@ class CheckoutController extends GetxController {
     bool? isAuthh = await prefs.getBool("isAuth");
     print("1");
     scaffoldKey.currentState?.showSnackBar(new SnackBar(
-      duration: new Duration(seconds: 5),
       content: new Row(
         children: <Widget>[
           new CircularProgressIndicator(),
@@ -119,7 +118,6 @@ class CheckoutController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     bool? isAuthh = await prefs.getBool("isAuth");
     scaffoldKey.currentState?.showSnackBar(new SnackBar(
-      duration: new Duration(seconds: 7),
       content: new Row(
         children: <Widget>[
           new CircularProgressIndicator(),
